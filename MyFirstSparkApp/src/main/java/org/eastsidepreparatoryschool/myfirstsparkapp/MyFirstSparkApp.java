@@ -14,6 +14,7 @@ import static spark.Spark.*;
 public class MyFirstSparkApp {
 
     public static void main(String[] args) {
+        staticFiles.location("/static");
         get("/hello", (req, res) -> "Hello World");
     }
 
