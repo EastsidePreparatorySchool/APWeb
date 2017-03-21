@@ -1,13 +1,11 @@
 
 package syncsort;
 
-import java.util.Arrays;
 import java.util.Random;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -16,6 +14,8 @@ import javafx.stage.Stage;
  * @author gunnar
  */
 public class SyncSort extends Application {
+    
+    ProgressIndicator pin;
 
     @Override
     public void start(Stage primaryStage) {
@@ -23,10 +23,11 @@ public class SyncSort extends Application {
         btn.setText("Sort large array");
         btn.setOnAction((e)->makeLargeArrayAndSort());
         
-        ProgressIndicator p = new ProgressIndicator();
+        pin = new ProgressIndicator();
+        pin.setProgress(0);
 
         VBox root = new VBox();
-        root.getChildren().addAll(btn, p);
+        root.getChildren().addAll(btn, pin);
 
         Scene scene = new Scene(root, 300, 250);
 
@@ -68,5 +69,6 @@ public class SyncSort extends Application {
         bubbleSort(a);
         //Arrays.sort(a);
         System.out.println("Done sorting.");
+        pin.setProgress(1);
     }
 }
