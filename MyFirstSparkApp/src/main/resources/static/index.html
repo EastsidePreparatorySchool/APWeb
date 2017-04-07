@@ -12,7 +12,10 @@ and open the template in the editor.
     </head>
     <body>
         <div>Hello World!<br>
-            <button onclick="test()">Test me!</button>
+            <button onclick="testSync()">Synchronous test</button><br>
+            <button onclick="testAsync()">Asynchronous test</button><br>
+            <button onclick="test()">Test with Promise pattern</button>
+            <button onclick="shutdown()">Shut down the server</button>
             <p id="output"></p>
         </div>
         <script src="test.js"></script>
