@@ -12,12 +12,17 @@ and open the template in the editor.
     </head>
     <body>
         <div>Start chatting<br>
-            
-            <input onchange="sendMessage()" id="input"><button onclick="sendMessage()">send</button><br>
+            <form method="post" action="postmessage" onsubmit="return submitForm(this);">
+                <input type="text" value=""  name="message" />
+                <input type="submit" value="Send"/>
+            </form>
+
+
+            <input id="input"><button onclick="sendMessage()">send</button><br>
             <button onclick="getNewMessages()">Get new messages</button><br>
 
             <br><br><br>
-            
+
             <p id="output"></p>
         </div>
         <script src="test.js"></script>
