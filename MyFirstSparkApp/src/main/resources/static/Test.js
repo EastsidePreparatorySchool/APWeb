@@ -89,11 +89,32 @@ function test () {
             output("Result: " + data);
         })
         .catch(error => {
-            ouput("Error: " + error);
+            output("Error: " + error);
         });
 }
 
 
+
+function testParams () {
+    request({url: "params?arg1=1&arg2=2+3"})
+        .then(data => {
+            output("Result: " + data);
+        })
+        .catch(error => {
+            output("Error: " + error);
+        });
+}
+
+
+function testSession () {
+    request({url: "session"})
+        .then(data => {
+            output("Result: " + data);
+        })
+        .catch(error => {
+            output("Error: " + error);
+        });
+}
 
 
 

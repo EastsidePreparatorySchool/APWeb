@@ -11,13 +11,13 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div>Hello World!<br>
-           
-            <button onclick="test()">Test with Promise pattern</button><br>
-            <button onclick="testParams()">mirror parameters</button><br>
-            <button onclick="testSession()">print session</button><br>
+        <div>Start chatting<br>
+            
+            <input onchange="sendMessage()" id="input"><button onclick="sendMessage()">send</button><br>
+            <button onclick="getNewMessages()">Get new messages</button><br>
 
             <br><br><br>
+            
             <p id="output"></p>
         </div>
         <script src="test.js"></script>
