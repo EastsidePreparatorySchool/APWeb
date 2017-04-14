@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Chat server GM</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>Start chatting<br>
+            <form method="post" action="postmessage" onsubmit="return submitForm(this);">
+                <input type="text" value=""  name="message" />
+                <input type="submit" value="Send"/>
+            </form>
+
+
+            <input id="input"><button onclick="sendMessage()">send</button><br>
+            <button onclick="getNewMessages()">Get new messages</button><br>
+
+            <br><br><br>
+
+            <p id="output"></p>
+        </div>
+        <script src="test.js"></script>
+    </body>
+</html>
