@@ -31,7 +31,7 @@ function sendMessage() {
     var textInput = document.getElementById("input").value;
     document.getElementById("input").value = "";
 
-    request({url: "/putmsg", method:"PUT", body: textInput})
+    request({url: "putmsg", method:"PUT", body: textInput})
         .then(data => {
             output("Result: " + data);
         })
@@ -40,27 +40,19 @@ function sendMessage() {
         });
 }
 
-function test2 () {
-    request({url: "tested"})
-    .then(data => {
-        output("Result: " + data);
-    })
-    .catch(error => {
-        ouput("Error: " + error);
-    });
-};
-
-function test3 () {
-    request({url: "shutdown"})
-    .then(data => {
-        output("Result: " + data);
-    })
-    .catch(error => {
-        ouput("Error: " + error);
-    });
-};
+function getNewMessages() {
+    request({url: "getnewmessages"})
+        .then(data => {
+            output(data);
+        })
+        .catch(error => {
+            ouput("Error: " + error);
+        });
+        }
 
 function output (message) {
-    document.getElementById("output").innerHTML += message + "<br>";
+    document.getElementById("output").innerHTML += message;
 }
+
+setInterval(getNewMessages, 100);
     
