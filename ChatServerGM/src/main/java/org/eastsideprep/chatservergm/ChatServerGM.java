@@ -14,12 +14,12 @@ import static spark.Spark.*;
  * @author gmein
  */
 public class ChatServerGM {
-    
+
     static ArrayList<String> messages;
 
     public static void main(String[] args) {
         messages = new ArrayList<>();
-        
+
         staticFiles.location("/static");
         get("/hello", (req, res) -> "Hello World");
         put("/putmessage", (req, res) -> putMessage(req));
@@ -28,9 +28,10 @@ public class ChatServerGM {
     }
 
     public static String putMessage(spark.Request req) {
+
         Context ctx = getContextFromSession(req.session());
         System.out.println("put msg: " + req.body());
-        messages.add(req.session().id()+":"+req.body());
+        messages.add(req.session().id() + ":" + req.body());
         return req.session().id();
     }
 
@@ -39,24 +40,30 @@ public class ChatServerGM {
 
         MultipartConfigElement multipartConfigElement = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
         req.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
+
         System.out.println("post msg: " + req.queryParams("message"));
-        messages.add(req.session().id()+":"+req.queryParams("message"));
+        messages.add(req.session().id() + ":" + req.queryParams("message"));
         return req.session().id();
     }
 
     public static String getNewMessages(spark.Request req, spark.Response res) {
+        System.out.println("entered getNewMessages");
         Context ctx = getContextFromSession(req.session());
+
+        //
         StringBuilder result = new StringBuilder();
         for (int i = ctx.seen; i < messages.size(); i++) {
             String s = messages.get(i);
+            
             if (s.startsWith(req.session().id())) {
-                s = s.substring(req.session().id().length()+1);
+                result.append(s.substring(req.session().id().length() + 1));
             } else {
-                s = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + s;
+                result.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+                result.append(s);
             }
-            result.append(s);
             result.append("<br>");
         }
+        
         ctx.seen = messages.size();
         return result.toString();
     }
