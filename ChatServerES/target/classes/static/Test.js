@@ -43,7 +43,15 @@ function sendMsg() {
             });
 }
 
-
+function getNewMessages() {
+    request({url: "getnewmessages"})
+            .then(data=> {
+                output(data);
+    })
+            .catch(error => {
+                output("Error " + error);
+    });
+}
 function test () {
     request({url: "hello"})
         .then(data => {
@@ -55,6 +63,6 @@ function test () {
 }
 
 function output (message) {
-    document.getElementById("output").innerHTML += message + "<br>";
+    document.getElementById("output").innerHTML += message;
 }
-    
+setInterval(getNewMessages, 100);

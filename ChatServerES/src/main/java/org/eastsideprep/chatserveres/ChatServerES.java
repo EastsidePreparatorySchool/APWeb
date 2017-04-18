@@ -20,6 +20,7 @@ public class ChatServerES {
         messages = new ArrayList<String>();
         staticFiles.location("/static");
         put("/putmessage", (req, res) -> putMessage(req));
+        get("/getnewmessages", (req, res) -> getNewMessages(req, res));
         get("/hello", (req, res) -> syncTest());
         get("/Sandwich", (req, res) -> "Que Interesante");
         get("/shutdown", (req, res) -> {System.exit(0); return 0;});
@@ -28,11 +29,36 @@ public class ChatServerES {
         messages.add(request.session().id()+": "+request.body());
         return true;
     }
+    public static String getNewMessages(spark.Request request, spark.Response response) {
+        Context ctx = getCtxFromSession(request.session());
+        StringBuilder result = new StringBuilder();
+        for(int i = ctx.seen; i <messages.size(); i++) {
+            String s = messages.get(i);
+            if (s.startsWith(request.session().id())) {
+                result.append(s.substring(request.session().id().length() + 1));
+            }
+            else {
+                result.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+                result.append(s);
+            }
+            result.append("<br>");
+        }
+        ctx.seen = messages.size();
+        return result.toString();
+    }
     public static String syncTest() {
         try {
             Thread.sleep(5000);
         } catch (InterruptedException ex) {
         }
         return "Hello World";
+    }
+    public static Context getCtxFromSession(spark.Session s) {
+        Context ctx = s.attribute("Context");
+        if (ctx == null) {
+            ctx = new Context();
+            s.attribute("Context", ctx);
+        }
+        return ctx;
     }
 }
