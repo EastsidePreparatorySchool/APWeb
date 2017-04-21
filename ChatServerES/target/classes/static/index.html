@@ -12,10 +12,13 @@ and open the template in the editor.
     </head>
     <body>
         <div>Start Chatting!<br>
-            <button onclick="test()">Test me!</button>
-            <button onclick="test2()">Test me!</button>
-            <button onclick="test3()">Test me!</button>
+            <form id="post" method="post" action="postmessage" onsubmit="return submitForm(this);">
+                <input type="text" value=""  name="message" />
+                <input type="submit" value="Post"/>
+            </form>
+            <input id ="input2"><button onclick="doStress()">Stress</button><br>
             <input id ="input"><button onclick="sendMsg()">Put</button><br>
+            <button onclick ="login()">Login</button>
             <p id="output"></p>
         </div>
         <script src="test.js"></script>

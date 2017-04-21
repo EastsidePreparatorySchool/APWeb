@@ -25,7 +25,7 @@ public class ChatServerGM {
         get("/hello", (req, res) -> "Hello World");
         put("/protected/putmessage", (req, res) -> putMessage(req));
         post("/protected/postmessage", (req, res) -> postMessage(req));
-        get("/protected/getnewmessages", "application/json", (req, res) -> getNewMessages(req, res), new JSONRT());
+        get("/protected/getnewmessages", "application/json", (req, res) -> getNewMessages(req, res),new JSONRT());
         before("/protected/*", (req, res) -> {
             if (req.session().attribute("initials") == null) {
                 halt(401, "You must login.");

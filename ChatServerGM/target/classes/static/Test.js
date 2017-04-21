@@ -85,6 +85,9 @@ function getNewMessages() {
     if (initials !== "") {
         request({url: "protected/getnewmessages"})
                 .then(data => {
+            if (data !== "[]")
+            output(data +"<br>");
+            return;
                     let messages = JSON.parse(data);
                     for (var i = 0; i < messages.length; i++) {
                         let s = messages[i];
