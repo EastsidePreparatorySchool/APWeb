@@ -1,4 +1,4 @@
-var session = "";
+var initials = "";
 
 
 function request(obj) {
@@ -27,10 +27,18 @@ function request(obj) {
 
 
 function sendMessage() {
+    // make sample object
+    var obj = {"table": "customers", "limit": 20};
+
+    var s = JSON.stringify(obj);
+    console.log(s);
+    console.log(JSON.parse(s).table);
+
+
     var s = document.getElementById("input").value;
     document.getElementById("input").value = "";
 
-    request({url: "putmessage", method: "PUT", body: s})
+    request({url: "protected/putmessage", method: "PUT", body: s})
             .then(data => {
                 session = data;
             })
@@ -39,9 +47,28 @@ function sendMessage() {
             });
 }
 
+var count = 0;
+
+function doStress() {
+    setInterval(stress, 10);
+}
+
+function stress() {
+    var s = document.getElementById("input").value;
+    document.getElementById("input").value = "";
+
+    request({url: "protected/putmessage", method: "PUT", body: String(Math.random())})
+            .then(data => {
+                ;
+            })
+            .catch(error => {
+                output("Error: " + error);
+            });
+
+}
 
 function submitForm(oFormElement) {
-    request({url: "postmessage", method: "POST", body: new FormData(oFormElement)})
+    request({url: "protected/postmessage", method: "POST", body: new FormData(oFormElement)})
             .then(data => {
                 session = data;
             })
@@ -52,10 +79,32 @@ function submitForm(oFormElement) {
 }
 
 
+
+
 function getNewMessages() {
-    request({url: "getnewmessages"})
+    if (initials !== "") {
+        request({url: "protected/getnewmessages"})
+                .then(data => {
+                    let messages = JSON.parse(data);
+                    for (var i = 0; i < messages.length; i++) {
+                        let s = messages[i];
+                        if (!s.startsWith(initials)) {
+                            s = "&nbsp;&nbsp;&nbsp;&nbsp;" + s; 
+                        }
+                        output(s + "<br>");
+                    }
+                })
+                .catch(error => {
+                    output("Error: " + error);
+                });
+    }
+}
+
+function login() {
+    initials = window.prompt("Please enter your initials");
+    request({url: "login", method: "put", body: initials})
             .then(data => {
-                output(data);
+                output("Hello " + data + "<br>");
             })
             .catch(error => {
                 output("Error: " + error);
