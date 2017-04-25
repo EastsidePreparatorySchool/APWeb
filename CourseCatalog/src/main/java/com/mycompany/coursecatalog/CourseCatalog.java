@@ -12,9 +12,19 @@ import static spark.Spark.*;
  * @author daman
  */
 public class CourseCatalog {
-    
-        public static void main(String[] args) {
+
+    public static void main(String[] args) {
         staticFiles.location("/static");
+        Database db = new Database();
+        db.connect();
+
+        db.example("courses");
+        db.example("students");
+        
+        Object[] ao = db.queryStudents("select * from students");
+        System.out.println(ao.length);
+        
+        db.disconnect();
     }
-    
+
 }
