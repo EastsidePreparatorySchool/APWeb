@@ -104,9 +104,10 @@ function getNewMessages() {
 }
 
 function login() {
-    initials = window.prompt("Please enter your initials");
-    request({url: "login", method: "put", body: initials})
+    let init = window.prompt("Please enter your initials");
+    request({url: "login", method: "put", body: init})
             .then(data => {
+                initials = init;
                 output("Hello " + data + "<br>");
             })
             .catch(error => {
