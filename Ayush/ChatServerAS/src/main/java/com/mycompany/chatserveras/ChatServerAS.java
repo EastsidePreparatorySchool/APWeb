@@ -6,6 +6,7 @@
 package com.mycompany.chatserveras;
 
 import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.MultipartConfigElement;
 import static spark.Spark.*;
 
@@ -18,33 +19,33 @@ public class ChatServerAS {
     
     public static void main(String[] args) {
         staticFiles.location("/static");
-        get("/hello", (req, res) -> "Hello World");
-        put("/putmsg", (req, res) -> putMsg(req));
-        post("/postmsg", (req, res) -> postMsg(req));
-        get("/getnewmessages", (req, res) -> getNewMessages(req, res));
+        get("/protected/hello", (req, res) -> "Hello World");
+        put("/protected/putmsg", (req, res) -> putMsg(req));
+        post("/protected/postmsg", (req, res) -> postMsg(req));
+        get("/protected/getnewmessages", "application/json", (req, res) -> getNewMessages(req, res), new JSONRT());
         
-//        before("/protected/*", (req, res) -> {
-//            if (req.session().attribute("initials") == null) {
-//                halt(401, "YOU SHALL NOT PASS.");
-//            }
-//        });
+        before("/protected/*", (req, res) -> {
+            if (req.session().attribute("initials") == null) {
+                halt(401, "YOU SHALL NOT PASS.");
+            }
+        });
         
-        //put("/login", (req, res) -> login(req));
-        //post("/postmsg", (req, res) -> postMsg(req));
+        put("/login", (req, res) -> login(req));
+        post("/protected/postmsg", (req, res) -> postMsg(req));
     }
     
-//    private static String login (spark.Request req) {
-//        
-//        req.session().attribute("initials", req.body());
-//        return req.body();
-//    }
+    private static String login (spark.Request req) {
+        
+        req.session().attribute("initials", req.body());
+        return req.body();
+    }
     
     public static String putMsg(spark.Request req) {
         Context ctx = getContextFromSession(req.session());
         synchronized (ctx) {
             System.out.println("put msg: " + req.body());
             synchronized(messages) {
-                messages.add(req.session().id() + ":" + req.body());
+                messages.add(req.session().attribute("initials").toString() + ":" + req.body());
             }
         }
         return req.session().id();
@@ -65,26 +66,16 @@ public class ChatServerAS {
         return req.session().id();
     }
     
-    public static String getNewMessages(spark.Request req, spark.Response res) {
+    public static Object getNewMessages(spark.Request req, spark.Response res) {
         Context ctx = getContextFromSession(req.session());
+        List<String> myMessages;
+        
         synchronized (ctx) {
-            StringBuilder result = new StringBuilder();
             synchronized (messages) {
-                for (int counter = ctx.seen; counter < messages.size(); counter++) {
-                    String newMessage = messages.get(counter);
-                    if (newMessage.startsWith(req.session().id())) {
-                        result.append(newMessage.substring(req.session().id().length() + 1));
-                    }
-                    else {
-                        result.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-                        result.append(newMessage);
-                    }
-                    result.append("<br>");
-                }
-
+                myMessages = messages.subList(ctx.seen, messages.size());
                 ctx.seen = messages.size();
             }
-            return result.toString();
+            return myMessages;
         }
     }
     
