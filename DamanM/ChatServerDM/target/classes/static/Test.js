@@ -1,8 +1,9 @@
-var session = "";
-function myRequest(obj) {
+function request(obj) {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
+
         xhr.open(obj.method || "GET", obj.url);
+
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {
                 resolve(xhr.response);
@@ -11,44 +12,122 @@ function myRequest(obj) {
             }
         };
         xhr.onerror = () => reject(xhr.statusText);
+
         xhr.send(obj.body);
     });
 }
+function req(obj) {
+    return new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+        
+        xhr.open(obj.method || "GET", obj.url);
+        xhr.setRequestHeader("Content-type", "application/json");
 
-function sendMessage() {
-    var m = document.getElementById("input").value;
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                resolve(xhr.response);
+            } else {
+                reject(xhr.statusText);
+            }
+        };
+        xhr.onerror = () => reject(xhr.statusText);
+
+        xhr.send(obj.body);
+    });
+}
+function mySend(obj) {
+
+    let xhr = new XMLHttpRequest();
+    xhr.open(obj.method || "GET", obj.url, false);
+    xhr.send(obj.body);
+    if (xhr.status >= 200 && xhr.status < 300) {
+        output("Result: " + xhr.response);
+    } else {
+        output("Error: " + xhr.statusText);
+    }
+}
+function submitForm(oFormElement) {
+    document.getElementById("post").value = "";
+    request({url: "protected/postmessage", method: "POST", body: new FormData(oFormElement)})
+            .then(data => {
+            })
+            .catch(error => {
+                output("Error: " + error + "<br>");
+            });
+    return false;
+}
+function sendMsg() {
+    var obj = {
+        parent: document.getElementById("input").value,
+        initials: initials,
+        message: document.getElementById("parent").value
+    };
+    if (obj.parent == "") {
+        obj.parent = -1;
+    }
     document.getElementById("input").value = "";
-    myRequest({url: "send", method: "PUT", body: m})
+    document.getElementById("parent").value = "";
+    req({url: "protected/putmessage", method: "PUT", body: JSON.stringify(obj)})
             .then(data => {
-                session = data;
             })
             .catch(error => {
-                output("Error: " + error);
+                output("Error: " + error + "<br>");
+            });
+}
+var initials = "";
+function login() {
+    var init = prompt("Halt! State your name");
+    req({url: "login", method: "put", body: init})
+            .then(data => {
+                initials = init;
+                output("Hello " + data + "<br>");
+            })
+            .catch(error => {
+                output("Error " + error + "<br>");
             });
 }
 
-function test() {
-    myRequest({url: "hello"})
-            .then(data => {
-                output("Result: " + data);
-            })
-            .catch(error => {
-                output("Error: " + data);
-            });
+function getNewMessages() {
+    if (initials !== "") {
+        request({url: "protected/getnewmessages"})
+                .then(data => {
+                    let messages = JSON.parse(data);
+                    for (var i = 0; i < messages.length; i++) {
+                        let s = messages[i];
+                        x = messageFactor(s);
+                        if (!s.initials.startsWith(initials)) {
+                            console.log(s);
+                            x = "&nbsp&nbsp&nbsp&nbsp;" + x;
+                        }
+                        output(x + "<br>");
+                    }
+                })
+                .catch(error => {
+                    output("Error " + error + "<br>");
+                });
+    }
 }
 
-function logIn() {
-    let username = prompt("What is your username?");
-    myRequest({url: "login?username=" + username})
-            .then(data => {
-                output("Result: " + data);
-            })
-            .catch(error => {
-                output("Error: " + data);
-            });
+function messageFactor(s) {
+        if(s.parent !== -1) {
+            return "#" + s.id + " in reply to " + s.parent + " " + s.initials + ": " + s.message;
+        } else {
+            return "#" + s.id + " " + s.initials + ": " + s.message;
+        }
 }
-
 function output(message) {
-    document.getElementById("output").innerHTML += message + "<br>";
+    document.getElementById("output").innerHTML += message;
 }
-
+function doStress() {
+    setInterval(sendMsg1000, 10);
+}
+function sendMsg1000() {
+    var s = document.getElementById("input2").value;
+    request({url: "protected/putmessage", method: "PUT", body: s})
+            .then(data => {
+            })
+            .catch(error => {
+                output("Error: " + error + "<br>");
+            });
+}
+setInterval(getNewMessages, 100);

@@ -10,16 +10,27 @@ package org.eastsideprep.chatserverdm;
  * @author daman
  */
 public class Message {
-    String username;
     String message;
+    int id;
+    int parent;
+    String initials;
     
-    public Message(String u, String m) {
-        this.username = u;
-        this.message = m;
+    Message(String message, int parent, String initials) {
+        this.message = message;
+        this.parent = parent;
+        this.initials = initials;
     }
     
+    public void setID(int id) {
+        this.id = id;
+    }
+    
+    @Override
     public String toString() {
-        return this.username + ": " + this.message;
+        if(this.parent != -1) {
+            return "#" + this.id + " in reply to " + this.parent + " " + this.initials + ": " + this.message;
+        } else {
+            return "#" + this.id + " " + this.initials + ": " + this.message;
+        }
     }
-    
 }
