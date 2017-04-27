@@ -14,7 +14,11 @@ public class JSONRT implements ResponseTransformer{
     final static private Gson gson = new Gson();
 
     @Override
-    public String render(Object o) {
-        return gson.toJson(o);
+    public String render(Object objectToRender) {
+        return gson.toJson(objectToRender);
+    }
+    
+    static ReplyMessage parse(String stringToParse) {
+        return gson.fromJson(stringToParse, ReplyMessage.class);
     }
 }

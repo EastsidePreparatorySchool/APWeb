@@ -30,6 +30,7 @@ function sendMessage() {
     };
     var stringObjectToSend = JSON.stringify(objectToSend);
     console.log(JSON.stringify(objectToSend));
+    console.log(objectToSend);
     
     document.getElementById("input").value = "";                                //Clears the input box - don't worry, the message to be sent is already stored in objectToSend.message.
     document.getElementById("reply").value = "";                                //Clears the reply box - don't worry, the message to reply to is already stored in objectToSend.parent.
@@ -79,10 +80,10 @@ function getNewMessages() {
                 console.log(messageArray);
                 for (var counter = 0; counter < messageArray.length; counter++) {
                     let messageAtIndex = messageArray[counter];
-                    if (!messageAtIndex.startsWith(initials)) {
+                    if (messageAtIndex.initials !== initials) {
                         messageAtIndex = "&nbsp;&nbsp;&nbsp;&nbsp;" + messageAtIndex;
                     }
-                    output(messageAtIndex + "<br>");
+                    output(messageAtIndex.initials + ": " + messageAtIndex.message + "<br>");
                 }
             })
             .catch(error => {

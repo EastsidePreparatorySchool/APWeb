@@ -13,5 +13,5 @@ public class ReplyMessage {
     int id = 0;
     int parent = 0;
     String initials = "";
-    String text = "";            
+    String message = "";            
 }
