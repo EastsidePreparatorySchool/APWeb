@@ -23,7 +23,7 @@ function sendMessage() {
     var textInput = document.getElementById("input").value;                     //Stores whatever is in the input field as a variable called textInput.
     document.getElementById("input").value = "";                                //Clears the input box - don't worry, the message to be sent is already stored in textInput.
 
-    request({url: "putmsg", method:"PUT", body: textInput})
+    request({url: "protected/putmsg", method:"PUT", body: textInput})
         .then(data => {
             sessionID = data;
         })
@@ -34,25 +34,34 @@ function sendMessage() {
 
 var initials = "";
 
-//function login() {
-//    initials = prompt("What are your initials?");
-//    request({url: "login", method: "put", body: initials})
-//        .then(data => {
-//            output("Hello" + data + "/br");
-//        })
-//        .catch(error => {
-//            output("Error: " + error);
-//        });
-//}
-
-function getNewMessages() {
-    request({url: "getnewmessages"})
+function login() {
+    initials = prompt("What are your initials?");
+    request({url: "login", method: "put", body: initials})
         .then(data => {
-            output(data);
+            output("Hello " + data + "<br>");
         })
         .catch(error => {
             output("Error: " + error);
-        }); 
+        });
+}
+
+function getNewMessages() {
+    if (initials !== "") {
+        request({url: "protected/getnewmessages"})
+            .then(data => {
+                let messages = JSON.parse(data);
+                for (var counter = 0; counter < messages.length; counter++) {
+                    let messageAtIndex = messages[counter];
+                    if (!messageAtIndex.startsWith(initials)) {
+                        messageAtIndex = "&nbsp;&nbsp;&nbsp;&nbsp;" + messageAtIndex;
+                    }
+                    output(messageAtIndex + "<br>");
+                }
+            })
+            .catch(error => {
+                output("Error: " + error);
+            }); 
+    }
 }
 
 function output (message) {
@@ -65,7 +74,7 @@ function doStress() {
 
 function stress() {
     var counter;
-    request({url: "putmsg", method:"PUT", body: String(Math.random())})
+    request({url: "protected/putmsg", method:"PUT", body: String(Math.random())})
         .then(data => {
             ;
         })
