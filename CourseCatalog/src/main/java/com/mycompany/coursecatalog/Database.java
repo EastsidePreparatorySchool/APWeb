@@ -73,9 +73,21 @@ public class Database {
 
     public class MessageData {
 
-        int id;
-        String login;
-        String message;
+        public int id;
+        public String login;
+        public String message;
+
+        public MessageData() {
+        }
+
+        public MessageData(String login, String message) {
+            this.login = login;
+            this.message = message;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
     }
 
     public Object[] getNewMessages(int after) {
@@ -85,7 +97,7 @@ public class Database {
 
         try {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM messages WHERE id > "+after);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM messages WHERE id > " + after);
 
             while (rs.next()) {
                 MessageData md = new MessageData();
@@ -100,6 +112,25 @@ public class Database {
         }
 
         return result;
+    }
+
+    public void insertMessage(MessageData md) {
+        //So MessageData object that gets passed in may need an ID supplied either from auto_increment or a lookup
+        try {
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate("INSERT INTO Messages VALUES (" + md.id + "," + md.login + "," + md.message + ")");
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public void getIDFromDatabase() {
+        try {
+            Statement stmt = conn.createStatement();
+            
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     public class StudentData {

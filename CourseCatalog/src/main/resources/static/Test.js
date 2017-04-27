@@ -19,10 +19,12 @@ function request(obj) {
     });
 }
 
-function req(obj) {
+function reqWithJSON(obj) {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
         xhr.open(obj.method || "GET", obj.url);
+        xhr.setRequestHeader("Content-type", "application/json");
+
 
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {
@@ -60,15 +62,10 @@ function submitForm(oFormElement) {
 }
 function sendMsg() {
     var obj = {
-        parent: document.getElementById("input").value,
         login: login,
-        message: document.getElementById("parent").value
+        message: document.getElementById("input").value
     };
-    if(obj.parent == "") {
-     obj.parent = -1;   
-    }
     document.getElementById("input").value = "";
-    document.getElementById("parent").value = "";
     request({url: "protected/putmessage", method: "PUT", body: JSON.stringify(obj)})
             .then(data => {
             })

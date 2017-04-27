@@ -11,10 +11,17 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <button onclick="logIn()">Log in!</button><br>
-        <input id="input"><button onclick="sendMessage()">send</button><br>
-        <br><br><br>
-        <p id="output"></p>
+        <div>Start Chatting!<br>
+<!--            <form id="post" method="post" action="postmessage" onsubmit="return submitForm(this);">
+                <input type="text" value=""  name="message" />
+                <input type="text" value="" name="parent"/>
+                <input type="submit" value="Post"/>
+            </form>-->
+<!--            <input id ="input2"><button onclick="doStress()">Stress</button><br>-->
+            <input id ="input"><button onclick="sendMsg()">Put</button><br>
+            <button onclick ="login()">Login</button>
+            <p id="output"></p>
+        </div>
         <script src="test.js"></script>
     </body>
 </html>

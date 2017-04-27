@@ -5,6 +5,8 @@
  */
 package com.mycompany.coursecatalog;
 
+import com.google.gson.Gson;
+import com.mycompany.coursecatalog.Database.MessageData;
 import java.util.List;
 import javax.servlet.MultipartConfigElement;
 import static spark.Spark.*;
@@ -14,6 +16,9 @@ import static spark.Spark.*;
  * @author daman
  */
 public class CourseCatalog {
+    
+    
+    final static private Gson gson = new Gson();
 
     public static void main(String[] args) {
 
@@ -28,7 +33,7 @@ public class CourseCatalog {
         });
 
         // simple chat server as part of service
-        put("/protected/putmessage", (req, res) -> putMessage(req));
+        put("/protected/putmessage", (req, res) -> putMessage(req), new JSONRT());
         post("/protected/postmessage", (req, res) -> postMessage(req));
         get("/protected/getnewmessages", "application/json", (req, res) -> getNewMessages(req, res), new JSONRT());
 
@@ -56,7 +61,15 @@ public class CourseCatalog {
     }
 
     public static String putMessage(spark.Request req) {
-
+        Context ctx = getContextFromSession(req.session());
+        MessageData m;
+        synchronized (ctx) {
+            //MessageData needs an ID
+                String myObjString = "" + req.body();
+                System.out.println("put msg: " + req.body());
+                m = gson.fromJson(myObjString, MessageData.class);
+                ctx.db.insertMessage(m);
+        }
         return "ok";
     }
 
