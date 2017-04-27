@@ -15,7 +15,7 @@ import static spark.Spark.*;
  * @author asharma
  */
 public class ChatServerAS {
-    static ArrayList<String> messages = new ArrayList<>();
+    static ArrayList<Object> messages = new ArrayList<>();
     
     public static void main(String[] args) {
         staticFiles.location("/static");
@@ -31,7 +31,6 @@ public class ChatServerAS {
         });
         
         put("/login", (req, res) -> login(req));
-        post("/protected/postmsg", (req, res) -> postMsg(req));
     }
     
     private static String login (spark.Request req) {
@@ -45,7 +44,7 @@ public class ChatServerAS {
         synchronized (ctx) {
             System.out.println("put msg: " + req.body());
             synchronized(messages) {
-                messages.add(req.session().attribute("initials").toString() + ":" + req.body());
+                messages.add(/*req.session().attribute("initials").toString() + ":" + */req.body());
             }
         }
         return req.session().id();
@@ -60,7 +59,7 @@ public class ChatServerAS {
 
             System.out.println("put msg: " + req.body());
             synchronized (messages) {
-                messages.add(req.session().id() + ":" + req.body());
+                messages.add(/*req.session().id() + ":" + */req.body());
             }
         }
         return req.session().id();
@@ -68,14 +67,15 @@ public class ChatServerAS {
     
     public static Object getNewMessages(spark.Request req, spark.Response res) {
         Context ctx = getContextFromSession(req.session());
-        List<String> myMessages;
+        List<Object> myMessages;
         
         synchronized (ctx) {
             synchronized (messages) {
                 myMessages = messages.subList(ctx.seen, messages.size());
                 ctx.seen = messages.size();
             }
-            return myMessages;
+            System.out.println(myMessages.toArray());
+            return myMessages.toArray();
         }
     }
     
