@@ -7,6 +7,7 @@ package com.mycompany.coursecatalog;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -70,7 +71,39 @@ public class Database {
         }
     }
 
-    private class StudentData {
+    public class MessageData {
+
+        int id;
+        String login;
+        String message;
+    }
+
+    public Object[] getNewMessages(int after) {
+
+        Object[] result = null;
+        ArrayList<MessageData> asd = new ArrayList<>();
+
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM messages WHERE id > "+after);
+
+            while (rs.next()) {
+                MessageData md = new MessageData();
+                md.id = rs.getInt(1);
+                md.login = rs.getString(2);
+                md.message = rs.getString(3);
+                asd.add(md);
+            }
+            result = asd.toArray();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return result;
+    }
+
+    public class StudentData {
+
         int id;
         String firstName;
         String lastName;
@@ -91,10 +124,10 @@ public class Database {
                 StudentData sd = new StudentData();
                 sd.firstName = rs.getString(2);
                 sd.lastName = rs.getString(3);
-                sd.login =rs.getString(4);
+                sd.login = rs.getString(4);
                 sd.gradYear = rs.getInt(5);
                 sd.id = rs.getInt(1);
-                
+
                 asd.add(sd);
             }
             result = asd.toArray();
