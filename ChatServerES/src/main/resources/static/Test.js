@@ -39,7 +39,21 @@ function submitForm(oFormElement) {
 function sendMsg() {
     var s = document.getElementById("input").value;
     document.getElementById("input").value = "";
+    var p = document.getElementById("parent").value;
+    document.getElementById("parent").value = "";
     request({url: "protected/putmessage", method: "PUT", body: s})
+            .then(data => {
+            })
+            .catch(error => {
+                output("Error: " + error + "<br>");
+            });
+}
+function sendMsg1() {
+    var s = document.getElementById("input").value;
+    document.getElementById("input").value = "";
+    var p = document.getElementById("parent").value;
+    document.getElementById("parent").value = "";
+    request({url: "protected/putmessage1", method: "PUT", body: JSON.stringify({id: 0, parent: p, initials: initials, message: s})})
             .then(data => {
             })
             .catch(error => {
@@ -48,9 +62,10 @@ function sendMsg() {
 }
 var initials = "";
 function login() {
-    initials = prompt("Halt! State your name");
-    request({url: "login", method: "put", body: initials})
+    var init = prompt("Halt! State your name");
+    request({url: "login", method: "put", body: init})
             .then(data => {
+                initials = init;
                 output("Hello " + data + "<br>");
             })
             .catch(error => {
@@ -62,7 +77,34 @@ function getNewMessages() {
     if (initials !== "") {
         request({url: "protected/getnewmessages"})
                 .then(data => {
-                    output(data);
+                    let messages = JSON.parse(data);
+                    for (var i = 0; i < messages.length; i++) {
+                        let s = "";
+                        if (messages[i].initials !== initials) {
+                            s = s + "&nbsp;&nbsp;&nbsp;&nbsp;";
+                        }
+                        s = s + messages[i].id + ": " + messages[i].initials + ": " + messages[i].message;
+                        output(s + "<br>");
+                    }
+                })
+                .catch(error => {
+                    output("Error " + error + "<br>");
+                });
+    }
+}
+function getNewMessages1() {
+    if (initials !== "") {
+        request({url: "protected/getnewmessages"})
+                .then(data => {
+                    let messages = JSON.parse(data);
+                    for (var i = 0; i < messages.length; i++) {
+                        let s = "";
+                        if (messages[i].initials !== initials) {
+                            s = s + "&nbsp;&nbsp;&nbsp;&nbsp;";
+                        }
+                        s = s + messages[i].id + ": " + messages[i].initials + ": " + messages[i].message;
+                        output(s + "<br>");
+                    }
                 })
                 .catch(error => {
                     output("Error " + error + "<br>");
@@ -84,4 +126,5 @@ function sendMsg1000() {
                 output("Error: " + error + "<br>");
             });
 }
-setInterval(getNewMessages, 100);
+//setInterval(getNewMessages, 100);
+setInterval(getNewMessages1, 100);

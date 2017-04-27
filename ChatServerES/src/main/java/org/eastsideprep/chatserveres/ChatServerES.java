@@ -8,20 +8,21 @@ package org.eastsideprep.chatserveres;
 import static spark.Spark.*;
 import java.util.*;
 import javax.servlet.MultipartConfigElement;
-
+import com.google.gson.*;
 /**
  *
  * @author ESchreiber
  */
 public class ChatServerES {
 
-    static ArrayList<String> messages = null;
+    static ArrayList<Message> messages = null;
 
     public static void main(String[] args) {
-        messages = new ArrayList<String>();
+        messages = new ArrayList<Message>();
         staticFiles.location("/static");
         put("/protected/putmessage", (req, res) -> putMessage(req));
-        get("/protected/getnewmessages", (req, res) -> getNewMessages(req, res));
+        put("/protected/putmessage1", (req, res) -> putMessage1(req));
+        get("/protected/getnewmessages", "application/json", (req, res) -> getNewMessages(req, res), new JSONRT());
         post("/protected/postmessage", (req, res) -> postMessage(req));
         before("/protected/*", (req, res) -> {
             if (req.session().attribute("initials") == null) {
@@ -32,19 +33,35 @@ public class ChatServerES {
     }
 
     public static boolean putMessage(spark.Request request) {
-        synchronized (messages) {
-            messages.add(request.session().attribute("initials") + ": " + request.body());
-            return true;
+        Context ctx = getCtxFromSession(request.session());
+        synchronized (ctx) {
+            synchronized (messages) {
+                messages.add(new Message(messages.size(), 0, request.session().attribute("initials"), request.body()));
+                return true;
+            }
+        }
+    }
+    public static boolean putMessage1(spark.Request request) {
+        Context ctx = getCtxFromSession(request.session());
+        Gson gson = new Gson();
+        synchronized (ctx) {
+            synchronized (messages) {
+                System.out.println(request.body());
+                messages.add(gson.fromJson(request.body(), Message.class));
+                return true;
+            }
         }
     }
 
     public static String postMessage(spark.Request req) {
-        synchronized (messages) {
-            Context ctx = getCtxFromSession(req.session());
-            MultipartConfigElement multipartConfigElement = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
-            req.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
-            messages.add(req.session().attribute("initials") + ":" + req.queryParams("message"));
-            return req.session().id();
+        Context ctx = getCtxFromSession(req.session());
+        synchronized (ctx) {
+            synchronized (messages) {
+                MultipartConfigElement multipartConfigElement = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
+                req.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
+                messages.add(new Message(messages.size(), 0, req.session().attribute("initials"), req.queryParams("message")));
+                return req.session().id();
+            }
         }
     }
 
@@ -53,23 +70,16 @@ public class ChatServerES {
         return req.body();
     }
 
-    public static String getNewMessages(spark.Request request, spark.Response response) {
-        synchronized (messages) {
-            Context ctx = getCtxFromSession(request.session());
-            StringBuilder result = new StringBuilder();
-            for (int i = ctx.seen; i < messages.size(); i++) {
-                String s = messages.get(i);
-                if (s.startsWith(request.session().attribute("initials"))) {
-                    result.append(s.substring(request.session().attribute("initials").toString().length() + 1));
-                } else {
-                    result.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-                    result.append(s);
-                }
-                result.append("<br>");
+    public static Object getNewMessages(spark.Request request, spark.Response response) {
+        Context ctx = getCtxFromSession(request.session());
+        List <Message> myMessages;
+        synchronized (ctx) {
+            synchronized (messages) {
+                myMessages = messages.subList(ctx.seen, messages.size());
+                ctx.seen = messages.size();
             }
-            ctx.seen = messages.size();
-            return result.toString();
         }
+        return myMessages.toArray();
     }
 
     public static Context getCtxFromSession(spark.Session s) {
