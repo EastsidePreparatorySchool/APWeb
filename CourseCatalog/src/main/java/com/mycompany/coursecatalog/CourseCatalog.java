@@ -36,6 +36,8 @@ public class CourseCatalog {
     }
 
     private static Object example(spark.Request req) {
+        System.out.println("entered example");
+
         Context ctx = getContextFromSession(req.session());
         System.out.println("put msg: " + req.body());
 
@@ -44,7 +46,7 @@ public class CourseCatalog {
 
         Object[] ao = ctx.db.queryStudents("select * from students");
         System.out.println(ao.length);
-        
+
         return ao;
     }
 
@@ -69,7 +71,7 @@ public class CourseCatalog {
     }
 
     public static Object getNewMessages(spark.Request req, spark.Response res) {
-        System.out.println("entered getNewMessages");
+//        System.out.println("entered getNewMessages");
         Context ctx = getContextFromSession(req.session());
         Object[] result = null;
         synchronized (ctx) {

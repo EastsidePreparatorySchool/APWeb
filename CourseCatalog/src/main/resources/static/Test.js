@@ -1,3 +1,6 @@
+var login = "";
+
+
 function request(obj) {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
@@ -15,6 +18,7 @@ function request(obj) {
         xhr.send(obj.body);
     });
 }
+
 function req(obj) {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
@@ -32,6 +36,7 @@ function req(obj) {
         xhr.send(obj.body);
     });
 }
+
 function mySend(obj) {
 
     let xhr = new XMLHttpRequest();
@@ -56,7 +61,7 @@ function submitForm(oFormElement) {
 function sendMsg() {
     var obj = {
         parent: document.getElementById("input").value,
-        initials: initials,
+        login: login,
         message: document.getElementById("parent").value
     };
     if(obj.parent == "") {
@@ -71,12 +76,11 @@ function sendMsg() {
                 output("Error: " + error + "<br>");
             });
 }
-var initials = "";
 function login() {
-    var init = prompt("Halt! State your name");
-    req({url: "login", method: "put", body: init})
+    var init = prompt("Please enter your login name:");
+    request({url: "login", method: "put", body: init})
             .then(data => {
-                initials = init;
+                login = init;
                 output("Hello " + data + "<br>");
             })
             .catch(error => {
@@ -85,13 +89,15 @@ function login() {
 }
 
 function getNewMessages() {
-    if (initials !== "") {
+    if (login !== "") {
         request({url: "protected/getnewmessages"})
                 .then(data => {
+//                    output (data);
                     let messages = JSON.parse(data);
                     for (var i = 0; i < messages.length; i++) {
-                        let s = messages[i];
-                        if (!s.startsWith(initials)) {
+                        let s = messages[i].message;
+//                        output(s);
+                        if (s && !s.startsWith(login)) {
                             s = "&nbsp&nbsp&nbsp&nbsp;" + s;
                         }
                         output(s + "<br>");
@@ -118,3 +124,14 @@ function sendMsg1000() {
             });
 }
 setInterval(getNewMessages, 100);
+
+
+function getExample() {
+    request({url: "protected/example", method: "GET", body: ""})
+            .then(data => {
+                output(data)
+            })
+            .catch(error => {
+                output("Error: " + error + "<br>");
+            });
+}
