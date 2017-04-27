@@ -20,7 +20,7 @@ public class ChatServerES {
     public static void main(String[] args) {
         messages = new ArrayList<Message>();
         staticFiles.location("/static");
-        put("/protected/putmessage", (req, res) -> putMessage(req));
+        //put("/protected/putmessage", (req, res) -> putMessage(req));
         put("/protected/putmessage1", (req, res) -> putMessage1(req));
         get("/protected/getnewmessages", "application/json", (req, res) -> getNewMessages(req, res), new JSONRT());
         post("/protected/postmessage", (req, res) -> postMessage(req));
@@ -32,7 +32,7 @@ public class ChatServerES {
         put("/login", (req, res) -> login(req));
     }
 
-    public static boolean putMessage(spark.Request request) {
+    /*public static boolean putMessage(spark.Request request) {
         Context ctx = getCtxFromSession(request.session());
         synchronized (ctx) {
             synchronized (messages) {
@@ -40,14 +40,15 @@ public class ChatServerES {
                 return true;
             }
         }
-    }
+    }*/
     public static boolean putMessage1(spark.Request request) {
         Context ctx = getCtxFromSession(request.session());
         Gson gson = new Gson();
         synchronized (ctx) {
             synchronized (messages) {
-                System.out.println(request.body());
-                messages.add(gson.fromJson(request.body(), Message.class));
+                Message m = gson.fromJson(request.body(), Message.class);
+                m.setIdd(messages.size());
+                messages.add(m);
                 return true;
             }
         }
@@ -59,7 +60,10 @@ public class ChatServerES {
             synchronized (messages) {
                 MultipartConfigElement multipartConfigElement = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
                 req.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
-                messages.add(new Message(messages.size(), 0, req.session().attribute("initials"), req.queryParams("message")));
+                Message m = new Message(0, req.session().attribute("initials"), req.queryParams("message"));
+                m.setIdd(messages.size());
+                messages.add(m);
+                
                 return req.session().id();
             }
         }

@@ -51,9 +51,9 @@ function sendMsg() {
 function sendMsg1() {
     var s = document.getElementById("input").value;
     document.getElementById("input").value = "";
-    var p = document.getElementById("parent").value;
+    var p = Number(document.getElementById("parent").value);
     document.getElementById("parent").value = "";
-    request({url: "protected/putmessage1", method: "PUT", body: JSON.stringify({id: 0, parent: p, initials: initials, message: s})})
+    request({url: "protected/putmessage1", method: "PUT", body: JSON.stringify({parent: p, initials: initials, message: s})})
             .then(data => {
             })
             .catch(error => {
@@ -77,6 +77,7 @@ function getNewMessages() {
     if (initials !== "") {
         request({url: "protected/getnewmessages"})
                 .then(data => {
+                    output(data);
                     let messages = JSON.parse(data);
                     for (var i = 0; i < messages.length; i++) {
                         let s = "";

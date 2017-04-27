@@ -16,10 +16,13 @@ public class Message {
     String initials;
     String message;
 
-    public Message(int i, int p, String in, String m) {
-        id = i;
+    public Message(int p, String in, String m) {
         parent = p;
         initials = in;
         message = m;
+    }
+    public boolean setIdd(int s) {
+        this.id = s;
+        return true;
     }
 }
