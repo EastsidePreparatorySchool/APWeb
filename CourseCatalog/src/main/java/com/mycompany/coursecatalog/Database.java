@@ -15,7 +15,7 @@ import java.util.Arrays;
  */
 public class Database {
 
-    private Connection conn;
+    public static Connection conn;
     private Statement stmt;
 
     Database() {
@@ -42,31 +42,7 @@ public class Database {
             System.out.println(e);
         }
     }
-    //Given a specific course id, which student ids want that as their first choice course?
-    public void firstChoice(String courseID) { //not sure how else to get the course ID we want. for now just be careful not to pass in droptable
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet results = stmt.executeQuery("select schedule_requests.individual_id from schedule_requests where schedule_requests.course_id = " + courseID + ";");
-            //unsure how to output this. Do we want a ResultSet or an sout?
-        }
-        catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-    //Given a specific course id, which student ids want that as a course?
-    public void allChoice(String courseID) { //not sure how else to get the course ID we want. for now just be careful not to pass in droptable
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet results = stmt.executeQuery("select schedule_requests.individual_id from schedule_requests"
-                    + "where schedule_requests.course_id = " + courseID + " or schedule_requests.first_alternate_course_id = " + courseID 
-                    + " or schedule_requests.second_alternate_course_id = " + courseID + ";");
-            //unsure how to output this. Do we want a ResultSet or an sout?
-        }
-        catch (Exception e ) {
-            System.out.println(e);
-        }
-    }
-
+    
     public void example(String tableName) {
 
         try {
