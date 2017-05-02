@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class Database {
 
     public static Connection conn;
-    private Statement stmt;
+    public Statement stmt;
 
     Database() {
         try {
