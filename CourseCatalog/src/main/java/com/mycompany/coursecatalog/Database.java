@@ -127,7 +127,7 @@ public class Database {
     public void getIDFromDatabase() {
         try {
             Statement stmt = conn.createStatement();
-            
+
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -140,6 +140,56 @@ public class Database {
         String lastName;
         String login;
         int gradYear;
+    }
+
+    public void retrieveStudent(StudentData sd) {
+
+    }
+
+    public void createStudent(StudentData sd) {
+        try {
+            Statement stmt = conn.createStatement();
+            String sql = "INSERT INTO students (id, firstname, lastname, login, gradyear) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, sd.id);
+            statement.setString(2, sd.firstName);
+            statement.setString(3, sd.lastName);
+            statement.setString(4, sd.login);
+            statement.setInt(5, sd.gradYear);
+
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("A new user was inserted successfully!");
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public void updateStudent() {
+
+    }
+
+    public void deleteStudent(StudentData sd) {
+        try {
+            String sql = "DELETE FROM Users WHERE id=?, firstname=?, lastname=?, login=?, gradyear=?";
+
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, sd.id);
+            statement.setString(2, sd.firstName);
+            statement.setString(3, sd.lastName);
+            statement.setString(4, sd.login);
+            statement.setInt(5, sd.gradYear);
+
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("A user was deleted successfully!");
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     public Object[] queryStudents(String query) {
