@@ -242,15 +242,14 @@ function sendMsg1000() {
                 output("Error: " + error + "<br>");
             });
 }
-setInterval(getNewMessages, 100);
 
-
-function helloWorld() {
-    request({url: "protected/helloWorld", method: "PUT", body: "helloWorld"})
+function example() {
+    request({url: "protected/example"})
             .then(data => {
-                output(data)
             })
             .catch(error => {
                 output("Error: " + error + "<br>");
             });
 }
+
+setInterval(getNewMessages, 100);

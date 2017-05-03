@@ -33,7 +33,6 @@ public class CourseCatalog {
         });
 
         // simple chat server as part of service
-        put("/helloWorld", (req, res) -> putMessage(req));
         put("/protected/putmessage", (req, res) -> putMessage(req), new JSONRT());
         post("/protected/postmessage", (req, res) -> postMessage(req));
         get("/protected/getnewmessages", "application/json", (req, res) -> getNewMessages(req, res), new JSONRT());
