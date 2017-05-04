@@ -22,15 +22,21 @@ public class Database {
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
+            System.out.print("Error creating datbase object: ");
+            System.out.println(ex);
         }
     }
 
     public void connect() {
-
+           System.out.println("Attempting to connect...");
         try {
-            this.conn = DriverManager.getConnection("jdbc:mysql://10.20.30.27/course_requests", "webapps", "LAyKqTDPsb7eMa8u");
-        } catch (Exception e) {
-            System.out.println(e);
+            this.conn = DriverManager.getConnection("jdbc:mysql://localhost/course_requests", "webapps", "LAyKqTDPsb7eMa8u");
+            System.out.println("Connection successful");
+        } catch (SQLException ex) {
+            System.out.print("Error connecting to database: ");
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
         }
     }
 

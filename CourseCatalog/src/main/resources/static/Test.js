@@ -106,7 +106,7 @@ function getNewMessages() {
     }
 }
 function output(message) {
-    document.getElementById("output").innerHTML += message;
+    document.getElementById("outputDiv").innerHTML += message;
 }
 function doStress() {
     setInterval(sendMsg1000, 10);
@@ -124,9 +124,13 @@ function sendMsg1000() {
 function example() {
     request({url: "protected/example", method: "GET", body: ""})
             .then(data => {
-                output(data);
+                insertStudents(outputDiv, data);
             })
             .catch(error => {
                 output("Error: " + error + "<br>");
             });
+}
+
+function erase(divToErase) {
+    document.getElementById(divToErase).innerHTML = "";
 }

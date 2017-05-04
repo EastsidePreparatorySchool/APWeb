@@ -37,7 +37,7 @@ public class CourseCatalog {
         post("/protected/postmessage", (req, res) -> postMessage(req));
         get("/protected/getnewmessages", "application/json", (req, res) -> getNewMessages(req, res), new JSONRT());
 
-        get("/protected/example", (req, res) -> example(req));
+        get("/protected/example", (req, res) -> example(req), new JSONRT());
     }
 
     private static Object example(spark.Request req) {

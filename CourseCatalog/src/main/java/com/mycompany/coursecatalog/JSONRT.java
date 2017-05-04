@@ -16,5 +16,8 @@ public class JSONRT implements ResponseTransformer {
     public String render(Object o) {
         return gson.toJson(o);
     }
-
+    
+    static Object parse(String stringToParse) {
+        return gson.fromJson(stringToParse, Object.class);
+    }
 }
