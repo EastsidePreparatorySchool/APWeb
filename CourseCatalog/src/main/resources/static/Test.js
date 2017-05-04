@@ -1,4 +1,4 @@
-var login = "";
+var loginString = "";
 
 
 function request(obj) {
@@ -62,7 +62,7 @@ function submitForm(oFormElement) {
 }
 function sendMsg() {
     var obj = {
-        login: login,
+        login: loginString,
         message: document.getElementById("input").value
     };
     document.getElementById("input").value = "";
@@ -77,7 +77,7 @@ function login() {
     var init = prompt("Please enter your login name:");
     request({url: "login", method: "put", body: init})
             .then(data => {
-                login = init;
+                loginString = init;
                 output("Hello " + data + "<br>");
             })
             .catch(error => {
@@ -86,7 +86,7 @@ function login() {
 }
 
 function getNewMessages() {
-    if (login !== "") {
+    if (loginString !== "") {
         request({url: "protected/getnewmessages"})
                 .then(data => {
 //                    output (data);
@@ -94,7 +94,7 @@ function getNewMessages() {
                     for (var i = 0; i < messages.length; i++) {
                         let s = messages[i].message;
 //                        output(s);
-                        if (s && !s.startsWith(login)) {
+                        if (s && !s.startsWith(loginString)) {
                             s = "&nbsp&nbsp&nbsp&nbsp;" + s;
                         }
                         output(s + "<br>");
@@ -120,13 +120,11 @@ function sendMsg1000() {
                 output("Error: " + error + "<br>");
             });
 }
-setInterval(getNewMessages, 100);
 
-
-function getExample() {
+function example() {
     request({url: "protected/example", method: "GET", body: ""})
             .then(data => {
-                output(data)
+                output(data);
             })
             .catch(error => {
                 output("Error: " + error + "<br>");

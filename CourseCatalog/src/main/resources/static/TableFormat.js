@@ -1,4 +1,4 @@
-function insertStudents(parent, students) {
+function insertStudents(parentID, students) {
     //This method takes in a parent div and then a JSON string of students
     var myTable = "<table><tr><th style='width: 100px; color: red;'>ID</th>";
     myTable += "<th style='width: 100px; color: red; text-align: right;'>First Name</th>";
@@ -39,5 +39,5 @@ function insertStudents(parent, students) {
 
     /// assemble table
 
-    parent.appendChild(myTable);
+    document.getElementById(parentID).appendChild(myTable);
 }
