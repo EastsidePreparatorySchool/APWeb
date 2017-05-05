@@ -16,7 +16,6 @@ public class Context {
     
     
     Context(String login) {
-        this.messagesSeen = 0;
         this.db = new Database();
         this.login = login;
         

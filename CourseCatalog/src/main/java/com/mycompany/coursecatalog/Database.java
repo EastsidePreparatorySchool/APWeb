@@ -77,67 +77,6 @@ public class Database {
         }
     }
 
-    public class MessageData {
-
-        public int id;
-        public String login;
-        public String message;
-
-        public MessageData() {
-        }
-
-        public MessageData(String login, String message) {
-            this.login = login;
-            this.message = message;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-    }
-
-    public Object[] getNewMessages(int after) {
-
-        Object[] result = null;
-        ArrayList<MessageData> asd = new ArrayList<>();
-
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM messages WHERE id > " + after);
-
-            while (rs.next()) {
-                MessageData md = new MessageData();
-                md.id = rs.getInt(1);
-                md.login = rs.getString(2);
-                md.message = rs.getString(3);
-                asd.add(md);
-            }
-            result = asd.toArray();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-        return result;
-    }
-
-    public void insertMessage(MessageData md) {
-        //So MessageData object that gets passed in may need an ID supplied either from auto_increment or a lookup
-        try {
-            Statement stmt = conn.createStatement();
-            stmt.executeUpdate("INSERT INTO Messages VALUES (" + md.id + "," + md.login + "," + md.message + ")");
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
-    public void getIDFromDatabase() {
-        try {
-            Statement stmt = conn.createStatement();
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
 
     public class StudentData {
 
@@ -218,6 +157,27 @@ public class Database {
                 asd.add(sd);
             }
             result = asd.toArray();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return result;
+    }
+
+    public String queryName(String login) {
+
+        String result = "unknown";
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("select firstname, lastname from students where login='"+login+"'");
+            System.out.println("Querying student name for login "+login);
+
+            if (rs.next()) {
+                StudentData sd = new StudentData();
+                sd.firstName = rs.getString(1);
+                sd.lastName = rs.getString(2);
+                result = sd.firstName + " " + sd.lastName;
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
