@@ -1,4 +1,3 @@
-
 function getCourseStudents() {
     document.getElementById("courseInput").value = "";
     request({url: "protected/getCourseStudents", method: "GET", body: document.getElementById("courseInput").value})
