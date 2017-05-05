@@ -79,6 +79,3 @@ if (!(location.href.toLowerCase().endsWith("login.html") || location.href.toLowe
 }
 
     
-
-
-
