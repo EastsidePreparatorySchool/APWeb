@@ -132,8 +132,17 @@ public class ScheduleRequest {
                         break;
                 }
 
-                String query2 = "UPDATE schedule_requests (id, individual_id, course_id, first_alternate_course_id, second_alternate_course_id, notes, advisor_reviewed, parent_reviewed;)"
-                        + " VALUES (?, ?, ?, ?, ?) WHERE id=?";
+                String query2 = "UPDATE schedule_requests SET (id=?, individual_id=?, course_id=?, first_alternate_course_id=?, second_alternate_course_id=?, notes=?, advisor_reviewed=?, parent_reviewed=?) WHERE id=?;";
+                statement.setInt(1, sr.id);
+                statement.setInt(2, sr.individual_id);
+                statement.setInt(3, sr.course_id);
+                statement.setInt(4, sr.first_alternate_course_id);
+                statement.setInt(5, sr.second_alternate_course_id);
+                statement.setString(6, sr.notes);
+                statement.setBoolean(7, sr.advisor_reviewed);
+                statement.setBoolean(8, sr.parent_reviewed);
+                statement.setInt(9, id);
+                statement.execute(query2);
             }
         } catch (Exception e) {
 
