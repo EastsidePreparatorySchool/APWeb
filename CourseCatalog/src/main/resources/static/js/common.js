@@ -16,7 +16,7 @@ function request(obj) {
     });
 }
 
-function requesWithJSON(obj) {
+function requestWithJSON(obj) {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
         xhr.open(obj.method || "GET", obj.url);
