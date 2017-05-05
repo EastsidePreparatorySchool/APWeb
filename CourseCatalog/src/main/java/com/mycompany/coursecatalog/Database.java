@@ -214,11 +214,11 @@ public class Database {
                 ScheduleRequest sr = new ScheduleRequest();
                 sr.individual_id = rs.getInt(2);
                 sr.course_id = rs.getInt(3);
-                sr.FirstAlternateCourse_id = rs.getInt(4);
-                sr.SecondAlternateCourse_id = rs.getInt(5);
+                sr.first_alternate_course_id = rs.getInt(4);
+                sr.second_alternate_course_id = rs.getInt(5);
                 sr.notes = rs.getString(6);
-                sr.AdvisorReviewed = rs.getBoolean(7);
-                sr.ParentReviewed = rs.getBoolean(8);
+                sr.advisor_reviewed = rs.getBoolean(7);
+                sr.parent_reviewed = rs.getBoolean(8);
                 sr.id = rs.getInt(1);
 
                 asd.add(sr);

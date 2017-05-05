@@ -32,6 +32,17 @@ public class ScheduleRequest {
         this.parent_reviewed = ParentReviewed;
     }
 
+    ScheduleRequest() {
+        this.id = 0;
+        this.individual_id = 0;
+        this.course_id = 0;
+        this.first_alternate_course_id = 0;
+        this.second_alternate_course_id = 0;
+        this.notes = "";
+        this.advisor_reviewed = false;
+        this.parent_reviewed = false;
+    }
+
     public int CreateScheduleRequest(ScheduleRequest sr) {
         int generatedKey = 0;
         try {
@@ -120,9 +131,9 @@ public class ScheduleRequest {
                     default:
                         break;
                 }
-                
+
                 String query2 = "UPDATE schedule_requests (id, individual_id, course_id, first_alternate_course_id, second_alternate_course_id, notes, advisor_reviewed, parent_reviewed;)"
-                    + " VALUES (?, ?, ?, ?, ?) WHERE id=?";
+                        + " VALUES (?, ?, ?, ?, ?) WHERE id=?";
             }
         } catch (Exception e) {
 
