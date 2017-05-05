@@ -5,6 +5,8 @@
  */
 package com.mycompany.coursecatalog;
 
+import static com.mycompany.coursecatalog.CourseCatalog.getContextFromSession;
+
 /**
  *
  * @author gmein
@@ -22,6 +24,14 @@ public class Context {
         this.timeLastSeen = System.currentTimeMillis();
         
         db.connect();
+    }
+    
+    void updateTimer() {
+        timeLastSeen = System.currentTimeMillis();
+    }
+
+    boolean checkExpired() {
+        return (System.currentTimeMillis() - timeLastSeen >= (5 * 60 * 1000)); // if it has been more than 5 minutes
     }
     
 }
