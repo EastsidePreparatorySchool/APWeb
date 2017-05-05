@@ -7,7 +7,6 @@ package com.mycompany.coursecatalog;
 
 import com.google.gson.Gson;
 import javax.servlet.MultipartConfigElement;
-import spark.Service;
 import static spark.Spark.*;
 import spark.staticfiles.StaticFilesConfiguration;
 
@@ -46,9 +45,17 @@ public class CourseCatalog {
                 res.redirect("login.html");
             }
         });
+        // liveness timer
+        before((req, res) -> {
+            System.out.println("Timer: URL: " + req.url());
+            if (req.url() != "") {
+                //updateTimer(req);
+            }
+        });
 
         // Static files filter is LAST
         StaticFilesConfiguration staticHandler = new StaticFilesConfiguration();
+
         staticHandler.configure("/static");
         before((request, response) -> staticHandler.consume(request.raw(), response.raw()));
 

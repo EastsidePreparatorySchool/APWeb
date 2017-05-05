@@ -13,11 +13,13 @@ public class Context {
     int messagesSeen;
     String login;
     public Database db;
+    long timeLastSeen;
     
     
     Context(String login) {
         this.db = new Database();
         this.login = login;
+        this.timeLastSeen = System.currentTimeMillis();
         
         db.connect();
     }
