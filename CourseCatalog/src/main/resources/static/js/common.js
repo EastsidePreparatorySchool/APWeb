@@ -52,5 +52,30 @@ function submitForm(tourl, oFormElement) {
 
 
 function output(message) {
-    document.getElementById("output").innerHTML += message;
+    document.getElementById("output").innerHTML += message + "<br>";
 }
+
+
+function erase(divToErase) {
+    document.getElementById(divToErase).innerHTML = "";
+}
+
+
+function checkTimeout() {
+    //output ("checking liveness");
+    request({url: "protected/checktimeout", method: "get"})
+            .then(data => {
+                //output(data);
+            })
+            .catch(error => {
+                location.assign("expired.html");
+            });
+
+}
+
+if (!(location.href.toLowerCase().endsWith("login.html") || location.href.toLowerCase().endsWith("expired.html"))) {
+    setInterval(checkTimeout, 1000);
+    //output("timer set");
+}
+
+    
