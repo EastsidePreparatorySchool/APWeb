@@ -14,10 +14,17 @@
                 <input type="submit" value="Get selections">
             </form>
         </div>
+        <div>You can use this to find all students who want a course:<br>
+            <input id="courseInput" value="" placeholder ="course name here">
+            <button onclick="getCourseStudents()">1st Choice</button>
+            <button onclick="thing2()">All Choices</button>
+        </div>
         <hr>
         Selections for student<span id="student"></span>:<br>
         <div id="selections">
         </div>
+        Course Output:<br>
+        <div id="courseOutput"></div>
         <hr>
         <button type="button" onclick="getCourseOfferings()">Get All Courses</button>
         <form method = "post" action="logout">
@@ -26,9 +33,8 @@
         <hr>
         Output:<br>
         <div id="output"></div>
-        <br>Courses Output:
-        <div id="courseOutput"></div>
-        <script src="js\status.js"></script>
-        <script src="js\Test.js"></script>
+        <script src="js\common.js"></script>
+        <script src="js\TableFormat.js"></script>
+        <script src="js\admin_course.js"></script>
     </body>
 </html>

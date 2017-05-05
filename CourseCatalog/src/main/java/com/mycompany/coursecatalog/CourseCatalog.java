@@ -83,6 +83,7 @@ public class CourseCatalog {
         get("/protected/getStudents", (req, res) -> getStudents(req), new JSONRT());
         get("/protected/getCourseOfferings", (req, res) -> getCourseOfferings(req), new JSONRT());
         get("/protected/getAllRequests", (req, res) -> getAllRequests(req), new JSONRT());
+        get("/protected/getCourseStudents", (req, res) -> getCourseStudents(req), new JSONRT());
     }
 
     private static Object getStudents(spark.Request req) {
@@ -95,6 +96,11 @@ public class CourseCatalog {
         System.out.println(ao.length);
 
         return ao;
+    }
+    private static Object getCourseStudents(spark.Request req) {
+        System.out.println("here now");
+        Context ctx = getContextFromSession(req.session());
+        return Student.firstChoice(req.body());
     }
 
     private static Object getCourseOfferings(spark.Request req) {

@@ -70,6 +70,7 @@ public class Student {
     //TODO: make a student class and make it get arrays of students back from the thingy
     public static Student[] firstChoice(String courseID) { //not sure how else to get the course ID we want. for now just be careful not to pass in droptable
         try {
+            System.out.println("here");
             Statement stmt = Database.conn.createStatement();
             ResultSet results = stmt.executeQuery("select schedule_requests.individual_id from schedule_requests where schedule_requests.course_id = " + courseID + ";");
             ArrayList<Student> s = new ArrayList<>();
@@ -86,6 +87,7 @@ public class Student {
     //Given a specific course id, which student ids want that as a course?
     public static Student[] allChoice(String courseID) { //not sure how else to get the course ID we want. for now just be careful not to pass in droptable
         try {
+            
             Statement stmt = Database.conn.createStatement();
             ArrayList<Student> s = new ArrayList<>();
             ResultSet results = stmt.executeQuery("select schedule_requests.individual_id from schedule_requests where schedule_requests.course_id = " + courseID + " or schedule_requests.first_alternate_course_id = " + courseID + " or schedule_requests.second_alternate_course_id = " + courseID + ";");
