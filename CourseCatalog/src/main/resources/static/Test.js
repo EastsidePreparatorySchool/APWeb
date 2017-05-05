@@ -111,7 +111,7 @@ function output(message) {
 function doStress() {
     setInterval(sendMsg1000, 10);
 }
-function sendMsg1000() {
+function sendMsg1000() {sfsdfsdfsdfsfsdf
     var s = document.getElementById("input2").value;
     request({url: "protected/putmessage", method: "PUT", body: s})
             .then(data => {
