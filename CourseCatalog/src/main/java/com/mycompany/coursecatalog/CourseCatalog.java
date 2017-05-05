@@ -7,7 +7,9 @@ package com.mycompany.coursecatalog;
 
 import com.google.gson.Gson;
 import javax.servlet.MultipartConfigElement;
+import spark.Service;
 import static spark.Spark.*;
+import spark.staticfiles.StaticFilesConfiguration;
 
 /**
  *
@@ -19,23 +21,37 @@ public class CourseCatalog {
 
     public static void main(String[] args) {
 
-        staticFiles.location("/static");
-
+        // see below
+        //staticFiles.location("/static");
         // login route and enforcing filter
         post("/login", (req, res) -> login(req, res));
         post("/logout", (req, res) -> logout(req, res));
-        get("protected/name", (req, res) -> getName(req, res));
+        get("/protected/name", (req, res) -> getName(req, res));
 
         before("/protected/*", (req, res) -> {
             if (req.session().attribute("context") == null) {
-                halt(401, "You must login.");
+                System.out.println("unauthorized " + req.url());
+                res.redirect("login.html");
             }
         });
-        before("/static/status.html", (req, res) -> {
+        before("status.html", (req, res) -> {
             if (req.session().attribute("context") == null) {
-                halt(401, "You must log in.");
+                System.out.println("unauthorized " + req.url());
+                res.redirect("login.html");
             }
         });
+        before("browse.html", (req, res) -> {
+            if (req.session().attribute("context") == null) {
+                System.out.println("unauthorized " + req.url());
+                res.redirect("login.html");
+            }
+        });
+
+        // Static files filter is LAST
+        StaticFilesConfiguration staticHandler = new StaticFilesConfiguration();
+        staticHandler.configure("/static");
+        before((request, response) -> staticHandler.consume(request.raw(), response.raw()));
+
         get("/protected/getStudents", (req, res) -> getStudents(req), new JSONRT());
         get("/protected/getCourseOfferings", (req, res) -> getCourseOfferings(req), new JSONRT());
         get("/protected/getAllRequests", (req, res) -> getAllRequests(req), new JSONRT());
@@ -52,7 +68,7 @@ public class CourseCatalog {
 
         return ao;
     }
-    
+
     private static Object getCourseOfferings(spark.Request req) {
         System.out.println("entered getCourseRequests");
         Context ctx = getContextFromSession(req.session());
@@ -61,19 +77,19 @@ public class CourseCatalog {
 
         Object[] ao = ctx.db.queryCourses("select * from course_offerings");
         System.out.println(ao.length);
-        
+
         return ao;
     }
-    
+
     private static Object getAllRequests(spark.Request req) {
         System.out.println("entered getAllRequests");
         Context ctx = getContextFromSession(req.session());
 
         ctx.db.getAllFrom("schedule_requests");
 
-        Object[] ao = ctx.db.queryAllRequests ("select * from schedule_requests");
+        Object[] ao = ctx.db.queryAllRequests("select * from schedule_requests");
         System.out.println(ao.length);
-        
+
         return ao;
     }
 
@@ -86,7 +102,7 @@ public class CourseCatalog {
 
         if (ctx.db.queryName(login).equals("unknown")) {
             internalLogout(req);
-            halt(401, "invalid login name.");
+            res.redirect("login.html");
             return "";
         }
 

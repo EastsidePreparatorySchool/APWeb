@@ -8,17 +8,46 @@
     </head>
     <body>
         <div>Selection criteria:<br>
+            <form>
+                <input type="radio" name="Discipline" value="All" checked>All<br>
+                <input type="radio" name="Discipline" value="English" >English<br>
+                <input type="radio" name="Discipline" value="Hist" >History/Social Sciences<br>
+                <input type="radio" name="Discipline" value="Math" >Math<br>
+                <input type="radio" name="Discipline" value="Science" >Science<br>
+                <input type="radio" name="Discipline" value="Spanish" >Spanish<br>
+                <input type="radio" name="Discipline" value="Arts" >Arts<br>
+                <input type="radio" name="Discipline" value="PE" >P.E.<br>
+                <input type="radio" name="Discipline" value="Tech" >Technology<br>
+                <input type="radio" name="Discipline" value="Seminars">Seminars<br>
+                <br>
+                <input type="radio" name="Grades" value="fivetwelve" checked>5th-12th<br>
+                <input type="radio" name="Grades" value="MS">Middle School<br>
+                <input type="radio" name="Grades" value="US">Uppper School<br>
+                <br>
+                <input type="radio" name="Duration" value="All" checked>All Durations<br>
+                <input type="radio" name="Duration" value="year">Year<br>
+                <input type="radio" name="Duration" value="tri">Trimester<br>
+                <input type="radio" name="Duration" value="sem">Seminar<br>
+                <br>
+                Search : <input type="text" name="search" value="" placeholder="keyword"><br>
+                <input type ="submit" value="Apply Criteria">
+            </form>
         </div>
+        <hr>
         <div>Course offerings matching your criteria:<br>
             <div id = "offerings"></div>
         </div>
+        <hr>
         <form action="status.html">
             <input type="submit" value="show my selections" />
         </form>
+        <hr>
         <form method="post" action="logout">
             <input type="submit" value="Log out" />
         </form>
-        <div id="outputDiv"></div>
+        <hr>
+        Output:<br>
+        <div id="output"></div>
         <script src="js\common.js"></script>
         <script src="js\browse.js"></script>
     </body>
