@@ -49,7 +49,7 @@ public class Database {
         }
     }
     
-    public void example(String tableName) {
+    public void getAllFrom(String tableName) {
 
         try {
             Statement stmt = conn.createStatement();
@@ -155,6 +155,73 @@ public class Database {
                 sd.id = rs.getInt(1);
 
                 asd.add(sd);
+            }
+            result = asd.toArray();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return result;
+    }
+    
+    public class CourseData {
+        int id;
+        int courseId;
+        int yearId;
+        String description;
+        String info;
+        String gradeLevels;
+    }
+    
+    public Object[] queryCourses(String query) {
+
+        Object[] result = null;
+        ArrayList<CourseData> asd = new ArrayList<>();
+
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                CourseData cd = new CourseData();
+                cd.courseId = rs.getInt(2);
+                cd.yearId = rs.getInt(3);
+                cd.description = rs.getString(5);
+                cd.info = rs.getString(9);
+                cd.gradeLevels = rs.getString(10);
+                cd.id = rs.getInt(1);
+
+                asd.add(cd);
+            }
+            result = asd.toArray();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return result;
+    }
+    
+    public Object[] queryAllRequests(String query) {
+
+        Object[] result = null;
+        ArrayList<ScheduleRequest> asd = new ArrayList<>();
+
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                ScheduleRequest sr = new ScheduleRequest();
+                sr.individual_id = rs.getInt(2);
+                sr.course_id = rs.getInt(3);
+                sr.FirstAlternateCourse_id = rs.getInt(4);
+                sr.SecondAlternateCourse_id = rs.getInt(5);
+                sr.notes = rs.getString(6);
+                sr.AdvisorReviewed = rs.getBoolean(7);
+                sr.ParentReviewed = rs.getBoolean(8);
+                sr.id = rs.getInt(1);
+
+                asd.add(sr);
             }
             result = asd.toArray();
         } catch (Exception e) {

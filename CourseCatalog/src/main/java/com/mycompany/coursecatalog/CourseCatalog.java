@@ -25,7 +25,6 @@ public class CourseCatalog {
         post("/login", (req, res) -> login(req, res));
         post("/logout", (req, res) -> logout(req, res));
         get("protected/name", (req, res) -> getName(req, res));
-        get("/protected/example", (req, res) -> example(req), new JSONRT());
 
         before("/protected/*", (req, res) -> {
             if (req.session().attribute("context") == null) {
@@ -37,20 +36,44 @@ public class CourseCatalog {
                 halt(401, "You must log in.");
             }
         });
+        get("/protected/getStudents", (req, res) -> getStudents(req), new JSONRT());
+        get("/protected/getCourseOfferings", (req, res) -> getCourseOfferings(req), new JSONRT());
+        get("/protected/getAllRequests", (req, res) -> getAllRequests(req), new JSONRT());
     }
 
-    private static Object example(spark.Request req) {
-        System.out.println("entered example");
-
+    private static Object getStudents(spark.Request req) {
+        System.out.println("entered getStudents");
         Context ctx = getContextFromSession(req.session());
-        System.out.println("put msg: " + req.body());
 
-        ctx.db.example("courses");
-        ctx.db.example("students");
+        ctx.db.getAllFrom("students");
 
         Object[] ao = ctx.db.queryStudents("select * from students");
         System.out.println(ao.length);
 
+        return ao;
+    }
+    
+    private static Object getCourseOfferings(spark.Request req) {
+        System.out.println("entered getCourseRequests");
+        Context ctx = getContextFromSession(req.session());
+
+        ctx.db.getAllFrom("course_offerings");
+
+        Object[] ao = ctx.db.queryCourses("select * from course_offerings");
+        System.out.println(ao.length);
+        
+        return ao;
+    }
+    
+    private static Object getAllRequests(spark.Request req) {
+        System.out.println("entered getAllRequests");
+        Context ctx = getContextFromSession(req.session());
+
+        ctx.db.getAllFrom("schedule_requests");
+
+        Object[] ao = ctx.db.queryAllRequests ("select * from schedule_requests");
+        System.out.println(ao.length);
+        
         return ao;
     }
 
