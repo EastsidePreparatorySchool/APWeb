@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.mycompany.coursecatalog.Database.MessageData;
 import java.util.List;
 import javax.servlet.MultipartConfigElement;
+import spark.Spark;
 import static spark.Spark.*;
 
 /**
@@ -25,8 +26,13 @@ public class CourseCatalog {
         staticFiles.location("/static");
 
         // login route and enforcing filter
-        put("/login", (req, res) -> login(req));
+        post("/login", (req, res) -> login(req, res));
         before("/protected/*", (req, res) -> {
+            if (req.session().attribute("context") == null) {
+                halt(401, "You must login.");
+            }
+        });
+        before("/static/status.html", (req, res) -> {
             if (req.session().attribute("context") == null) {
                 halt(401, "You must login.");
             }
@@ -55,8 +61,15 @@ public class CourseCatalog {
         return ao;
     }
 
-    private static String login(spark.Request req) {
+    private static String login(spark.Request req, spark.Response res) {
+        MultipartConfigElement multipartConfigElement = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
+        req.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
         req.session().attribute("context", new Context(req.body()));
+
+        System.out.println("login: " + req.session().attribute("context"));
+        
+        res.redirect("status.html");
+        
         return req.body();
     }
 
@@ -80,6 +93,7 @@ public class CourseCatalog {
         req.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
 
         System.out.println("post msg: " + req.queryParams("message"));
+        
         return "ok";
     }
 
