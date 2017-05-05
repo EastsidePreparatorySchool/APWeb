@@ -50,16 +50,7 @@ function mySend(obj) {
         output("Error: " + xhr.statusText);
     }
 }
-function submitForm(oFormElement) {
-    document.getElementById("post").value = "";
-    request({url: "protected/postmessage", method: "POST", body: new FormData(oFormElement)})
-            .then(data => {
-            })
-            .catch(error => {
-                output("Error: " + error + "<br>");
-            });
-    return false;
-}
+
 function sendMsg() {
     var obj = {
         login: loginString,
@@ -105,8 +96,8 @@ function getNewMessages() {
                 });
     }
 }
-function output(message) {
-    document.getElementById("outputDiv").innerHTML += message;
+function output(message, idToOutput) {
+    document.getElementById("" + idToOutput + "").innerHTML += message;
 }
 function doStress() {
     setInterval(sendMsg1000, 10);
@@ -124,17 +115,17 @@ function sendMsg1000() {
 function getStudents() {
     request({url: "protected/getStudents", method: "GET", body: ""})
             .then(data => {
-                insertStudents(outputDiv, data);
+                insertStudents("output", data);
             })
             .catch(error => {
-                output("Error: " + error + "<br>");
+                output("Error: " + error + "<br>", output);
             });
 }
 
 function getCourseOfferings() {
     request({url: "protected/getCourseOfferings", method: "GET", body: ""})
             .then(data => {
-                insertCourseOfferings(outputDiv, data);
+                insertCourseOfferings("courseOutput", data);
             })
             .catch(error => {
                 output("Error: " + error + "<br>");
@@ -144,7 +135,7 @@ function getCourseOfferings() {
 function getAllRequests() {
     request({url: "protected/getAllRequests", method: "GET", body: ""})
             .then(data => {
-                insertAllRequests(outputDiv, data);
+                insertAllRequests("output", data);
             })
             .catch(error => {
                 output("Error: " + error + "<br>");
@@ -152,5 +143,55 @@ function getAllRequests() {
 }
 
 function erase() {
-    document.getElementById("outputDiv").innerHTML = "";
+    document.getElementById("output").innerHTML = "";
+}
+
+function request(obj) {
+    return new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open(obj.method || "GET", obj.url);
+
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                resolve(xhr.response);
+            } else {
+                reject(xhr.statusText);
+            }
+        };
+        xhr.onerror = () => reject(xhr.statusText);
+
+        xhr.send(obj.body);
+    });
+}
+
+function requestWithJSON(obj) {
+    return new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open(obj.method || "GET", obj.url);
+        xhr.setRequestHeader("Content-type", "application/json");
+
+
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                resolve(xhr.response);
+            } else {
+                reject(xhr.statusText);
+            }
+        };
+        xhr.onerror = () => reject(xhr.statusText);
+
+        xhr.send(obj.body);
+    });
+}
+
+
+
+function submitForm(tourl, oFormElement) {
+    request({url: tourl, method: "POST", body: new FormData(oFormElement)})
+            .then(data => {
+            })
+            .catch(error => {
+                output("Error: " + error + "<br>");
+            });
+    return false;
 }

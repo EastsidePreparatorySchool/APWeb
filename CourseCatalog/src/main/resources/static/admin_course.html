@@ -5,6 +5,7 @@
         <title>Course selections for student</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="js\admin_course.js"></script>
     </head>
     <body>
         <div>Hello <span id="nameSpan">guest</span>, please enter a student and submit to review:<br>
@@ -18,13 +19,16 @@
         <div id="selections">
         </div>
         <hr>
+        <button type="button" onclick="getCourseOfferings()">Get All Courses</button>
         <form method = "post" action="logout">
             <input type="submit" value="Log out" />
         </form>
         <hr>
         Output:<br>
         <div id="output"></div>
-        <script src="js\common.js"></script>
+        <br>Courses Output:
+        <div id="courseOutput"></div>
         <script src="js\status.js"></script>
+        <script src="js\Test.js"></script>
     </body>
 </html>
