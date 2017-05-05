@@ -121,8 +121,8 @@ function sendMsg1000() {
             });
 }
 
-function example() {
-    request({url: "protected/example", method: "GET", body: ""})
+function getStudents() {
+    request({url: "protected/getStudents", method: "GET", body: ""})
             .then(data => {
                 insertStudents(outputDiv, data);
             })
@@ -131,6 +131,26 @@ function example() {
             });
 }
 
-function erase(divToErase) {
-    document.getElementById(divToErase).innerHTML = "";
+function getCourseOfferings() {
+    request({url: "protected/getCourseOfferings", method: "GET", body: ""})
+            .then(data => {
+                insertCourseOfferings(outputDiv, data);
+            })
+            .catch(error => {
+                output("Error: " + error + "<br>");
+            });
+}
+
+function getAllRequests() {
+    request({url: "protected/getAllRequests", method: "GET", body: ""})
+            .then(data => {
+                insertAllRequests(outputDiv, data);
+            })
+            .catch(error => {
+                output("Error: " + error + "<br>");
+            });
+}
+
+function erase() {
+    document.getElementById("outputDiv").innerHTML = "";
 }
