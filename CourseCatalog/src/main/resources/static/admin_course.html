@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Course selections for student</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>Hello <span id="nameSpan">guest</span>, please enter a student and submit to review:<br>
+            <form>
+                <input type="text" name="login" value="" placeholder="student login">
+                <input type="submit" value="Get selections">
+            </form>
+        </div>
+        <hr>
+        Selections for student<span id="student"></span>:<br>
+        <div id="selections">
+        </div>
+        <hr>
+        <form method = "post" action="logout">
+            <input type="submit" value="Log out" />
+        </form>
+        <hr>
+        Output:<br>
+        <div id="output"></div>
+        <script src="js\common.js"></script>
+        <script src="js\status.js"></script>
+    </body>
+</html>
