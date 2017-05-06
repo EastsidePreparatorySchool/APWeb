@@ -29,6 +29,7 @@ public class CourseCatalog {
         get("/protected/checktimeout", (req, res) -> {
             Context ctx = getContextFromSession(req.session());
             if (ctx == null || ctx.checkExpired()) {
+                System.out.println("filter: expired");
                 internalLogout(req);
                 return "expired";
             }
@@ -37,7 +38,7 @@ public class CourseCatalog {
 
         // liveness check
         before((req, res) -> {
-            System.out.println("check time " + req.url());
+            System.out.println("filter: check time " + req.url());
             Context ctx = getContextFromSession(req.session());
             if (ctx != null && ctx.checkExpired()) {
                 internalLogout(req);
@@ -46,18 +47,21 @@ public class CourseCatalog {
         });
 
         before("/protected/*", (req, res) -> {
+            System.out.println("filter: protect *");
             if (req.session().attribute("context") == null) {
                 System.out.println("unauthorized " + req.url());
                 res.redirect("login.html");
             }
         });
         before("status.html", (req, res) -> {
+            System.out.println("filter: protect status");
             if (req.session().attribute("context") == null) {
                 System.out.println("unauthorized " + req.url());
                 res.redirect("login.html");
             }
         });
         before("browse.html", (req, res) -> {
+            System.out.println("filter: protect browse");
             if (req.session().attribute("context") == null) {
                 System.out.println("unauthorized " + req.url());
                 res.redirect("login.html");
@@ -67,8 +71,8 @@ public class CourseCatalog {
         before((req, res) -> {
             Context ctx = getContextFromSession(req.session());
             if (ctx != null) {
-                System.out.println("Timer: URL: " + req.url());
                 if (!req.url().endsWith("/protected/checktimeout")) {
+                    System.out.println("timer reset from URL: " + req.url());
                     ctx.updateTimer();
                 }
             }
@@ -97,6 +101,7 @@ public class CourseCatalog {
 
         return ao;
     }
+
     private static Object getCourseStudents(spark.Request req) {
         System.out.println("here now");
         Context ctx = getContextFromSession(req.session());
