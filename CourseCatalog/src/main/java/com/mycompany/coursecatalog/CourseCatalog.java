@@ -7,7 +7,6 @@ package com.mycompany.coursecatalog;
 
 import com.google.gson.Gson;
 import javax.servlet.MultipartConfigElement;
-import spark.Service;
 import static spark.Spark.*;
 import spark.staticfiles.StaticFilesConfiguration;
 import com.mycompany.coursecatalog.ScheduleRequest;
@@ -32,28 +31,61 @@ public class CourseCatalog {
         post("/login", (req, res) -> login(req, res));
         post("/logout", (req, res) -> logout(req, res));
         get("/protected/name", (req, res) -> getName(req, res));
+        get("/protected/checktimeout", (req, res) -> {
+            Context ctx = getContextFromSession(req.session());
+            if (ctx == null || ctx.checkExpired()) {
+                System.out.println("filter: expired");
+                internalLogout(req);
+                return "expired";
+            }
+            return "alive";
+        });
+
+        // liveness check
+        before((req, res) -> {
+            System.out.println("filter: check time " + req.url());
+            Context ctx = getContextFromSession(req.session());
+            if (ctx != null && ctx.checkExpired()) {
+                internalLogout(req);
+                res.redirect("expired.html");
+            }
+        });
 
         before("/protected/*", (req, res) -> {
+            System.out.println("filter: protect *");
             if (req.session().attribute("context") == null) {
                 System.out.println("unauthorized " + req.url());
                 res.redirect("login.html");
             }
         });
         before("status.html", (req, res) -> {
+            System.out.println("filter: protect status");
             if (req.session().attribute("context") == null) {
                 System.out.println("unauthorized " + req.url());
                 res.redirect("login.html");
             }
         });
         before("browse.html", (req, res) -> {
+            System.out.println("filter: protect browse");
             if (req.session().attribute("context") == null) {
                 System.out.println("unauthorized " + req.url());
                 res.redirect("login.html");
             }
         });
+        // liveness timer
+        before((req, res) -> {
+            Context ctx = getContextFromSession(req.session());
+            if (ctx != null) {
+                if (!req.url().endsWith("/protected/checktimeout")) {
+                    System.out.println("timer reset from URL: " + req.url());
+                    ctx.updateTimer();
+                }
+            }
+        });
 
         // Static files filter is LAST
         StaticFilesConfiguration staticHandler = new StaticFilesConfiguration();
+
         staticHandler.configure("/static");
         before((request, response) -> staticHandler.consume(request.raw(), response.raw()));
 
@@ -83,6 +115,7 @@ public class CourseCatalog {
             return 0;
         });
         //patch for update
+        get("/protected/getCourseStudents", (req, res) -> getCourseStudents(req), new JSONRT());
     }
 
     private static Object getStudents(spark.Request req) {
@@ -95,6 +128,12 @@ public class CourseCatalog {
         System.out.println(ao.length);
 
         return ao;
+    }
+
+    private static Object getCourseStudents(spark.Request req) {
+        System.out.println("here now");
+        Context ctx = getContextFromSession(req.session());
+        return Student.firstChoice(req.body());
     }
 
     private static Object getCourseOfferings(spark.Request req) {
@@ -142,11 +181,13 @@ public class CourseCatalog {
     }
 
     private static void internalLogout(spark.Request req) {
-        Context ctx = getContextFromSession(req.session());
-        ctx.db.disconnect();
-        req.session().attribute("context", null);
+        if (req.session().attribute("context") != null) {
+            Context ctx = getContextFromSession(req.session());
+            ctx.db.disconnect();
+            req.session().attribute("context", null);
 
-        System.out.println("logged off.");
+            System.out.println("logged off.");
+        }
     }
 
     private static String logout(spark.Request req, spark.Response res) {
@@ -168,12 +209,6 @@ public class CourseCatalog {
 
     public static Context getContextFromSession(spark.Session s) {
         Context ctx = s.attribute("context");
-        if (ctx == null) {
-            // this should never happen since we require login with a before-filter
-            ctx = new Context("unknown");
-            s.attribute("Context", ctx);
-        }
-
         return ctx;
     }
 
