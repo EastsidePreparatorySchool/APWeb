@@ -9,6 +9,11 @@ import com.google.gson.Gson;
 import javax.servlet.MultipartConfigElement;
 import static spark.Spark.*;
 import spark.staticfiles.StaticFilesConfiguration;
+import com.mycompany.coursecatalog.ScheduleRequest;
+import static com.mycompany.coursecatalog.ScheduleRequest.CreateScheduleRequest;
+import static com.mycompany.coursecatalog.ScheduleRequest.DeleteScheduleRequest;
+import static com.mycompany.coursecatalog.ScheduleRequest.RetrieveScheduleRequest;
+import static com.mycompany.coursecatalog.ScheduleRequest.UpdateScheduleRequest;
 
 /**
  *
@@ -87,6 +92,29 @@ public class CourseCatalog {
         get("/protected/getStudents", (req, res) -> getStudents(req), new JSONRT());
         get("/protected/getCourseOfferings", (req, res) -> getCourseOfferings(req), new JSONRT());
         get("/protected/getAllRequests", (req, res) -> getAllRequests(req), new JSONRT());
+        put("/protected/createScheduleRequest", (req, res) -> {
+            Context ctx = getContextFromSession(req.session());
+            ScheduleRequest sr = gson.fromJson(req.body(), ScheduleRequest.class);
+            return CreateScheduleRequest(sr, ctx.db);
+        });
+        get("/protected/retrieveScheduleRequest", (req, res) -> {
+            Context ctx = getContextFromSession(req.session());
+            int id = Integer.getInteger(req.body());
+            return RetrieveScheduleRequest(id, ctx.db);
+        }, new JSONRT());
+        delete("/protected/deleteScheduleRequest", (req, res) -> {
+            Context ctx = getContextFromSession(req.session());
+            int id = Integer.getInteger(req.body());
+            DeleteScheduleRequest(id, ctx.db);
+            return 0;
+        });
+        patch("/protected/updateScheduleRequest", (req, res) -> {
+            Context ctx = getContextFromSession(req.session());
+            ScheduleRequest sr = gson.fromJson(req.body(), ScheduleRequest.class);
+            UpdateScheduleRequest(sr, ctx.db);
+            return 0;
+        });
+        //patch for update
         get("/protected/getCourseStudents", (req, res) -> getCourseStudents(req), new JSONRT());
     }
 
