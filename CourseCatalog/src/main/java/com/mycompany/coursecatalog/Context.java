@@ -27,7 +27,7 @@ public class Context {
     Object getStudents(spark.Request req) {
         System.out.println("entered getStudents");
 
-        db.getAllFrom("students");
+//        db.dumpTable("students");
 
         Object[] ao = db.queryStudents("select * from students");
         System.out.println(ao.length);
