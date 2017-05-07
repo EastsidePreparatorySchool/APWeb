@@ -16,7 +16,8 @@ function getStudents() {
 
 
 function getStudentSelections() {
-    request({url: "/protected/getAllRequests", method: "GET", body: ""})
+    var login=document.getElementById("login").value;
+    request({url: "/protected/getAllRequests?login="+login})
             .then(data => {
                 eraseDiv("selections");
                 if (data !== undefined && data !== null) {

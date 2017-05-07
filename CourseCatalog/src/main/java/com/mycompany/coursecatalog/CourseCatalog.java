@@ -71,7 +71,7 @@ public class CourseCatalog {
         // functionality:
         get("/protected/getStudents", (req, res) -> getReqCtx(req).getStudents(req), new JSONRT());
         get("/protected/getCourseOfferings", (req, res) -> getReqCtx(req).getCourseOfferings(req), new JSONRT());
-        get("/protected/getAllRequests", (req, res) -> getReqCtx(req).getAllRequests(req), new JSONRT());
+        get("/protected/getAllRequests", (req, res) -> getReqCtx(req).getAllRequests(req.queryParams("login")), new JSONRT());
         get("/protected/getCourseStudentsFirst", (req, res) ->  getReqCtx(req).getCourseStudentsFirst(req.queryParams("id")), new JSONRT());
         get("/protected/getCourseStudentsAll", (req, res) -> getReqCtx(req).getCourseStudentsAll(req.queryParams("id")), new JSONRT());
 

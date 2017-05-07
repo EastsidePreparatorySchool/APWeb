@@ -1,6 +1,5 @@
 package com.mycompany.coursecatalog;
 
-
 public class Context {
 
     int messagesSeen;
@@ -23,12 +22,8 @@ public class Context {
     boolean checkExpired() {
         return (System.currentTimeMillis() - timeLastSeen >= (5 * 60 * 1000)); // if it has been more than 5 minutes
     }
-    
-    
-    
-    
-    // route functionality
 
+    // route functionality
     Object getStudents(spark.Request req) {
         System.out.println("entered getStudents");
 
@@ -52,9 +47,8 @@ public class Context {
 
     Object getCourseOfferings(spark.Request req) {
         System.out.println("entered getCourseOfferings");
-        
-//        db.getAllFrom("course_offerings");
 
+//        db.getAllFrom("course_offerings");
 //        Object[] ao = db.queryCourseOfferings"select * from course_offerings where year_id='18'");
         Object[] ao = db.queryCourseOfferings("select course_offerings.*, courses.name as name from course_offerings, courses where course_offerings.course_id=courses.id and course_offerings.year_id='18'");
         System.out.println(ao.length);
@@ -62,21 +56,18 @@ public class Context {
         return ao;
     }
 
-    Object getAllRequests(spark.Request req) {
+    Object getAllRequests(String login) {
         System.out.println("entered getAllRequests");
-    
-        db.getAllFrom("schedule_requests");
-
-        Object[] ao = db.queryAllRequests("select * from schedule_requests");
+        Object[] ao;
+//        db.getAllFrom("schedule_requests");
+        if (login == null) {
+            ao = db.queryAllRequests("select * from schedule_requests");
+        } else {
+            ao = db.queryAllRequests("select schedule_requests.*,students.id from schedule_requests, students where schedule_requests.individual_id=students.id and students.login='"+login+"'");
+        }
         System.out.println(ao.length);
 
         return ao;
     }
-    
-    
-    
-    
-    
-    
 
 }

@@ -2,12 +2,12 @@
 
 function insertAllRequests(parentID, allRequests) {
     //This method takes in a parent div and then a JSON string of course offerings
-    var myTable = "<table><tr><th style='width: 100px; color: red;'>ID</th>";
+    var myTable = "<table><tr><th style='width: 100px; color: red;text-align: right;'>ID</th>";
     myTable += "<th style='width: 50px; color: red; text-align: right;'>Individual ID</th>";
-    myTable += "<th style='width: 50px; color: red; text-align: right;'>Course ID</th>";
+    myTable += "<th style='width: 100px; color: red; text-align: right;'>Course ID</th>";
     myTable += "<th style='width: 50px; color: red; text-align: right;'>First Alt. Course</th>";
     myTable += "<th style='width: 50px; color: red; text-align: right;'>Second Alt. Course</th><tr>";
-    myTable += "<th style='width: 50px; color: red; text-align: right;'>Notes</th><tr>";
+    myTable += "<th style='width: 200px; color: red; text-align: right;'>Notes</th><tr>";
     myTable += "<th style='width: 50px; color: red; text-align: right;'>Advisor Approved</th><tr>";
     myTable += "<th style='width: 50px; color: red; text-align: right;'>Parent Approved</th><tr>";
     

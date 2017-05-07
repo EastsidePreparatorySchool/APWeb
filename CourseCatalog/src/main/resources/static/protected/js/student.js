@@ -1,11 +1,11 @@
 
 function insertStudents(parentID, students) {
     //This method takes in a parent div and then a JSON string of students
-    var myTable = "<table><tr><th style='width: 100px; color: red;'>ID</th>";
+    var myTable = "<table><tr><th style='width: 100px; color: red;text-align: left;'>ID</th>";
     myTable += "<th style='width: 100px; color: red; text-align: left;'>First Name</th>";
     myTable += "<th style='width: 100px; color: red; text-align: left;'>Last Name</th>";
     myTable += "<th style='width: 100px; color: red; text-align: left;'>Login</th>";
-    myTable += "<th style='width: 100px; color: red; text-align: left;'>Graduation Year</th><tr>";
+    myTable += "<th style='width: 200px; color: red; text-align: left;'>Graduation Year</th><tr>";
 
     var studentsJSONString = JSON.parse(students);
     if (studentsJSONString === undefined || studentsJSONString === null) {
