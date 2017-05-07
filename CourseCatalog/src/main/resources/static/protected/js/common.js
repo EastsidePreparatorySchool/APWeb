@@ -86,7 +86,7 @@ function erase(divToErase) {
 
 function checkTimeout() {
     //output ("checking liveness");
-    request({url: "protected/checktimeout", method: "get"})
+    request({url: "/protected/checktimeout", method: "get"})
             .then(data => {
                 //output(data);
             })
@@ -97,7 +97,7 @@ function checkTimeout() {
 }
 
 function logout() {
-    request({url: "logout", method: "post"})
+    request({url: "/logout", method: "post"})
             .then(data => {
                 //output(data);
                 location.assign("login.html");
@@ -111,8 +111,8 @@ function logout() {
 
 function updateName() {
     var span = document.getElementById("nameSpan");
-    if (span != null) {
-        request({url: "protected/name", method: "get"})
+    if (span !== null) {
+        request({url: "/protected/name", method: "get"})
                 .then(data => {
                     //output("Name: "+data);
                     span.innerHTML = data;

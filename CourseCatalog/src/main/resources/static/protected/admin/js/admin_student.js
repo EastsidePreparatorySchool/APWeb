@@ -1,5 +1,5 @@
 function getStudents() {
-    request({url: "protected/getStudents", method: "GET", body: ""})
+    request({url: "/protected/getStudents", method: "GET", body: ""})
             .then(data => {
                 if (data != null) {
                     insertStudents("output", data);
@@ -14,7 +14,7 @@ function getStudents() {
 
 
 function getStudentSelections() {
-    request({url: "protected/getAllRequests", method: "GET", body: ""})
+    request({url: "/protected/getAllRequests", method: "GET", body: ""})
             .then(data => {
                 if (data !== undefined && data !== null) {
                     outputTo("selections", data+"<br>");

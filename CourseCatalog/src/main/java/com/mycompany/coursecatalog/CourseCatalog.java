@@ -28,6 +28,8 @@ public class CourseCatalog {
         post("/login", (req, res) -> login(req, res));
         post("/logout", (req, res) -> logout(req, res));
         get("/protected/name", (req, res) -> getName(req, res));
+        
+        // HTML pages use this to switch to the "expired" page
         get("/protected/checktimeout", (req, res) -> {
             Context ctx = getContextFromSession(req.session());
             if (ctx == null || ctx.checkExpired()) {
@@ -38,7 +40,7 @@ public class CourseCatalog {
             return "alive";
         });
 
-        // liveness check
+        // liveness check - this actually governs expiration
         before((req, res) -> {
             System.out.println("filter: check time " + req.url());
             Context ctx = getContextFromSession(req.session());
@@ -55,21 +57,7 @@ public class CourseCatalog {
                 res.redirect("login.html");
             }
         });
-        before("status.html", (req, res) -> {
-            System.out.println("filter: protect status");
-            if (req.session().attribute("context") == null) {
-                System.out.println("unauthorized " + req.url());
-                res.redirect("login.html");
-            }
-        });
-        before("browse.html", (req, res) -> {
-            System.out.println("filter: protect browse");
-            if (req.session().attribute("context") == null) {
-                System.out.println("unauthorized " + req.url());
-                res.redirect("login.html");
-            }
-        });
-        before("admin_student.html", (req, res) -> {
+        before("/protected/admin/*", (req, res) -> {
             System.out.println("filter: protect status");
             Context ctx = getContextFromSession(req.session());
             if (ctx == null || !ctx.login.equalsIgnoreCase("bgummere")) {
@@ -77,15 +65,7 @@ public class CourseCatalog {
                 res.redirect("login.html");
             }
         });
-        before("admin_course.html", (req, res) -> {
-            System.out.println("filter: protect browse");
-            Context ctx = getContextFromSession(req.session());
-            if (ctx == null || !ctx.login.equalsIgnoreCase("bgummere")) {
-                System.out.println("unauthorized " + req.url());
-                res.redirect("login.html");
-            }
-        });
-        // liveness timer
+        // liveness timer - this keeps the context alive for valid pages and requests
         before((req, res) -> {
             Context ctx = getContextFromSession(req.session());
             if (ctx != null) {
@@ -95,10 +75,9 @@ public class CourseCatalog {
                 }
             }
         });
-
+        
         // Static files filter is LAST
         StaticFilesConfiguration staticHandler = new StaticFilesConfiguration();
-
         staticHandler.configure("/static");
         before((request, response) -> staticHandler.consume(request.raw(), response.raw()));
 
@@ -192,9 +171,9 @@ public class CourseCatalog {
 
         System.out.println("\"" + login + "\"");
         if (login.equalsIgnoreCase("bgummere")) {
-            System.out.println("login: " + login);
+            System.out.println("login: admin " + login);
             req.session().attribute("context", ctx);
-            res.redirect("admin_student.html");
+            res.redirect("protected/admin/admin_student.html");
 
             return "ok";
         }
@@ -207,7 +186,7 @@ public class CourseCatalog {
 
         System.out.println("login: " + login);
         req.session().attribute("context", ctx);
-        res.redirect("status.html");
+        res.redirect("protected/status.html");
 
         return "ok";
     }
