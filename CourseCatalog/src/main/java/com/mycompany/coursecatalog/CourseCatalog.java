@@ -9,7 +9,6 @@ import com.google.gson.Gson;
 import javax.servlet.MultipartConfigElement;
 import static spark.Spark.*;
 import spark.staticfiles.StaticFilesConfiguration;
-import com.mycompany.coursecatalog.ScheduleRequest;
 import static com.mycompany.coursecatalog.ScheduleRequest.CreateScheduleRequest;
 import static com.mycompany.coursecatalog.ScheduleRequest.DeleteScheduleRequest;
 import static com.mycompany.coursecatalog.ScheduleRequest.RetrieveScheduleRequest;
@@ -25,9 +24,7 @@ public class CourseCatalog {
 
     public static void main(String[] args) {
 
-        // see below
-        //staticFiles.location("/static");
-        // login route and enforcing filter
+        // housekeeping routes and filters
         post("/login", (req, res) -> login(req, res));
         post("/logout", (req, res) -> logout(req, res));
         get("/protected/name", (req, res) -> getName(req, res));
@@ -72,6 +69,22 @@ public class CourseCatalog {
                 res.redirect("login.html");
             }
         });
+        before("admin_student.html", (req, res) -> {
+            System.out.println("filter: protect status");
+            Context ctx = getContextFromSession(req.session());
+            if (ctx == null || !ctx.login.equalsIgnoreCase("bgummere")) {
+                System.out.println("unauthorized " + req.url());
+                res.redirect("login.html");
+            }
+        });
+        before("admin_course.html", (req, res) -> {
+            System.out.println("filter: protect browse");
+            Context ctx = getContextFromSession(req.session());
+            if (ctx == null || !ctx.login.equalsIgnoreCase("bgummere")) {
+                System.out.println("unauthorized " + req.url());
+                res.redirect("login.html");
+            }
+        });
         // liveness timer
         before((req, res) -> {
             Context ctx = getContextFromSession(req.session());
@@ -89,9 +102,14 @@ public class CourseCatalog {
         staticHandler.configure("/static");
         before((request, response) -> staticHandler.consume(request.raw(), response.raw()));
 
+        // functionality:
         get("/protected/getStudents", (req, res) -> getStudents(req), new JSONRT());
         get("/protected/getCourseOfferings", (req, res) -> getCourseOfferings(req), new JSONRT());
         get("/protected/getAllRequests", (req, res) -> getAllRequests(req), new JSONRT());
+        get("/protected/getCourseStudentsFirst", (req, res) -> getCourseStudentsFirst(req), new JSONRT());
+        get("/protected/getCourseStudentsAll", (req, res) -> getCourseStudentsAll(req), new JSONRT());
+
+        // schedule request CRUD
         put("/protected/createScheduleRequest", (req, res) -> {
             Context ctx = getContextFromSession(req.session());
             ScheduleRequest sr = gson.fromJson(req.body(), ScheduleRequest.class);
@@ -114,8 +132,6 @@ public class CourseCatalog {
             UpdateScheduleRequest(sr, ctx.db);
             return 0;
         });
-        //patch for update
-        get("/protected/getCourseStudents", (req, res) -> getCourseStudents(req), new JSONRT());
     }
 
     private static Object getStudents(spark.Request req) {
@@ -130,14 +146,20 @@ public class CourseCatalog {
         return ao;
     }
 
-    private static Object getCourseStudents(spark.Request req) {
-        System.out.println("here now");
+    private static Object getCourseStudentsFirst(spark.Request req) {
+        System.out.println("getCourseStudentsFirst");
         Context ctx = getContextFromSession(req.session());
         return Student.firstChoice(req.body());
     }
 
+    private static Object getCourseStudentsAll(spark.Request req) {
+        System.out.println("getCourseStudentsAll");
+        Context ctx = getContextFromSession(req.session());
+        return Student.allChoice(req.body());
+    }
+
     private static Object getCourseOfferings(spark.Request req) {
-        System.out.println("entered getCourseRequests");
+        System.out.println("entered getCourseOfferings");
         Context ctx = getContextFromSession(req.session());
 
         ctx.db.getAllFrom("course_offerings");
@@ -160,12 +182,22 @@ public class CourseCatalog {
         return ao;
     }
 
+    // housekeeping:
     private static String login(spark.Request req, spark.Response res) {
         MultipartConfigElement multipartConfigElement = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
         req.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
 
         String login = req.queryParams("login");
         Context ctx = new Context(login);
+
+        System.out.println("\"" + login + "\"");
+        if (login.equalsIgnoreCase("bgummere")) {
+            System.out.println("login: " + login);
+            req.session().attribute("context", ctx);
+            res.redirect("admin_student.html");
+
+            return "ok";
+        }
 
         if (ctx.db.queryName(login).equals("unknown")) {
             internalLogout(req);
@@ -201,6 +233,11 @@ public class CourseCatalog {
         Context ctx = getContextFromSession(req.session());
         String result = "";
         System.out.println("Name for: " + ctx.login);
+
+        if (ctx.login.equalsIgnoreCase("bgummere")) {
+            System.out.println("Name: Mr. Gummere");
+            return "Mr. Gummere";
+        }
 
         result = ctx.db.queryName(ctx.login);
         System.out.println("Name: " + result);

@@ -7,6 +7,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
+        <div id="banner">
+            Logged in:&nbsp;<span id="nameSpan"></span>.&nbsp; 
+            <button onclick="logout()">Log out</button>
+        </div>
+        <br>
+        <form action="status.html">
+            <input type="submit" value="Show my selections" />
+        </form>
+        <hr>
+        <br>
+        <br>
+
+
         <div>Selection criteria:<br>
             <form>
                 <input type="radio" name="Discipline" value="All" checked>All<br>
@@ -38,14 +51,9 @@
             <div id = "offerings"></div>
         </div>
         <hr>
-        <form action="status.html">
-            <input type="submit" value="show my selections" />
-        </form>
-        <hr>
-        <form method="post" action="logout">
-            <input type="submit" value="Log out" />
-        </form>
-        <hr>
+
+
+
         Output:<br>
         <div id="output"></div>
         <script src="js\common.js"></script>

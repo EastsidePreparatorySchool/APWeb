@@ -2,39 +2,50 @@
 
 <html>
     <head>
-        <title>Course selections for student</title>
+        <title>Admin: Course information</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="js\admin_course.js"></script>
     </head>
     <body>
-        <div>Hello <span id="nameSpan">guest</span>, please enter a student and submit to review:<br>
-            <form>
-                <input type="text" name="login" value="" placeholder="student login">
-                <input type="submit" value="Get selections">
-            </form>
+        <div id="banner">
+            Logged in:&nbsp;<span id="nameSpan"></span>.&nbsp; 
+            <button onclick="logout()">Log out</button>
         </div>
-        <div>You can use this to find all students who want a course:<br>
-            <input id="courseInput" value="" placeholder ="course name here">
-            <button onclick="getCourseStudents()">1st Choice</button>
-            <button onclick="thing2()">All Choices</button>
+        <br>
+        <form method = "post" action="admin_student.html">
+            <input type="submit" value="Switch to student view" />
+        </form>
+        <hr>
+        <br>
+        <br>
+
+
+
+
+        <div>
+            You can use this to find all students who want a course:<br>
+            <input type="text" id="courseInput" value="" placeholder ="course name here">
+            <button onclick="getCourseStudentsFirst()">1st Choice</button>
+            <button onclick="getCourseStudentsAll()">All Choices</button>
         </div>
         <hr>
-        Selections for student<span id="student"></span>:<br>
-        <div id="selections">
-        </div>
+
+
+
+
         Course Output:<br>
         <div id="courseOutput"></div>
         <hr>
         <button type="button" onclick="getCourseOfferings()">Get All Courses</button>
-        <form method = "post" action="logout">
-            <input type="submit" value="Log out" />
-        </form>
         <hr>
+
+
         Output:<br>
         <div id="output"></div>
         <script src="js\common.js"></script>
         <script src="js\TableFormat.js"></script>
+        <script src="js\student.js"></script>
         <script src="js\admin_course.js"></script>
     </body>
 </html>

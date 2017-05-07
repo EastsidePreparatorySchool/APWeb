@@ -70,7 +70,7 @@ public class Student {
     //TODO: make a student class and make it get arrays of students back from the thingy
     public static Student[] firstChoice(String courseID) { //not sure how else to get the course ID we want. for now just be careful not to pass in droptable
         try {
-            System.out.println("here");
+            System.out.println("firstChoice");
             Statement stmt = Database.conn.createStatement();
             ResultSet results = stmt.executeQuery("select schedule_requests.individual_id from schedule_requests where schedule_requests.course_id = " + courseID + ";");
             ArrayList<Student> s = new ArrayList<>();

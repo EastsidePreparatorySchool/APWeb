@@ -2,29 +2,45 @@
 
 <html>
     <head>
-        <title>Course selections</title>
+        <title>Admin: Student Information</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div>Hello <span id="nameSpan">guest</span>, your course selections are:<br>
-            <div id="selections">
-            </div>
+        <div id="banner">
+            Logged in:&nbsp;<span id="nameSpan"></span>.&nbsp; 
+            <button onclick="logout()">Log out</button>
+        </div>
+        <br>
+        <form method = "post" action="admin_course.html">
+            <input type="submit" value="Switch to course view" />
+        </form>
+        <hr>
+        <br>
+        <br>
+
+
+        <div>
+            Please enter a student and submit to review:<br>
+             <input type="text" id="login" value="" placeholder ="Student login">
+            <button onclick="getStudentSelections()">1st Choice</button>
         </div>
         <hr>
-        <form action="browse.html">
-            <input type="submit" value="browse course offerings" />
-        </form>
+        Selections for student<span id="student"></span>:<br>
+        <div id="selections">
+        </div>
         <hr>
+
         <button type="button" onclick="getStudents()">Get All Students</button>
-        <form method = "post" action="logout">
-            <input type="submit" value="Log out" />
-        </form>
         <hr>
+
+
         Output:<br>
         <div id="output"></div>
+        
         <script src="js\common.js"></script>
-        <script src="js\status.js"></script>
+        <script src="js\tableformat.js"></script>
+        <script src="js\student.js"></script>
         <script src="js\admin_student.js"></script>
     </body>
 </html>
