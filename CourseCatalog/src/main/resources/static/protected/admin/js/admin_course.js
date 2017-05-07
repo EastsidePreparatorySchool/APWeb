@@ -3,7 +3,7 @@ function getCourseStudentsFirst() {
     var courseID = document.getElementById("courseInput").value;
     output("requesting students for course ..." + courseID);
 
-    request({url: "/protected/getCourseStudentsFirst?id=" + courseID})
+    request({url: "/protected/admin/getCourseStudentsFirst?id=" + courseID})
             .then(data => {
                 output("success");
                 eraseDiv("courseOutput");
@@ -20,7 +20,7 @@ function getCourseStudentsAll() {
     var courseID = document.getElementById("courseInput").value;
     output("requesting students for course ..." + courseID);
 
-    request({url: "/protected/getCourseStudentsAll?id="+courseID})
+    request({url: "/protected/admin/getCourseStudentsAll?id="+courseID})
             .then(data => {
                 output("success");
                 eraseDiv("courseOutput");

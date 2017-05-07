@@ -1,5 +1,5 @@
 function getStudents() {
-    request({url: "/protected/getStudents", method: "GET", body: ""})
+    request({url: "/protected/admin/getStudents", method: "GET", body: ""})
             .then(data => {
                 if (data != null) {
                     eraseDiv("output");
@@ -17,7 +17,7 @@ function getStudents() {
 
 function getStudentSelections() {
     var login=document.getElementById("login").value;
-    request({url: "/protected/getAllRequests?login="+login})
+    request({url: "/protected/admin/getAllRequests?login="+login})
             .then(data => {
                 eraseDiv("selections");
                 if (data !== undefined && data !== null) {

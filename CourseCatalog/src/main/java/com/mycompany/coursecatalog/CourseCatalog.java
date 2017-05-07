@@ -69,11 +69,12 @@ public class CourseCatalog {
         before((request, response) -> staticHandler.consume(request.raw(), response.raw()));
 
         // functionality:
-        get("/protected/getStudents", (req, res) -> getReqCtx(req).getStudents(req), new JSONRT());
         get("/protected/getCourseOfferings", (req, res) -> getReqCtx(req).getCourseOfferings(req), new JSONRT());
-        get("/protected/getAllRequests", (req, res) -> getReqCtx(req).getAllRequests(req.queryParams("login")), new JSONRT());
-        get("/protected/getCourseStudentsFirst", (req, res) ->  getReqCtx(req).getCourseStudentsFirst(req.queryParams("id")), new JSONRT());
-        get("/protected/getCourseStudentsAll", (req, res) -> getReqCtx(req).getCourseStudentsAll(req.queryParams("id")), new JSONRT());
+        get("/protected/getMyRequests", (req, res) -> getReqCtx(req).getAllRequests(getReqCtx(req).login), new JSONRT());
+        get("/protected/admin/getStudents", (req, res) -> getReqCtx(req).getStudents(req), new JSONRT());
+        get("/protected/admin/getAllRequests", (req, res) -> getReqCtx(req).getAllRequests(req.queryParams("login")), new JSONRT());
+        get("/protected/admin/getCourseStudentsFirst", (req, res) ->  getReqCtx(req).getCourseStudentsFirst(req.queryParams("id")), new JSONRT());
+        get("/protected/admin/getCourseStudentsAll", (req, res) -> getReqCtx(req).getCourseStudentsAll(req.queryParams("id")), new JSONRT());
 
         // schedule request CRUD
         put("/protected/createScheduleRequest", (req, res) -> {
