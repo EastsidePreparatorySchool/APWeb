@@ -42,27 +42,27 @@ public class CourseCatalog {
 
         // liveness check - this actually governs expiration
         before((req, res) -> {
-            System.out.println("filter: check time " + req.url());
+            System.out.println("filter: timer alive?" + req.url());
             Context ctx = getContextFromSession(req.session());
             if (ctx != null && ctx.checkExpired()) {
                 internalLogout(req);
-                res.redirect("expired.html");
+                res.redirect("/expired.html");
             }
         });
 
         before("/protected/*", (req, res) -> {
-            System.out.println("filter: protect *");
+            System.out.println("filter: /protected/*");
             if (req.session().attribute("context") == null) {
                 System.out.println("unauthorized " + req.url());
-                res.redirect("login.html");
+                res.redirect("/unauthorized.html");
             }
         });
         before("/protected/admin/*", (req, res) -> {
-            System.out.println("filter: protect status");
+            System.out.println("filter: /protected/admin/*");
             Context ctx = getContextFromSession(req.session());
             if (ctx == null || !ctx.login.equalsIgnoreCase("bgummere")) {
                 System.out.println("unauthorized " + req.url());
-                res.redirect("login.html");
+                res.redirect("/unauthorized.html");
             }
         });
         // liveness timer - this keeps the context alive for valid pages and requests
