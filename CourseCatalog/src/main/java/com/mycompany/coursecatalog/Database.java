@@ -64,7 +64,7 @@ public class Database {
         }
     }
 
-    public void getAllFrom(String tableName) {
+    public void dumpTable(String tableName) {
 
         try {
             Statement stmt = conn.createStatement();
@@ -108,11 +108,14 @@ public class Database {
         }
 
     }
+    
+    
+    
+    
+    
+    
 
-    public void retrieveStudent(Student sd) {
-
-    }
-
+    // CRUD: Students
     public void createStudent(Student sd) {
         try {
             Statement stmt = conn.createStatement();
@@ -126,7 +129,7 @@ public class Database {
 
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("A new user was inserted successfully!");
+                System.out.println("A new student was inserted successfully!");
             }
 
         } catch (Exception e) {
@@ -134,10 +137,23 @@ public class Database {
         }
     }
 
-    public void updateStudent() {
+    // todo: write this, implement route
+    public Student retrieveStudent(int id) {
+        return null;
+    }
+
+    // todo: write this, implement route
+    public Student retrieveStudent(String login) {
+        return null;
+    }
+
+    // to do: write this, implement route
+    public void updateStudent(Student sd) {
 
     }
 
+    //todo: Make this only look at id, not the other fields
+    // todo: implement route
     public void deleteStudent(Student sd) {
         try {
             String sql = "DELETE FROM Users WHERE id=?, firstname=?, lastname=?, login=?, gradyear=?";
@@ -159,6 +175,98 @@ public class Database {
         }
     }
 
+    // CRUD: ScheduleReqeusts
+    public int createScheduleRequest(ScheduleRequest sr) {
+        int generatedKey = 0;
+
+        try {
+            String key[] = {"ID"}; //put the name of the primary key column
+            int id = getLastID();
+            id++;
+            String sql = "INSERT INTO schedule_requests (id, individual_id, course_id, first_alternate_course_id, second_alternate_course_id, notes, advisor_reviewed, parent_reviewed)"
+                    + " VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            PreparedStatement statement = conn.prepareStatement(sql, key);
+            statement.setInt(1, id);
+            statement.setInt(2, sr.individual_id);
+            statement.setInt(3, sr.course_id);
+            statement.setInt(4, sr.first_alternate_course_id);
+            statement.setInt(5, sr.second_alternate_course_id);
+            statement.setString(6, sr.notes);
+            statement.setBoolean(7, sr.advisor_reviewed);
+            statement.setBoolean(8, sr.parent_reviewed);
+
+            ResultSet rs;
+
+            rs = statement.getGeneratedKeys();
+            if (rs.next()) {
+                generatedKey = rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return generatedKey;
+    }
+
+    public ScheduleRequest retrieveScheduleRequest(int id) {
+        ScheduleRequest request = null;
+        try {
+            String sql = "SELECT * FROM schedule_requests WHERE id=?;";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, id);
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                request = new ScheduleRequest(rs.getInt("id"), rs.getInt("individual_id"), rs.getInt("course_id"), rs.getInt("first_alternate_course_id"),
+                        rs.getInt("second_alternate_course_id"), rs.getString("notes"),
+                        rs.getBoolean("advisor_reviewed"), rs.getBoolean("parent_reviewed"));
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return request;
+    }
+
+    public void updateScheduleRequest(ScheduleRequest sr) {
+        try {
+            String query2 = "UPDATE schedule_requests SET (id=?, individual_id=?, course_id=?, first_alternate_course_id=?, second_alternate_course_id=?, notes=?, advisor_reviewed=?, parent_reviewed=?) WHERE id=?;";
+            int id = sr.id;
+            PreparedStatement statement = conn.prepareStatement(query2);
+            statement.setInt(1, sr.id);
+            statement.setInt(2, sr.individual_id);
+            statement.setInt(3, sr.course_id);
+            statement.setInt(4, sr.first_alternate_course_id);
+            statement.setInt(5, sr.second_alternate_course_id);
+            statement.setString(6, sr.notes);
+            statement.setBoolean(7, sr.advisor_reviewed);
+            statement.setBoolean(8, sr.parent_reviewed);
+            statement.setInt(9, id);
+            statement.execute(query2);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public void deleteScheduleRequest(int id) {
+        //delete from schedule_requests where id=1
+        try {
+            String sql = "DELETE FROM schedule_requests WHERE id=?;";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, id);
+
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("A user was deleted successfully!");
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+    }
+
+    // queries of all kinds
     public Object[] queryStudents(String query) {
 
         Object[] result = null;
@@ -257,96 +365,6 @@ public class Database {
         }
 
         return result;
-    }
-
-    public int createScheduleRequest(ScheduleRequest sr) {
-        int generatedKey = 0;
-
-        try {
-            String key[] = {"ID"}; //put the name of the primary key column
-            int id = getLastID();
-            id++;
-            String sql = "INSERT INTO schedule_requests (id, individual_id, course_id, first_alternate_course_id, second_alternate_course_id, notes, advisor_reviewed, parent_reviewed)"
-                    + " VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
-            PreparedStatement statement = conn.prepareStatement(sql, key);
-            statement.setInt(1, id);
-            statement.setInt(2, sr.individual_id);
-            statement.setInt(3, sr.course_id);
-            statement.setInt(4, sr.first_alternate_course_id);
-            statement.setInt(5, sr.second_alternate_course_id);
-            statement.setString(6, sr.notes);
-            statement.setBoolean(7, sr.advisor_reviewed);
-            statement.setBoolean(8, sr.parent_reviewed);
-
-            ResultSet rs;
-
-            rs = statement.getGeneratedKeys();
-            if (rs.next()) {
-                generatedKey = rs.getInt(1);
-            }
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return generatedKey;
-    }
-
-    public ArrayList<ScheduleRequest> retrieveScheduleRequest(int id) {
-        ArrayList<ScheduleRequest> requests = new ArrayList<>();
-        try {
-            String sql = "SELECT * FROM schedule_requests WHERE id=?;";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, id);
-
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                requests.add(new ScheduleRequest(rs.getInt("id"), rs.getInt("individual_id"), rs.getInt("course_id"), rs.getInt("first_alternate_course_id"),
-                        rs.getInt("second_alternate_course_id"), rs.getString("notes"),
-                        rs.getBoolean("advisor_reviewed"), rs.getBoolean("parent_reviewed")));
-            }
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return requests;
-    }
-
-    public void updateScheduleRequest(ScheduleRequest sr) {
-        try {
-            String query2 = "UPDATE schedule_requests SET (id=?, individual_id=?, course_id=?, first_alternate_course_id=?, second_alternate_course_id=?, notes=?, advisor_reviewed=?, parent_reviewed=?) WHERE id=?;";
-            int id = sr.id;
-            PreparedStatement statement = conn.prepareStatement(query2);
-            statement.setInt(1, sr.id);
-            statement.setInt(2, sr.individual_id);
-            statement.setInt(3, sr.course_id);
-            statement.setInt(4, sr.first_alternate_course_id);
-            statement.setInt(5, sr.second_alternate_course_id);
-            statement.setString(6, sr.notes);
-            statement.setBoolean(7, sr.advisor_reviewed);
-            statement.setBoolean(8, sr.parent_reviewed);
-            statement.setInt(9, id);
-            statement.execute(query2);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
-    public void deleteScheduleRequest(int id) {
-        //delete from schedule_requests where id=1
-        try {
-            String sql = "DELETE FROM schedule_requests WHERE id=?;";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, id);
-
-            int rowsDeleted = statement.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("A user was deleted successfully!");
-            }
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
     }
 
     //not sure how else to get the course ID we want. for now just be careful not to pass in droptable
