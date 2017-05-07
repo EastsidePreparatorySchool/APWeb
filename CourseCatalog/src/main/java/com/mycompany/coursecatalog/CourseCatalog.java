@@ -1,23 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.coursecatalog;
 
 import com.google.gson.Gson;
 import javax.servlet.MultipartConfigElement;
 import static spark.Spark.*;
 import spark.staticfiles.StaticFilesConfiguration;
-import static com.mycompany.coursecatalog.ScheduleRequest.CreateScheduleRequest;
-import static com.mycompany.coursecatalog.ScheduleRequest.DeleteScheduleRequest;
-import static com.mycompany.coursecatalog.ScheduleRequest.RetrieveScheduleRequest;
-import static com.mycompany.coursecatalog.ScheduleRequest.UpdateScheduleRequest;
 
-/**
- *
- * @author daman
- */
 public class CourseCatalog {
 
     final static private Gson gson = new Gson();
@@ -28,7 +15,7 @@ public class CourseCatalog {
         post("/login", (req, res) -> login(req, res));
         post("/logout", (req, res) -> logout(req, res));
         get("/protected/name", (req, res) -> getName(req, res));
-        
+
         // HTML pages use this to switch to the "expired" page
         get("/protected/checktimeout", (req, res) -> {
             Context ctx = getContextFromSession(req.session());
@@ -75,90 +62,35 @@ public class CourseCatalog {
                 }
             }
         });
-        
+
         // Static files filter is LAST
         StaticFilesConfiguration staticHandler = new StaticFilesConfiguration();
         staticHandler.configure("/static");
         before((request, response) -> staticHandler.consume(request.raw(), response.raw()));
 
         // functionality:
-        get("/protected/getStudents", (req, res) -> getStudents(req), new JSONRT());
-        get("/protected/getCourseOfferings", (req, res) -> getCourseOfferings(req), new JSONRT());
-        get("/protected/getAllRequests", (req, res) -> getAllRequests(req), new JSONRT());
-        get("/protected/getCourseStudentsFirst", (req, res) -> getCourseStudentsFirst(req), new JSONRT());
-        get("/protected/getCourseStudentsAll", (req, res) -> getCourseStudentsAll(req), new JSONRT());
+        get("/protected/getStudents", (req, res) -> getReqCtx(req).getStudents(req), new JSONRT());
+        get("/protected/getCourseOfferings", (req, res) -> getReqCtx(req).getCourseOfferings(req), new JSONRT());
+        get("/protected/getAllRequests", (req, res) -> getReqCtx(req).getAllRequests(req), new JSONRT());
+        get("/protected/getCourseStudentsFirst", (req, res) ->  getReqCtx(req).getCourseStudentsFirst(req.queryParams("id")), new JSONRT());
+        get("/protected/getCourseStudentsAll", (req, res) -> getReqCtx(req).getCourseStudentsAll(req.queryParams("id")), new JSONRT());
 
         // schedule request CRUD
         put("/protected/createScheduleRequest", (req, res) -> {
-            Context ctx = getContextFromSession(req.session());
             ScheduleRequest sr = gson.fromJson(req.body(), ScheduleRequest.class);
-            return CreateScheduleRequest(sr, ctx.db);
+            return getReqDb(req).createScheduleRequest(sr);
         });
         get("/protected/retrieveScheduleRequest", (req, res) -> {
-            Context ctx = getContextFromSession(req.session());
-            int id = Integer.getInteger(req.body());
-            return RetrieveScheduleRequest(id, ctx.db);
+            return getReqDb(req).retrieveScheduleRequest(Integer.parseInt(req.queryParams("id")));
         }, new JSONRT());
-        delete("/protected/deleteScheduleRequest", (req, res) -> {
-            Context ctx = getContextFromSession(req.session());
-            int id = Integer.getInteger(req.body());
-            DeleteScheduleRequest(id, ctx.db);
-            return 0;
-        });
         patch("/protected/updateScheduleRequest", (req, res) -> {
-            Context ctx = getContextFromSession(req.session());
-            ScheduleRequest sr = gson.fromJson(req.body(), ScheduleRequest.class);
-            UpdateScheduleRequest(sr, ctx.db);
+            getReqDb(req).updateScheduleRequest(gson.fromJson(req.body(), ScheduleRequest.class));
             return 0;
         });
-    }
-
-    private static Object getStudents(spark.Request req) {
-        System.out.println("entered getStudents");
-        Context ctx = getContextFromSession(req.session());
-
-        ctx.db.getAllFrom("students");
-
-        Object[] ao = ctx.db.queryStudents("select * from students");
-        System.out.println(ao.length);
-
-        return ao;
-    }
-
-    private static Object getCourseStudentsFirst(spark.Request req) {
-        System.out.println("getCourseStudentsFirst");
-        Context ctx = getContextFromSession(req.session());
-        return Student.firstChoice(req.body());
-    }
-
-    private static Object getCourseStudentsAll(spark.Request req) {
-        System.out.println("getCourseStudentsAll");
-        Context ctx = getContextFromSession(req.session());
-        return Student.allChoice(req.body());
-    }
-
-    private static Object getCourseOfferings(spark.Request req) {
-        System.out.println("entered getCourseOfferings");
-        Context ctx = getContextFromSession(req.session());
-
-        ctx.db.getAllFrom("course_offerings");
-
-        Object[] ao = ctx.db.queryCourses("select * from course_offerings");
-        System.out.println(ao.length);
-
-        return ao;
-    }
-
-    private static Object getAllRequests(spark.Request req) {
-        System.out.println("entered getAllRequests");
-        Context ctx = getContextFromSession(req.session());
-
-        ctx.db.getAllFrom("schedule_requests");
-
-        Object[] ao = ctx.db.queryAllRequests("select * from schedule_requests");
-        System.out.println(ao.length);
-
-        return ao;
+        delete("/protected/deleteScheduleRequest", (req, res) -> {
+            getReqDb(req).deleteScheduleRequest(Integer.parseInt(req.body()));
+            return 0;
+        });
     }
 
     // housekeeping:
@@ -209,7 +141,7 @@ public class CourseCatalog {
     }
 
     public static String getName(spark.Request req, spark.Response res) {
-        Context ctx = getContextFromSession(req.session());
+        Context ctx = getReqCtx(req);
         String result = "";
         System.out.println("Name for: " + ctx.login);
 
@@ -223,9 +155,20 @@ public class CourseCatalog {
         return result;
     }
 
-    public static Context getContextFromSession(spark.Session s) {
+    // this can be called even when there is no context
+    private static Context getContextFromSession(spark.Session s) {
         Context ctx = s.attribute("context");
         return ctx;
+    }
+
+    // this should only be called when we know there is a context in the session
+    private static Context getReqCtx(spark.Request req) {
+        return getContextFromSession(req.session());
+    }
+
+    // this should only be called when we know there is a context in the session
+    private static Database getReqDb(spark.Request req) {
+        return getContextFromSession(req.session()).db;
     }
 
 }

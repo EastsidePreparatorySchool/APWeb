@@ -79,7 +79,7 @@ function outputTo(divid, message) {
 }
 
 
-function erase(divToErase) {
+function eraseDiv(divToErase) {
     document.getElementById(divToErase).innerHTML = "";
 }
 
@@ -91,7 +91,7 @@ function checkTimeout() {
                 //output(data);
             })
             .catch(error => {
-                location.assign("expired.html");
+                location.assign("/expired.html");
             });
 
 }
@@ -100,11 +100,11 @@ function logout() {
     request({url: "/logout", method: "post"})
             .then(data => {
                 //output(data);
-                location.assign("login.html");
+                location.assign("/login.html");
 
             })
             .catch(error => {
-                location.assign("login.html");
+                location.assign("/login.html");
             });
 
 }

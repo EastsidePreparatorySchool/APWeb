@@ -25,7 +25,7 @@
 
         <div>
             You can use this to find all students who want a course:<br>
-            <input type="text" id="courseInput" value="" placeholder ="course name here">
+            <input type="text" id="courseInput" value="1018" placeholder ="course name here">
             <button onclick="getCourseStudentsFirst()">1st Choice</button>
             <button onclick="getCourseStudentsAll()">All Choices</button>
         </div>
@@ -34,17 +34,20 @@
 
 
 
+        <button type="button" onclick="getCourseOfferings()">Get All Course offerings for 2017/18</button>
+        <button type="button" onclick="getCourseOfferingsFull()">Get All Course offerings for 2017/18 (full detail)</button>
+        <hr>
+        
         Course Output:<br>
         <div id="courseOutput"></div>
         <hr>
-        <button type="button" onclick="getCourseOfferings()">Get All Courses</button>
-        <hr>
-
+    
 
         Output:<br>
         <div id="output"></div>
         <script src="..\js\common.js"></script>
-        <script src="..\js\TableFormat.js"></script>
+        <script src="..\js\schedulerequest.js"></script>
+        <script src="..\js\courseoffering.js"></script>
         <script src="..\js\student.js"></script>
         <script src="js\admin_course.js"></script>
     </body>
