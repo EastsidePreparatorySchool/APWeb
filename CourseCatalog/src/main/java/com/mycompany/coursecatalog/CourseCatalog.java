@@ -29,7 +29,7 @@ public class CourseCatalog {
 
         // liveness check - this actually governs expiration
         before((req, res) -> {
-            System.out.println("filter: timer alive?" + req.url());
+//            System.out.println("filter: timer alive?" + req.url());
             Context ctx = getContextFromSession(req.session());
             if (ctx != null && ctx.checkExpired()) {
                 internalLogout(req);
@@ -38,14 +38,14 @@ public class CourseCatalog {
         });
 
         before("/protected/*", (req, res) -> {
-            System.out.println("filter: /protected/*");
+//            System.out.println("filter: /protected/*");
             if (req.session().attribute("context") == null) {
                 System.out.println("unauthorized " + req.url());
                 res.redirect("/unauthorized.html");
             }
         });
         before("/protected/admin/*", (req, res) -> {
-            System.out.println("filter: /protected/admin/*");
+//            System.out.println("filter: /protected/admin/*");
             Context ctx = getContextFromSession(req.session());
             if (ctx == null || !ctx.login.equalsIgnoreCase("bgummere")) {
                 System.out.println("unauthorized " + req.url());
@@ -57,7 +57,7 @@ public class CourseCatalog {
             Context ctx = getContextFromSession(req.session());
             if (ctx != null) {
                 if (!req.url().endsWith("/protected/checktimeout")) {
-                    System.out.println("timer reset from URL: " + req.url());
+//                    System.out.println("timer reset from URL: " + req.url());
                     ctx.updateTimer();
                 }
             }
@@ -144,15 +144,15 @@ public class CourseCatalog {
     public static String getName(spark.Request req, spark.Response res) {
         Context ctx = getReqCtx(req);
         String result = "";
-        System.out.println("Name for: " + ctx.login);
+//        System.out.println("Name for: " + ctx.login);
 
         if (ctx.login.equalsIgnoreCase("bgummere")) {
-            System.out.println("Name: Mr. Gummere");
+//            System.out.println("Name: Mr. Gummere");
             return "Mr. Gummere";
         }
 
         result = ctx.db.queryName(ctx.login);
-        System.out.println("Name: " + result);
+//        System.out.println("Name: " + result);
         return result;
     }
 

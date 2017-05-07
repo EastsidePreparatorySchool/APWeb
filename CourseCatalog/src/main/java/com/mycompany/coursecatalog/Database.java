@@ -100,7 +100,7 @@ public class Database {
 
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Statement executed: " + sql + ", " + parameter + ", rows affected:" + rowsAffected);
+//                System.out.println("Statement executed: " + sql + ", " + parameter + ", rows affected:" + rowsAffected);
             }
 
         } catch (Exception e) {
@@ -167,7 +167,7 @@ public class Database {
 
             int rowsDeleted = statement.executeUpdate();
             if (rowsDeleted > 0) {
-                System.out.println("A user was deleted successfully!");
+                System.out.println("A student was deleted successfully!");
             }
 
         } catch (Exception e) {
@@ -175,6 +175,11 @@ public class Database {
         }
     }
 
+    
+    
+    
+    
+    
     // CRUD: ScheduleReqeusts
     public int createScheduleRequest(ScheduleRequest sr) {
         int generatedKey = 0;
@@ -257,7 +262,7 @@ public class Database {
 
             int rowsDeleted = statement.executeUpdate();
             if (rowsDeleted > 0) {
-                System.out.println("A user was deleted successfully!");
+                System.out.println("A ScheduleRequest was deleted successfully!");
             }
 
         } catch (Exception e) {
@@ -266,6 +271,12 @@ public class Database {
 
     }
 
+    
+    
+    
+    
+    
+    
     // queries of all kinds
     public Object[] queryStudents(String query) {
 
@@ -353,7 +364,7 @@ public class Database {
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("select firstname, lastname from students where login='" + login + "'");
-            System.out.println("Querying student name for login " + login);
+//            System.out.println("Querying student name for login " + login);
 
             if (rs.next()) {
                 String firstName = rs.getString(1);
@@ -370,7 +381,7 @@ public class Database {
     //not sure how else to get the course ID we want. for now just be careful not to pass in droptable
     public Object firstChoice(String courseID) {
         try {
-            System.out.println("firstChoicecourse id: " + courseID);
+//            System.out.println("firstChoicecourse id: " + courseID);
             Statement stmt = conn.createStatement();
             ResultSet results = stmt.executeQuery("select schedule_requests.individual_id, students.* from schedule_requests, students "
                     + "where schedule_requests.individual_id=students.id and schedule_requests.course_id = " + courseID);
@@ -389,7 +400,7 @@ public class Database {
     //not sure how else to get the course ID we want. for now just be careful not to pass in droptable
     public Object allChoice(String courseID) {
         try {
-            System.out.println("allChoicecourse id: " + courseID);
+//            System.out.println("allChoicecourse id: " + courseID);
 
             Statement stmt = conn.createStatement();
             ArrayList<Student> s = new ArrayList<>();

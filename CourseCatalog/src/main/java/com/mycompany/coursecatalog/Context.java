@@ -23,6 +23,12 @@ public class Context {
         return (System.currentTimeMillis() - timeLastSeen >= (5 * 60 * 1000)); // if it has been more than 5 minutes
     }
 
+    
+    
+    
+    
+    
+    
     // route functionality
     Object getStudents(spark.Request req) {
         System.out.println("entered getStudents");
@@ -30,7 +36,7 @@ public class Context {
 //        db.dumpTable("students");
 
         Object[] ao = db.queryStudents("select * from students");
-        System.out.println(ao.length);
+//        System.out.println(ao.length);
 
         return ao;
     }
@@ -51,7 +57,7 @@ public class Context {
 //        db.getAllFrom("course_offerings");
 //        Object[] ao = db.queryCourseOfferings"select * from course_offerings where year_id='18'");
         Object[] ao = db.queryCourseOfferings("select course_offerings.*, courses.name as name from course_offerings, courses where course_offerings.course_id=courses.id and course_offerings.year_id='18'");
-        System.out.println(ao.length);
+//        System.out.println(ao.length);
 
         return ao;
     }
@@ -65,7 +71,7 @@ public class Context {
         } else {
             ao = db.queryAllRequests("select schedule_requests.*,students.id from schedule_requests, students where schedule_requests.individual_id=students.id and students.login='"+login+"'");
         }
-        System.out.println(ao.length);
+//        System.out.println(ao.length);
 
         return ao;
     }
