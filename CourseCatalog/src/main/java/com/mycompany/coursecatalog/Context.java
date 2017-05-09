@@ -30,6 +30,7 @@ public class Context {
     
     
     // route functionality
+    
     Object getStudents(spark.Request req) { // returns an array of all students
         System.out.println("entered getStudents");
 
