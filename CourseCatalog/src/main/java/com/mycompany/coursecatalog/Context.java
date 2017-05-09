@@ -76,5 +76,10 @@ public class Context {
 
         return ao;
     }
+    //not yet supported
+    Object getSpecificCourses(String disc, String grad, String len) {
+       System.out.println("entered getSpecificCourses");
+       return db.getSpecificCoursesDB(disc, grad, len);
+    }
 
 }
