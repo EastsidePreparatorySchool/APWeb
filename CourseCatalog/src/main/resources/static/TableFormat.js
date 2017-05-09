@@ -81,10 +81,7 @@ function insertStudents(parentID, students) {
     
     myTable += "</table>";
 
-    output(myTable);
-    /// assemble table
-    var div = document.getElementById(parentID);
-    div.appendChild(myTable);    
+    output(myTable, parentID); 
 }
 
 function insertCourseOfferings(parentID, courseOfferings) {
@@ -130,10 +127,7 @@ function insertCourseOfferings(parentID, courseOfferings) {
     
     myTable += "</table>";
 
-    output(myTable);
-    /// assemble table
-    var div = document.getElementById(parentID);
-    div.appendChild(myTable);    
+    output(myTable, parentID);  
 }
 
 function insertAllRequests(parentID, allRequests) {
@@ -187,8 +181,5 @@ function insertAllRequests(parentID, allRequests) {
     
     myTable += "</table>";
 
-    output(myTable);
-    /// assemble table
-    var div = document.getElementById(parentID);
-    div.appendChild(myTable);    
+    output(myTable, parentID);  
 }

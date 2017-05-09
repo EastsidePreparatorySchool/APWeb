@@ -16,7 +16,7 @@ function request(obj) {
     });
 }
 
-function requesWithJSON(obj) {
+function requestWithJSON(obj) {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
         xhr.open(obj.method || "GET", obj.url);
@@ -52,7 +52,7 @@ function submitForm(tourl, oFormElement) {
 
 
 function output(message) {
-    document.getElementById("output").innerHTML += message;
+    document.getElementById("output").innerHTML += message + "<br>";
 }
 
 
@@ -61,6 +61,21 @@ function erase(divToErase) {
 }
 
 
+function checkTimeout() {
+    //output ("checking liveness");
+    request({url: "protected/checktimeout", method: "get"})
+            .then(data => {
+                //output(data);
+            })
+            .catch(error => {
+                location.assign("expired.html");
+            });
 
+}
 
+if (!(location.href.toLowerCase().endsWith("login.html") || location.href.toLowerCase().endsWith("expired.html"))) {
+    setInterval(checkTimeout, 1000);
+    //output("timer set");
+}
 
+    
