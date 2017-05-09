@@ -7,7 +7,6 @@ package com.mycompany.coursecatalog;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  *
@@ -15,8 +14,7 @@ import java.util.Arrays;
  */
 public class Database {
 
-    public static Connection conn;
-    public Statement stmt;
+    public Connection conn;
 
     Database() {
         try {
@@ -28,7 +26,7 @@ public class Database {
     }
 
     public void connect() {
-           System.out.println("Attempting to connect...");
+        System.out.println("Attempting to connect...");
         try {
             this.conn = DriverManager.getConnection("jdbc:mysql://localhost/course_requests", "webapps", "LAyKqTDPsb7eMa8u");
             System.out.println("Connection successful");
@@ -48,8 +46,25 @@ public class Database {
             System.out.println(e);
         }
     }
-    
-    public void getAllFrom(String tableName) {
+
+    public int getLastID() {
+        try {
+            int lastID = 0;
+            Statement stmt = conn.createStatement();
+            stmt.executeQuery("SELECT LAST_INSERTED_ID() AS id;");
+            ResultSet rs;
+
+            rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                lastID = rs.getInt(1);
+            }
+            return lastID;
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    public void dumpTable(String tableName) {
 
         try {
             Statement stmt = conn.createStatement();
@@ -77,21 +92,31 @@ public class Database {
         }
     }
 
+    void executePS(String sql, int parameter) {
 
-    public class StudentData {
+        try {
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, parameter);
 
-        int id;
-        String firstName;
-        String lastName;
-        String login;
-        int gradYear;
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+//                System.out.println("Statement executed: " + sql + ", " + parameter + ", rows affected:" + rowsAffected);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
     }
+    
+    
+    
+    
+    
+    
 
-    public void retrieveStudent(StudentData sd) {
-
-    }
-
-    public void createStudent(StudentData sd) {
+    // CRUD: Students
+    public void createStudent(Student sd) {
         try {
             Statement stmt = conn.createStatement();
             String sql = "INSERT INTO students (id, firstname, lastname, login, gradyear) VALUES (?, ?, ?, ?, ?)";
@@ -104,7 +129,7 @@ public class Database {
 
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("A new user was inserted successfully!");
+                System.out.println("A new student was inserted successfully!");
             }
 
         } catch (Exception e) {
@@ -112,11 +137,24 @@ public class Database {
         }
     }
 
-    public void updateStudent() {
+    // todo: write this, implement route
+    public Student retrieveStudent(int id) {
+        return null;
+    }
+
+    // todo: write this, implement route
+    public Student retrieveStudent(String login) {
+        return null;
+    }
+
+    // to do: write this, implement route
+    public void updateStudent(Student sd) {
 
     }
 
-    public void deleteStudent(StudentData sd) {
+    //todo: Make this only look at id, not the other fields
+    // todo: implement route
+    public void deleteStudent(Student sd) {
         try {
             String sql = "DELETE FROM Users WHERE id=?, firstname=?, lastname=?, login=?, gradyear=?";
 
@@ -129,7 +167,7 @@ public class Database {
 
             int rowsDeleted = statement.executeUpdate();
             if (rowsDeleted > 0) {
-                System.out.println("A user was deleted successfully!");
+                System.out.println("A student was deleted successfully!");
             }
 
         } catch (Exception e) {
@@ -137,23 +175,120 @@ public class Database {
         }
     }
 
+    
+    
+    
+    
+    
+    // CRUD: ScheduleReqeusts
+    public int createScheduleRequest(ScheduleRequest sr) {
+        int generatedKey = 0;
+
+        try {
+            String key[] = {"ID"}; //put the name of the primary key column
+            int id = getLastID();
+            id++;
+            String sql = "INSERT INTO schedule_requests (id, individual_id, course_id, first_alternate_course_id, second_alternate_course_id, notes, advisor_reviewed, parent_reviewed)"
+                    + " VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            PreparedStatement statement = conn.prepareStatement(sql, key);
+            statement.setInt(1, id);
+            statement.setInt(2, sr.individual_id);
+            statement.setInt(3, sr.course_id);
+            statement.setInt(4, sr.first_alternate_course_id);
+            statement.setInt(5, sr.second_alternate_course_id);
+            statement.setString(6, sr.notes);
+            statement.setBoolean(7, sr.advisor_reviewed);
+            statement.setBoolean(8, sr.parent_reviewed);
+
+            ResultSet rs;
+
+            rs = statement.getGeneratedKeys();
+            if (rs.next()) {
+                generatedKey = rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return generatedKey;
+    }
+
+    public ScheduleRequest retrieveScheduleRequest(int id) {
+        ScheduleRequest request = null;
+        try {
+            String sql = "SELECT * FROM schedule_requests WHERE id=?;";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, id);
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                request = new ScheduleRequest(rs.getInt("id"), rs.getInt("individual_id"), rs.getInt("course_id"), rs.getInt("first_alternate_course_id"),
+                        rs.getInt("second_alternate_course_id"), rs.getString("notes"),
+                        rs.getBoolean("advisor_reviewed"), rs.getBoolean("parent_reviewed"));
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return request;
+    }
+
+    public void updateScheduleRequest(ScheduleRequest sr) {
+        try {
+            String query2 = "UPDATE schedule_requests SET (id=?, individual_id=?, course_id=?, first_alternate_course_id=?, second_alternate_course_id=?, notes=?, advisor_reviewed=?, parent_reviewed=?) WHERE id=?;";
+            int id = sr.id;
+            PreparedStatement statement = conn.prepareStatement(query2);
+            statement.setInt(1, sr.id);
+            statement.setInt(2, sr.individual_id);
+            statement.setInt(3, sr.course_id);
+            statement.setInt(4, sr.first_alternate_course_id);
+            statement.setInt(5, sr.second_alternate_course_id);
+            statement.setString(6, sr.notes);
+            statement.setBoolean(7, sr.advisor_reviewed);
+            statement.setBoolean(8, sr.parent_reviewed);
+            statement.setInt(9, id);
+            statement.execute(query2);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public void deleteScheduleRequest(int id) {
+        //delete from schedule_requests where id=1
+        try {
+            String sql = "DELETE FROM schedule_requests WHERE id=?;";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, id);
+
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("A ScheduleRequest was deleted successfully!");
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+    }
+
+    
+    
+    
+    
+    
+    
+    // queries of all kinds
     public Object[] queryStudents(String query) {
 
         Object[] result = null;
-        ArrayList<StudentData> asd = new ArrayList<>();
+        ArrayList<Student> asd = new ArrayList<>();
 
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
 
             while (rs.next()) {
-                StudentData sd = new StudentData();
-                sd.firstName = rs.getString(2);
-                sd.lastName = rs.getString(3);
-                sd.login = rs.getString(4);
-                sd.gradYear = rs.getInt(5);
-                sd.id = rs.getInt(1);
-
+                Student sd = new Student(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5));
                 asd.add(sd);
             }
             result = asd.toArray();
@@ -163,33 +298,25 @@ public class Database {
 
         return result;
     }
-    
-    public class CourseData {
-        int id;
-        int courseId;
-        int yearId;
-        String description;
-        String info;
-        String gradeLevels;
-    }
-    
-    public Object[] queryCourses(String query) {
+
+    public Object[] queryCourseOfferings(String query) {
 
         Object[] result = null;
-        ArrayList<CourseData> asd = new ArrayList<>();
+        ArrayList<CourseOffering> asd = new ArrayList<>();
 
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
 
             while (rs.next()) {
-                CourseData cd = new CourseData();
+                CourseOffering cd = new CourseOffering();
                 cd.courseId = rs.getInt(2);
                 cd.yearId = rs.getInt(3);
                 cd.description = rs.getString(5);
                 cd.info = rs.getString(9);
                 cd.gradeLevels = rs.getString(10);
                 cd.id = rs.getInt(1);
+                cd.name = rs.getString(11);
 
                 asd.add(cd);
             }
@@ -200,7 +327,7 @@ public class Database {
 
         return result;
     }
-    
+
     public Object[] queryAllRequests(String query) {
 
         Object[] result = null;
@@ -236,20 +363,59 @@ public class Database {
         String result = "unknown";
         try {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select firstname, lastname from students where login='"+login+"'");
-            System.out.println("Querying student name for login "+login);
+            ResultSet rs = stmt.executeQuery("select firstname, lastname from students where login='" + login + "'");
+//            System.out.println("Querying student name for login " + login);
 
             if (rs.next()) {
-                StudentData sd = new StudentData();
-                sd.firstName = rs.getString(1);
-                sd.lastName = rs.getString(2);
-                result = sd.firstName + " " + sd.lastName;
+                String firstName = rs.getString(1);
+                String lastName = rs.getString(2);
+                result = firstName + " " + lastName;
             }
         } catch (Exception e) {
             System.out.println(e);
         }
 
         return result;
+    }
+
+    //not sure how else to get the course ID we want. for now just be careful not to pass in droptable
+    public Object firstChoice(String courseID) {
+        try {
+//            System.out.println("firstChoicecourse id: " + courseID);
+            Statement stmt = conn.createStatement();
+            ResultSet results = stmt.executeQuery("select schedule_requests.individual_id, students.* from schedule_requests, students "
+                    + "where schedule_requests.individual_id=students.id and schedule_requests.course_id = " + courseID);
+            ArrayList<Student> s = new ArrayList<>();
+            while (results.next()) {
+                s.add(new Student(results.getInt(2), results.getString(3), results.getString(4), results.getString(5), results.getInt(6)));
+            }
+            return s.toArray();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
+    //Given a specific course id, which student ids want that as a course?
+    //not sure how else to get the course ID we want. for now just be careful not to pass in droptable
+    public Object allChoice(String courseID) {
+        try {
+//            System.out.println("allChoicecourse id: " + courseID);
+
+            Statement stmt = conn.createStatement();
+            ArrayList<Student> s = new ArrayList<>();
+            ResultSet results = stmt.executeQuery("select schedule_requests.individual_id, students.* from schedule_requests, students "
+                    + "where schedule_requests.individual_id=students.id and (schedule_requests.course_id = " + courseID
+                    + " or schedule_requests.first_alternate_course_id = " + courseID
+                    + " or schedule_requests.second_alternate_course_id = " + courseID + ")");
+            while (results.next()) {
+                s.add(new Student(results.getInt(2), results.getString(3), results.getString(4), results.getString(5), results.getInt(6)));
+            }
+            return s.toArray();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
     }
 
 }

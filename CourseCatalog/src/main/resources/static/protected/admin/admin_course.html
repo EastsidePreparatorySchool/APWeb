@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Admin: Course information</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="js\admin_course.js"></script>
+    </head>
+    <body>
+        <div id="banner">
+            Logged in:&nbsp;<span id="nameSpan"></span>.&nbsp; 
+            <button onclick="logout()">Log out</button>
+        </div>
+        <br>
+        <button onclick="location.assign('admin_student.html')">Switch to student view</button>
+        <hr>
+        <br>
+        <br>
+
+
+
+
+        <div>
+            You can use this to find all students who want a course:<br>
+            <input type="text" id="courseInput" value="1018" placeholder ="course name here">
+            <button onclick="getCourseStudentsFirst()">1st Choice</button>
+            <button onclick="getCourseStudentsAll()">All Choices</button>
+        </div>
+        <hr>
+
+
+
+
+        <button type="button" onclick="getCourseOfferings()">Get All Course offerings for 2017/18</button>
+        <button type="button" onclick="getCourseOfferingsFull()">Get All Course offerings for 2017/18 (full detail)</button>
+        <hr>
+        
+        Course Output:<br>
+        <div id="courseOutput"></div>
+        <hr>
+    
+
+        Output:<br>
+        <div id="output"></div>
+        <script src="..\js\common.js"></script>
+        <script src="..\js\schedulerequest.js"></script>
+        <script src="..\js\courseoffering.js"></script>
+        <script src="..\js\student.js"></script>
+        <script src="js\admin_course.js"></script>
+    </body>
+</html>
