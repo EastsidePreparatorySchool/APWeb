@@ -417,5 +417,14 @@ public class Database {
         }
         return null;
     }
+    public Object getSpecificCoursesDB(String disc, String grad, String len) {
+        try {
+            Statement stmt = conn.createStatement();
+            ArrayList<Student> s = new ArrayList<>();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return "";
+    }
 
 }
