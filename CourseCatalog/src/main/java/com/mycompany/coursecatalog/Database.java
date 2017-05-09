@@ -441,11 +441,17 @@ public class Database {
     public Object getSpecificCoursesDB(String disc, String grad, String len) {
         try {
             Statement stmt = conn.createStatement();
-            ArrayList<Student> s = new ArrayList<>();
+            ArrayList<Course> s = new ArrayList<>();
+            ResultSet results = stmt.executeQuery("select * from courses where courses.subdiscipline = " + disc + " and courses.gradelevels = " + grad + " and courses.credits = " + len);
+            while (results.next()) {
+                s.add(new Course()); 
+                //EDIT TO DO THE REAL CONSTRUCTOR
+            }
+            return s.toArray();
         } catch (Exception e) {
             System.out.println(e);
         }
-        return "";
+        return null;
     }
 
 }
