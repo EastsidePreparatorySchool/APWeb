@@ -30,7 +30,7 @@ public class Context {
     
     
     // route functionality
-    Object getStudents(spark.Request req) {
+    Object getStudents(spark.Request req) { // hah!
         System.out.println("entered getStudents");
 
 //        db.dumpTable("students");
