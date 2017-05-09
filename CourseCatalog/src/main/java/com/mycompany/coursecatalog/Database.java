@@ -108,12 +108,6 @@ public class Database {
         }
 
     }
-    
-    
-    
-    
-    
-    
 
     // CRUD: Students
     public void createStudent(Student sd) {
@@ -139,16 +133,54 @@ public class Database {
 
     // todo: write this, implement route
     public Student retrieveStudent(int id) {
-        return null;
+        Student request = null;
+        try {
+            String sql = "SELECT * FROM students WHERE id=?;";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, id);
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                request = new Student(rs.getInt("id"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("login"), rs.getInt("gradyear"));
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return request;
     }
 
     // todo: write this, implement route
     public Student retrieveStudent(String login) {
-        return null;
+        Student request = null;
+        try {
+            String sql = "SELECT * FROM students WHERE login=?;";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, login);
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                request = new Student(rs.getInt("id"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("login"), rs.getInt("gradyear"));
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return request;
     }
 
     // to do: write this, implement route
     public void updateStudent(Student sd) {
+        try {
+            String sql = "UPDATE FROM students SET firstname=?, lastname=?, login=?, gradyear=? WHERE id=?;";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, sd.firstName);
+            statement.setString(2, sd.lastName);
+            statement.setString(3, sd.login);
+            statement.setInt(4, sd.getGradYear());
+        } catch (Exception e) {
+            System.out.println(e);
+        }
 
     }
 
@@ -156,7 +188,7 @@ public class Database {
     // todo: implement route
     public void deleteStudent(Student sd) {
         try {
-            String sql = "DELETE FROM Users WHERE id=?, firstname=?, lastname=?, login=?, gradyear=?";
+            String sql = "DELETE FROM students WHERE id=?, firstname=?, lastname=?, login=?, gradyear=?";
 
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, sd.id);
@@ -175,11 +207,6 @@ public class Database {
         }
     }
 
-    
-    
-    
-    
-    
     // CRUD: ScheduleReqeusts
     public int createScheduleRequest(ScheduleRequest sr) {
         int generatedKey = 0;
@@ -271,12 +298,6 @@ public class Database {
 
     }
 
-    
-    
-    
-    
-    
-    
     // queries of all kinds
     public Object[] queryStudents(String query) {
 
