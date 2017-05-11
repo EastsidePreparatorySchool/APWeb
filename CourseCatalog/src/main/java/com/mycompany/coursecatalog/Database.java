@@ -438,7 +438,10 @@ public class Database {
         }
         return null;
     }
+    //Gets the corresponding course_offerings and returns them as an array.
     public Object getSpecificCoursesDB(String disc, String grad, String len) {
+        // here i need to transform disc grad and len into parseable items.
+        //find what they're supposed to look like in sql and use that as a base.
         try {
             Statement stmt = conn.createStatement();
             ArrayList<Course> s = new ArrayList<>();
