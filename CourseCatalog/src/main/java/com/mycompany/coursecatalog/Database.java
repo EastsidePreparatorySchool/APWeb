@@ -490,7 +490,7 @@ public class Database {
             ResultSet results = stmt.executeQuery(query + ";"); //execute dat query
             while (results.next()) {
                 //creates a new Course object with all fields filled. There has GOT to be a better way to do this.
-                s.add(new Course(results.getInt(2), results.getString(3), results.getString(4), results.getInt(5), results.getInt(6), results.getInt(7), results.getString(8), results.getInt(8), results.getInt(9), results.getString(10), results.getInt(11), results.getString(12), results.getString(13), results.getInt(14), results.getInt(15), results.getFloat(16), results.getInt(17)));
+                s.add(new Course(results.getInt(1), results.getString(2), results.getString(3), results.getInt(4), results.getInt(5), results.getInt(6), results.getString(7), results.getInt(8), results.getInt(9), results.getString(10), results.getInt(11), results.getString(12), results.getString(13), results.getInt(14), results.getInt(15), results.getFloat(16), results.getInt(17)));
             }
             return s.toArray();
         } catch (Exception e) {
