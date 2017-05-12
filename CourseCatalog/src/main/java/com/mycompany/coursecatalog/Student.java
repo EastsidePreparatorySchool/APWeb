@@ -25,7 +25,7 @@ public class Student {
         gradYear = g;
     }
 
-    //Getters and setters
+    //Getters and Setters
     public int getId() {
         return id;
     }
@@ -65,6 +65,4 @@ public class Student {
     public void setGradYear(int gradYear) {
         this.gradYear = gradYear;
     }
-    //Given a specific course id, which student ids want that as their first choice course?
-    //TODO: make a student class and make it get arrays of students back from the thingy
 }
