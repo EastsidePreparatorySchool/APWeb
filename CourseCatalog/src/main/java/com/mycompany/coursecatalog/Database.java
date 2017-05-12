@@ -438,17 +438,49 @@ public class Database {
         }
         return null;
     }
+
     //Gets the corresponding course_offerings and returns them as an array.
     public Object getSpecificCoursesDB(String disc, String grad, String len) {
-        // here i need to transform disc grad and len into parseable items.
-        //find what they're supposed to look like in sql and use that as a base.
         try {
+        //get the right dept ID
+            int deptID = 0;
+            String query = "select * from courses where ";
+            //get the right dept ID
+            if (disc.equals("Eng")) {
+                query += "courses.department_id = 1 ";
+            } else if (disc.equals("His")) {
+                query += "courses.department_id = 2 ";
+            } else if (disc.equals("Mth")) {
+                query += "courses.department_id = 3 ";
+            } else if (disc.equals("Sci")) {
+                query += "courses.department_id = 4 ";
+            } else if (disc.equals("Spa")) {
+                query += "courses.department_id = 5 ";
+            } else if (disc.equals("FPA")) {
+                query += "courses.department_id = 6 ";
+            } else if (disc.equals("PE")) {
+                query += "courses.department_id = 7 ";
+            } else if (disc.equals("Elc")) {
+                query += "courses.department_id = 8 ";
+            } else if (disc.equals("N/A")) {
+                query += "courses.department_id = 9 ";
+            } else if (disc.equals("Tech")) {
+                query += "courses.department_id = 10 ";
+            } else if (disc.equals("Sem")) {
+                query += "courses.department_id = 11 ";
+            }
+            if (grad.equals("MS")) {
+                query += "and courses.gradelevels in (5, 6, 7, 8)"; //Problem here. 7-8 is a viable grade set, this doesn't cover it.
+            } else if (grad.equals("US")) {
+                query += "and courses.gradelevels in (9, 10, 11, 12)"; //Problem here. 9-10 is a viable grade set, this doesn't cover it.
+            }
+            //need to add length of class functionality.
             Statement stmt = conn.createStatement();
             ArrayList<Course> s = new ArrayList<>();
-            ResultSet results = stmt.executeQuery("select * from courses where courses.subdiscipline = " + disc + " and courses.gradelevels = " + grad + " and courses.credits = " + len);
+            ResultSet results = stmt.executeQuery(query + ";");
             while (results.next()) {
-                s.add(new Course()); 
-                //EDIT TO DO THE REAL CONSTRUCTOR
+                //creates a new Course object with all fields filled. There has got to be a better way to do this.
+                s.add(new Course(results.getInt(2), results.getString(3), results.getString(4), results.getInt(5), results.getInt(6), results.getInt(7), results.getString(8), results.getInt(8), results.getInt(9), results.getString(10), results.getInt(11), results.getString(12), results.getString(13), results.getInt(14), results.getInt(15), results.getFloat(16), results.getInt(17)));
             }
             return s.toArray();
         } catch (Exception e) {
