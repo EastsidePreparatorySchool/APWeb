@@ -439,4 +439,64 @@ public class Database {
         return null;
     }
 
+    //Gets the corresponding course_offerings and returns them as an array.
+    public Object getSpecificCoursesDB(String disc, String grad, String len) {
+        try {
+            //string that we modify to add the thingy
+            String query = "select * from courses where ";
+            //dept ID addition
+            if (disc.equals("Eng")) {
+                query += "courses.department_id = 1";
+            } else if (disc.equals("His")) {
+                query += "courses.department_id = 2";
+            } else if (disc.equals("Mth")) {
+                query += "courses.department_id = 3";
+            } else if (disc.equals("Sci")) {
+                query += "courses.department_id = 4";
+            } else if (disc.equals("Spa")) {
+                query += "courses.department_id = 5";
+            } else if (disc.equals("FPA")) {
+                query += "courses.department_id = 6";
+            } else if (disc.equals("PE")) {
+                query += "courses.department_id = 7";
+            } else if (disc.equals("Elc")) {
+                query += "courses.department_id = 8";
+            } else if (disc.equals("N/A")) {
+                query += "courses.department_id = 9";
+            } else if (disc.equals("Tech")) {
+                query += "courses.department_id = 10";
+            } else if (disc.equals("Sem")) {
+                query += "courses.department_id = 11";
+            }
+            //grade addition
+            if (grad.equals("MS")) {
+                query += " and courses.gradelevels in (5, 6, 7, 8, 5-6, 6-7, 7-8, 5-7, 5-8, 6-8, 5-8)";
+            } else if (grad.equals("US")) {
+                query += " and courses.gradelevels in (9, 10, 11, 12, 9-10, 10-11, 11-12, 9-11, 9-12, 10-12, 9-12)";
+            }
+            //length addition
+            if (len.equals("year")) {
+                query += " and courses.term_id = 4";
+            } else if (len.equals("tri")) {
+                query += " and courses.term_id in (1, 2, 3)";
+            }
+            //does not deal with seminars. This should be client side?
+            //edge case handling where no conditions are added. removes "where."
+            if (query.length() == 28) {
+                query = query.substring(0, 21);
+            }
+            Statement stmt = conn.createStatement();
+            ArrayList<Course> s = new ArrayList<>();
+            ResultSet results = stmt.executeQuery(query + ";"); //execute dat query
+            while (results.next()) {
+                //creates a new Course object with all fields filled. There has GOT to be a better way to do this.
+                s.add(new Course(results.getInt(2), results.getString(3), results.getString(4), results.getInt(5), results.getInt(6), results.getInt(7), results.getString(8), results.getInt(8), results.getInt(9), results.getString(10), results.getInt(11), results.getString(12), results.getString(13), results.getInt(14), results.getInt(15), results.getFloat(16), results.getInt(17)));
+            }
+            return s.toArray();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
 }

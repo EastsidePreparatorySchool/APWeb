@@ -30,7 +30,8 @@ public class Context {
     
     
     // route functionality
-    Object getStudents(spark.Request req) {
+    
+    Object getStudents(spark.Request req) { // returns an array of all students
         System.out.println("entered getStudents");
 
 //        db.dumpTable("students");
@@ -74,6 +75,11 @@ public class Context {
 //        System.out.println(ao.length);
 
         return ao;
+    }
+    //not yet supported
+    Object getSpecificCourses(String disc, String grad, String len) {
+       System.out.println("entered getSpecificCourses");
+       return db.getSpecificCoursesDB(disc, grad, len);
     }
 
 }
