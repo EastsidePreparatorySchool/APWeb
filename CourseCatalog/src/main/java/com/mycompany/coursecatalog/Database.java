@@ -379,18 +379,20 @@ public class Database {
         return result;
     }
 
-    public String queryName(String login) {
+    public String queryName(Context ctx) {
 
         String result = "unknown";
         try {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select firstname, lastname from students where login='" + login + "'");
+            ResultSet rs = stmt.executeQuery("select firstname, lastname, id from students where login='" + ctx.login + "'");
 //            System.out.println("Querying student name for login " + login);
 
             if (rs.next()) {
                 String firstName = rs.getString(1);
                 String lastName = rs.getString(2);
-                result = firstName + " " + lastName;
+                result = firstName + " " + lastName + " ("+ctx.login+", "+rs.getInt(3)+")";
+                ctx.name = firstName + " " + lastName ;
+                ctx.id = rs.getInt(3);
             }
         } catch (Exception e) {
             System.out.println(e);

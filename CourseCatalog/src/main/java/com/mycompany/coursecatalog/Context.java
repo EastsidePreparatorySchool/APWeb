@@ -4,12 +4,16 @@ public class Context {
 
     int messagesSeen;
     String login;
+    int id;
+    String name;
     public Database db;
     long timeLastSeen;
 
     Context(String login) {
         this.db = new Database();
         this.login = login;
+        this.id = 0;
+        this.name = null;
         this.timeLastSeen = System.currentTimeMillis();
 
         db.connect();

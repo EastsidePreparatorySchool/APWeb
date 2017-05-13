@@ -1,3 +1,7 @@
+var student_name = null;
+var student_login = null;
+var student_id = null;
+
 function request(obj) {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
@@ -116,6 +120,13 @@ function updateName() {
                 .then(data => {
                     //output("Name: "+data);
                     span.innerHTML = data;
+                    student_name = data.substring(0, data.indexOf("("));
+                    student_login = data.substring(data.indexOf("(")+1, data.indexOf(","));
+                    student_id = Number(data.substring(data.indexOf(",")+2, data.length-1));
+                    console.log(student_name);
+                    console.log(student_login);
+                    console.log(student_id);
+                    
                 })
                 .catch(error => {
                     output("Error: " + error);
