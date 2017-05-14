@@ -71,6 +71,7 @@ public class CourseCatalog {
         // functionality:
         get("/protected/getCourseOfferings", (req, res) -> getReqCtx(req).getCourseOfferings(req), new JSONRT());
         get("/protected/getMyRequests", (req, res) -> getReqCtx(req).getAllRequests(getReqCtx(req).login), new JSONRT());
+        get("/protected/getSpecificCourses", (req, res) -> getReqCtx(req).getSpecificCourses(req.queryParams("disc"), req.queryParams("grad"), req.queryParams("len")), new JSONRT());
         
         get("/protected/admin/getStudents", (req, res) -> getReqCtx(req).getStudents(req), new JSONRT());
         get("/protected/admin/getAllRequests", (req, res) -> getReqCtx(req).getAllRequests(req.queryParams("login")), new JSONRT());
@@ -108,11 +109,13 @@ public class CourseCatalog {
             System.out.println("login: admin " + login);
             req.session().attribute("context", ctx);
             res.redirect("protected/admin/admin_student.html");
+            ctx.name = "Mr. Gummere";
+            ctx.id = 0;
 
             return "ok";
         }
 
-        if (ctx.db.queryName(login).equals("unknown")) {
+        if (ctx.db.queryName(ctx).equals("unknown")) {
             internalLogout(req);
             res.redirect("login.html");
             return "";
@@ -152,7 +155,7 @@ public class CourseCatalog {
             return "Mr. Gummere";
         }
 
-        result = ctx.db.queryName(ctx.login);
+        result = ctx.db.queryName(ctx);
 //        System.out.println("Name: " + result);
         return result;
     }
