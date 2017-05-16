@@ -515,15 +515,40 @@ public class Database {
             }
             //grade addition
             if (grad.equals("MS")) {
-                query += " and courses.gradelevels in (5, 6, 7, 8, 5-6, 6-7, 7-8, 5-7, 5-8, 6-8, 5-8)";
+                System.out.println("It's middle school");
+                if (query.length() == 28) {
+                    query += "courses.gradelevels in (5, 6, 7, 8, 5-6, 6-7, 7-8, 5-7, 5-8, 6-8, 5-8)";
+                }
+                else {
+                    query += " and courses.gradelevels in (5, 6, 7, 8, 5-6, 6-7, 7-8, 5-7, 5-8, 6-8, 5-8)";
+                }
             } else if (grad.equals("US")) {
-                query += " and courses.gradelevels in (9, 10, 11, 12, 9-10, 10-11, 11-12, 9-11, 9-12, 10-12, 9-12)";
+                System.out.println("It's upper school");
+                if (query.length() == 28) {
+                    query += "courses.gradelevels in (9, 10, 11, 12, 9-10, 10-11, 11-12, 9-11, 9-12, 10-12, 9-12)";
+                }
+                else {
+                    query += " and courses.gradelevels in (9, 10, 11, 12, 9-10, 10-11, 11-12, 9-11, 9-12, 10-12, 9-12)";
+                }
+                
             }
             //length addition
             if (len.equals("year")) {
-                query += " and courses.term_id = 4";
+                System.out.println("For the year");
+                if (query.length() == 28) {
+                    query += "courses.term_id = 4";
+                }
+                else {
+                    query += " and courses.term_id = 4";
+                }
             } else if (len.equals("tri")) {
-                query += " and courses.term_id in (1, 2, 3)";
+                System.out.println("For the trimester");
+                if (query.length() == 28) {
+                    query += "courses.term_id in (1, 2, 3)";
+                }
+                else {
+                    query += " and courses.term_id in (1, 2, 3)";
+                }
             }
             //does not deal with seminars. This should be client side?
             //edge case handling where no conditions are added. removes "where."
@@ -535,7 +560,7 @@ public class Database {
             ResultSet results = stmt.executeQuery(query + ";"); //execute dat query
             while (results.next()) {
                 //creates a new Course object with all fields filled. There has GOT to be a better way to do this.
-                s.add(new Course(results.getInt(1), results.getString(2), results.getString(3), results.getInt(4), results.getInt(5), results.getInt(6), results.getString(7), results.getInt(8), results.getInt(9), results.getString(10), results.getInt(11), results.getString(12), results.getString(13), results.getInt(14), results.getInt(15), results.getFloat(16), results.getInt(17)));
+                s.add(new Course(results.getInt(1), results.getString(2), results.getString(3), results.getInt(5), results.getInt(6), results.getInt(7), results.getString(8), results.getInt(9), results.getInt(10), results.getString(11), results.getInt(12), results.getString(13), results.getString(14), results.getInt(15), results.getInt(17), results.getFloat(18), results.getInt(19)));
             }
             return s.toArray();
         } catch (Exception e) {

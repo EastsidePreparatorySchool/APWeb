@@ -42,7 +42,9 @@
                 <input type="radio" name="Duration" value="sem">Seminar<br>
                 <br>
                 Search : <input type="text" name="search" value="" placeholder="keyword"><br>
-                <input type ="submit" value="Apply Criteria">
+                <button type="button" onclick="getSpecificCourseOfferings()">Apply Criteria</button>
+                <button type="button" onclick="eraseDiv('courseOutput'); eraseDiv('output')">Erase Output and courseOutput Div</button>
+                <button type="button" onclick="eraseDiv('courseOutput')">Erase only courseOutput Div</button>
             </form>
         </div>
         <hr>
@@ -54,7 +56,9 @@
 
 
         Output:<br>
-        <div id="output"></div>
+        <div id="output"></div><br>
+        Course Output:<br>
+        <div id="courseOutput"></div>
         <script src="js\common.js"></script>
         <script src="js\schedulerequest.js"></script>
         <script src="js\courseoffering.js"></script>

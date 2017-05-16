@@ -1,19 +1,18 @@
-
-function insertCourseOfferings(parentID, coString) {
-    //This method takes in a parent div and then a JSON string of students
-    output("insertCourseOfferings");
+function insertCourseOfferings(parentID, inputData) {
+    //This method takes in a parent div and then a JSON string of courses
+    output("insertSpecificCourseOfferings");
     var myTable = "<table><tr><th style='width: 100px; color: red;text-align: left;'>ID</th>";
     myTable += "<th style='width: 200px; color: red; text-align: left;'>Name</th>";
 
-    var cos = JSON.parse(coString);
-    if (cos === undefined || cos === null) {
+    var coursesArray = JSON.parse(inputData);
+    if (coursesArray === undefined || coursesArray === null) {
         outputTo(parentID, "no data<br>");
         return;
     }
 
-    for (var i = 0; i < cos.length; i++) {
-        var tableRow = "<tr>" + "<td>" + cos[i].id + "</td>"
-                + "<td>" + cos[i].name + "</td>";
+    for (var i = 0; i < coursesArray.length; i++) {
+        var tableRow = "<tr>" + "<td>" + coursesArray[i].id + "</td>"
+                + "<td>" + coursesArray[i].name + "</td>";
         myTable += tableRow;
     }
 
