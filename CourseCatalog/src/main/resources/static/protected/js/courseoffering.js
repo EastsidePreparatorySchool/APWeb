@@ -1,4 +1,4 @@
-function insertCourseOfferings(parentID, inputData) {
+function insertCourseOfferings(parentID, inputData, withButton) {
     //This method takes in a parent div and then a JSON string of courses
     output("insertSpecificCourseOfferings");
     var myTable = "<table><tr><th style='width: 100px; color: red;text-align: left;'>ID</th>";
@@ -13,6 +13,9 @@ function insertCourseOfferings(parentID, inputData) {
     for (var i = 0; i < coursesArray.length; i++) {
         var tableRow = "<tr>" + "<td>" + coursesArray[i].id + "</td>"
                 + "<td>" + coursesArray[i].name + "</td>";
+        if (withButton !== undefined) {
+            tableRow +="<td><button onclick='console.log(\"added course "+coursesArray[i].id+"\")'>Select</button></td>"
+        }
         myTable += tableRow;
     }
 

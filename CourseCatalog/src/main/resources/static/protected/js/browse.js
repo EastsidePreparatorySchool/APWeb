@@ -4,7 +4,7 @@ function getSpecificCourseOfferings() {
     request({url: "/protected/getSpecificCourses?disc="+radioCheck("Discipline")+"&grad="+radioCheck("Grades")+"&len="+radioCheck("Duration")})
             .then(data => {
                 output("success");
-                insertCourseOfferings("courseOutput", data);
+                insertCourseOfferings("courseOutput", data, true);
             })
             .catch(error => {
                 output("Error: " + error);
