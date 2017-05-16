@@ -24,7 +24,11 @@ public class Database {
             System.out.println(ex);
         }
     }
-
+    // sets the conn field to a connection with the course_requests database.
+    // if connection is unsuccessful, prints the detail message of the
+    // exception (a string associated with it on construction), a 5
+    // character code associated with the SQL state, and the vendor-specific
+    // error code associated with the error.
     public void connect() {
         System.out.println("Attempting to connect...");
         try {
@@ -38,6 +42,7 @@ public class Database {
         }
     }
 
+    // closes the conn field's connection, prints exception is unsuccessful
     public void disconnect() {
 
         try {
@@ -47,6 +52,8 @@ public class Database {
         }
     }
 
+    // returns the id of the last row inserted into the database
+    // if unsuccessful, returns -1
     public int getLastID() {
         try {
             int lastID = 0;
@@ -64,11 +71,14 @@ public class Database {
         }
     }
 
+    // prints the contents of the table.
+    // first prints column names and types, then prints the row id and first
+    // two columns of all rows. prints exception if unsuccessful
     public void dumpTable(String tableName) {
 
         try {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from " + tableName);
+            ResultSet rs = stmt.executeQuery("select * from " + tableName); // select everything in the table
 
             System.out.println();
             System.out.println(tableName + ":");
@@ -76,13 +86,13 @@ public class Database {
             ResultSetMetaData rsmd = rs.getMetaData();
             int numberOfColumns = rsmd.getColumnCount();
             for (int i = 1; i <= numberOfColumns; i++) {
-                System.out.println(rsmd.getColumnName(i) + ",  " + rsmd.getColumnTypeName(i));
+                System.out.println(rsmd.getColumnName(i) + ",  " + rsmd.getColumnTypeName(i)); // prints column name and type
             }
 
             System.out.println();
             System.out.println("Rows:");
 
-            while (rs.next()) {
+            while (rs.next()) { // prints the id and first two columns of all rows
                 System.out.println(rs.getInt(1) + "  " + rs.getString(2) + "  " + rs.getString(3));
             }
 
@@ -92,6 +102,9 @@ public class Database {
         }
     }
 
+    // executes a prepared sql statement specified by the sql argument
+    // the first parameter of that prepared statement will be the parameter argument
+    // prints exception if unsuccessful
     void executePS(String sql, int parameter) {
 
         try {
@@ -110,6 +123,8 @@ public class Database {
     }
 
     // CRUD: Students
+    // makes a new row in the students table using the fields of the Student argument
+    // prints success message if successful, prints exception otherwise
     public void createStudent(Student sd) {
         try {
             Statement stmt = conn.createStatement();
@@ -208,13 +223,16 @@ public class Database {
     }
 
     // CRUD: ScheduleReqeusts
+    // makes a new row in the schedule_requests table using the fields of the
+    // scheduleRequest argument
+    // prints success message if successful, prints exception otherwise
     public int createScheduleRequest(ScheduleRequest sr) {
         int generatedKey = 0;
 
         try {
             String key[] = {"ID"}; //put the name of the primary key column
             int id = getLastID();
-            id++;
+            id++; // make sure the row will be inserted at the end of the table
             String sql = "INSERT INTO schedule_requests (id, individual_id, course_id, first_alternate_course_id, second_alternate_course_id, notes, advisor_reviewed, parent_reviewed)"
                     + " VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement statement = conn.prepareStatement(sql, key);
@@ -240,12 +258,15 @@ public class Database {
         return generatedKey;
     }
 
+    // returns a ScheduleRequest whose fields are retrieved from the 
+    // schedule_requests table at the row specified by the id argument
+    // prints exception if unsuccessful
     public ScheduleRequest retrieveScheduleRequest(int id) {
         ScheduleRequest request = null;
         try {
             String sql = "SELECT * FROM schedule_requests WHERE id=?;";
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, id);
+            statement.setInt(1, id); // prepares sql statement that will select the row associated with id argument
 
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
@@ -260,6 +281,9 @@ public class Database {
         return request;
     }
 
+    // changes the values of the row specified by the id field of the 
+    // ScheduleRequest argument to the values specified by that argument's fields
+    // prints exception if unsuccessful
     public void updateScheduleRequest(ScheduleRequest sr) {
         try {
             String query2 = "UPDATE schedule_requests SET (id=?, individual_id=?, course_id=?, first_alternate_course_id=?, second_alternate_course_id=?, notes=?, advisor_reviewed=?, parent_reviewed=?) WHERE id=?;";
@@ -280,6 +304,8 @@ public class Database {
         }
     }
 
+    // deletes the row in the schedule_requests table specified by the id argument
+    // prints exception if unsuccessful
     public void deleteScheduleRequest(int id) {
         //delete from schedule_requests where id=1
         try {
@@ -299,6 +325,10 @@ public class Database {
     }
 
     // queries of all kinds
+    // returns an array of Student objects made from the data selected by the query argument
+    // this method is made to be used with the students table. 
+    // use with other tables at your own risk
+    // prints exception and returns null if unsuccessful
     public Object[] queryStudents(String query) {
 
         Object[] result = null;
@@ -308,7 +338,7 @@ public class Database {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
 
-            while (rs.next()) {
+            while (rs.next()) { // create Student objects from the data in the specified table and adds them to asd array
                 Student sd = new Student(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5));
                 asd.add(sd);
             }
@@ -320,6 +350,10 @@ public class Database {
         return result;
     }
 
+    // returns an array of CourseOffering objects made from the data selected by the query argument
+    // this method is made to be used with the course_offerings table. 
+    // use with other tables at your own risk
+    // prints exception and returns null if unsuccessful
     public Object[] queryCourseOfferings(String query) {
 
         Object[] result = null;
@@ -349,6 +383,10 @@ public class Database {
         return result;
     }
 
+    // returns an array of ScheduleRequest objects made from the data selected by the query argument
+    // this method is made to be used with the course_requests table. 
+    // use with other tables at your own risk
+    // prints exception and returns null if unsuccessful
     public Object[] queryAllRequests(String query) {
 
         Object[] result = null;
@@ -379,6 +417,11 @@ public class Database {
         return result;
     }
 
+    // sets name and id fields of Context argument to data selected from  the
+    // row of the students table specified by the login field of the Context argument.
+    // sets the name field of Context argument the student's first name and last name
+    // sets the id field of the Context argument to the student's id
+    // returns the string "unknown" if unsuccessful
     public String queryName(Context ctx) {
 
         String result = "unknown";
