@@ -109,11 +109,13 @@ public class CourseCatalog {
             System.out.println("login: admin " + login);
             req.session().attribute("context", ctx);
             res.redirect("protected/admin/admin_student.html");
+            ctx.name = "Mr. Gummere";
+            ctx.id = 0;
 
             return "ok";
         }
 
-        if (ctx.db.queryName(login).equals("unknown")) {
+        if (ctx.db.queryName(ctx).equals("unknown")) {
             internalLogout(req);
             res.redirect("login.html");
             return "";
@@ -153,7 +155,7 @@ public class CourseCatalog {
             return "Mr. Gummere";
         }
 
-        result = ctx.db.queryName(ctx.login);
+        result = ctx.db.queryName(ctx);
 //        System.out.println("Name: " + result);
         return result;
     }
