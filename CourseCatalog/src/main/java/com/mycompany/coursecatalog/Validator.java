@@ -7,6 +7,7 @@ package com.mycompany.coursecatalog;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Date;
 
 /**
  *
@@ -27,17 +28,44 @@ public class Validator {
             courseStatement.setInt(1, sr.course_id);
             
             ResultSet results = courseStatement.executeQuery();
+            Course c = new Course();
             if (results.next()) {
-                Course c = new Course(results.getInt(1), results.getString(2), results.getString(3), results.getInt(4), results.getInt(5), results.getInt(6), results.getString(7), results.getInt(8), results.getInt(9), results.getString(10), results.getInt(11), results.getString(12), results.getString(13), results.getInt(14), results.getInt(15), results.getFloat(16), results.getInt(17));
+                c = new Course(results.getInt(1), results.getString(2), results.getString(3), results.getInt(4), results.getInt(5), results.getInt(6), results.getString(7), results.getInt(8), results.getInt(9), results.getString(10), results.getInt(11), results.getString(12), results.getString(13), results.getInt(14), results.getInt(15), results.getFloat(16), results.getInt(17));
+            }
+            
+            if (c.gradelevels == null || c.gradelevels.equals("null") || c.gradelevels.equals("")) {
+                return "Eligible";
             }
 
             PreparedStatement studentStatement = ctx.db.conn.prepareStatement(courses);
             studentStatement.setInt(1, sr.individual_id);
 
             ResultSet rs = studentStatement.executeQuery();
+            Student s = new Student();
             if (rs.next()) {
-                Student s = new Student(rs.getInt("id"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("login"), rs.getInt("gradyear"));
+                s = new Student(rs.getInt("id"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("login"), rs.getInt("gradyear"));
             }
+            
+            //I'm writing this as if course registrations are ONLY open in the beginning of the new year
+            
+            int grade = s.gradYear - new Date().getYear();
+            String[] gradelevel = c.gradelevels.split("-");
+            if(gradelevel.length == 2) {
+                if (((grade > Integer.parseInt(gradelevel[0])) && (Integer.parseInt(gradelevel[1]) > grade))) {
+                    return "Eligible";
+                } else {
+                    return "Ilegible";
+                }
+            } 
+            
+            if(gradelevel.length == 1) {
+                if (grade == Integer.parseInt(gradelevel[0])) {
+                    return "Eligible";
+                } else {
+                    return "Ilegible";
+                }
+            }
+            
 
         } catch (Exception e) {
 

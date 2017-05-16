@@ -24,6 +24,10 @@ public class Student {
         login = log;
         gradYear = g;
     }
+    
+    public Student() {
+        
+    }
 
     //Getters and Setters
     public int getId() {
