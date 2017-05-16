@@ -433,8 +433,8 @@ public class Database {
             if (rs.next()) {
                 String firstName = rs.getString(1);
                 String lastName = rs.getString(2);
-                result = firstName + " " + lastName + " ("+ctx.login+", "+rs.getInt(3)+")";
-                ctx.name = firstName + " " + lastName ;
+                result = firstName + " " + lastName + " (" + ctx.login + ", " + rs.getInt(3) + ")";
+                ctx.name = firstName + " " + lastName;
                 ctx.id = rs.getInt(3);
             }
         } catch (Exception e) {
@@ -567,6 +567,58 @@ public class Database {
             System.out.println(e);
         }
         return null;
+    }
+
+    //given a schedule request, does the student meet the prereqs?
+    //also, this should be moved to 'validation' once the branches are merged.
+    //needs an enrollment table to function. Currently does not.
+    //returns true if student is eligible, false if not.
+    public boolean preReqEligibility(ScheduleRequest r) {
+        String sql = "select courses.requirements from courses where courses.id = ";
+        String prereq = "";
+        try {
+            Statement stmt = conn.createStatement();
+            //check first course option
+            ResultSet results = stmt.executeQuery(sql + r.course_id + ";");
+            results.next();
+            prereq = results.getString(1);
+            if (prereq != null) {
+                //Prerequisite is spelled like 40 different ways in the database. why.
+                ResultSet resultX = stmt.executeQuery("select * from enrollemnts where enrollments.name = " + prereq.substring(14) + ";");
+                if (resultX == null) {
+                    //ineligible.
+                    return false;
+                }
+            }
+            //checking alternate course id.
+            ResultSet resultsY = stmt.executeQuery(sql + r.first_alternate_course_id + ";");
+            resultsY.next();
+            prereq = resultsY.getString(1);
+            if (prereq != null) {
+                //Prerequisite is spelled like 40 different ways in the database. why.
+                ResultSet resultX = stmt.executeQuery("select * from enrollemnts where enrollments.name = " + prereq.substring(14) + ";");
+                if (resultX == null) {
+                    //ineligible.
+                    return false;
+                }
+            }
+            //check second alt course id.
+            ResultSet resultsZ = stmt.executeQuery(sql + r.second_alternate_course_id + ";");
+            resultsZ.next();
+            prereq = resultsZ.getString(1);
+            if (prereq != null) {
+                //Prerequisite is spelled like 40 different ways in the database. why.
+                ResultSet resultX = stmt.executeQuery("select * from enrollemnts where enrollments.name = " + prereq.substring(14) + ";");
+                if (resultX == null) {
+                    //ineligible.
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            
+        }
+        //if passes all tests, is eligible.
+        return true;
     }
 
 }
