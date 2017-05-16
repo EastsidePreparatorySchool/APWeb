@@ -10,23 +10,25 @@ package com.mycompany.coursecatalog;
  * @author ESchreiber
  */
 public class Course {
-    private int id;
-    private String name;
-    private String sisid;
-    private int term_id; // this is used
-    private int needalt;
-    private int graded;
-    private String short_name;
-    private int catalog;
-    private int offering;
-    private String subdiscipline;
-    private int reqd;
-    private String gradelevels; // this is used
-    private String requirements;
-    private int department_id; // this is used
-    private int archived;
-    private float credits;
-    private int sort_tier;
+    
+    public int id;
+    public String name;
+    public String sisid;
+    public int term_id; // this is used
+    public int needalt;
+    public int graded;
+    public String short_name;
+    public int catalog;
+    public int offering;
+    public String subdiscipline;
+    public int reqd;
+    public String gradelevels; // this is used
+    public String requirements;
+    public int department_id; // this is used
+    public int archived;
+    public float credits;
+    public int sort_tier;
+    
     public Course(int i, String n, String s, int t, int ne, int g, String sh, int c, int o, String sub, int re, String gr, String req, int dep, int arc, float cre, int sor) {
         id = i;
         name = n;
@@ -45,5 +47,8 @@ public class Course {
         archived = arc;
         credits = cre;
         sort_tier = sor;
+    }
+    
+    public Course() {    
     }
 }
