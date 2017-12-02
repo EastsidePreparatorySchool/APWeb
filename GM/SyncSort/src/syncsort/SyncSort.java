@@ -1,28 +1,27 @@
-
 package syncsort;
 
+import java.util.Arrays;
 import java.util.Random;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-/**
- *
- * @author gunnar
- */
+
 public class SyncSort extends Application {
-    
+
     ProgressIndicator pin;
+    Button btn;
 
     @Override
     public void start(Stage primaryStage) {
-        Button btn = new Button();
+        btn = new Button();
         btn.setText("Sort large array");
-        btn.setOnAction((e)->makeLargeArrayAndSort());
-        
+        btn.setOnAction((e) -> makeLargeArrayAndSort());
+
         pin = new ProgressIndicator();
         pin.setProgress(0);
 
@@ -34,16 +33,17 @@ public class SyncSort extends Application {
         primaryStage.setTitle("Synchronous sort on UI thread");
         primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.setOnCloseRequest((e)->{System.exit(0);});
     }
 
-    
     public static void main(String[] args) {
         launch(args);
     }
 
-    public static void bubbleSort(int[] a) {
+    public void bubbleSort(int[] a) {
         boolean workDone;
         int size = a.length;
+        int pass = 0;
         do {
             workDone = false;
             for (int i = 0; i < size - 1; i++) {
@@ -54,21 +54,32 @@ public class SyncSort extends Application {
                     workDone = true;
                 }
             }
+        pass++;
+        final double d = (double)pass/(double)size;
+        Platform.runLater(()->{pin.setProgress(d);});
         } while (workDone);
     }
 
-    
     void makeLargeArrayAndSort() {
-        int size = 1000;
-        int[] a = new int[size];
-        Random r = new Random();
-        for (int i = 0; i < size; i++) {
-            a[i] = r.nextInt(10000);
-        }
-        
-        bubbleSort(a);
-        //Arrays.sort(a);
-        System.out.println("Done sorting.");
-        pin.setProgress(1);
+        btn.setDisable(true);
+        btn.setText("Please be patient ...");
+        new Thread(() -> {
+            int size = 500000;
+            int[] a = new int[size];
+            Random r = new Random();
+            int i;
+            for ( i = 0; i < size/2; i++) {
+                a[i] = r.nextInt(10000);
+            }
+
+            for (; i <size; i++) {
+                a[i] = 10000;
+            }
+            bubbleSort(a);
+            //Arrays.sort(a);
+            System.out.println("Done sorting.");
+            pin.setProgress(1);
+            Platform.runLater(()->{btn.setDisable(false);btn.setText("Sort large array");});
+        }).start();
     }
 }
