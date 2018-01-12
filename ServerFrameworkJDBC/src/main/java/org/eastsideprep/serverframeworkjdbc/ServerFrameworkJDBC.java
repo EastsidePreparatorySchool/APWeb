@@ -29,6 +29,7 @@ public class ServerFrameworkJDBC {
         get("/protected/get", "application/json", (req, res) -> getHandler(req),new JSONRT());
         
         get("/protected/gettables", "application/json", (req, res) -> getTablesHandler(req),new JSONRT());
+        get("/protected/getdukakisfilms", "application/json", (req, res) -> getDukakisHandler(req),new JSONRT());
         
         before("/protected/*", (req, res) -> {
             if (req.session().attribute("initials") == null) {
@@ -88,6 +89,13 @@ public class ServerFrameworkJDBC {
     }
 
     
+     public static Object getDukakisHandler(spark.Request req) {
+        System.out.println("entered getNewMessages");
+        Context ctx = getContextFromSession(req.session());
+  
+        return ctx.db.showFilmsWithRockDukakis();
+    }
+
     
     public static Context getContextFromSession(spark.Session s) {
         Context ctx = s.attribute("Context");

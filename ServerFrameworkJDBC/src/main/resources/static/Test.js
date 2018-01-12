@@ -65,10 +65,13 @@ function get () {
 
 }
 
-function showTables () {
-    request({url: "protected/gettables"})
+function showDukakis () {
+    request({url: "protected/getdukakisfilms"})
             .then(data => {
-                output(data + "<br>");
+                data = JSON.parse(data);
+                for (var i = 0; i < data.length; i++) {
+                    output("<br>"+data[i].name + ", "+  data[i].year+ "<br>");
+                }
             })
             .catch(error => {
                 output("Error: " + error);
