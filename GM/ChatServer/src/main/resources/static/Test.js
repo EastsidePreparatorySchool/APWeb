@@ -85,14 +85,15 @@ function getNewMessages() {
     if (initials !== "") {
         request({url: "protected/getnewmessages"})
                 .then(data => {
-            if (data !== "[]")
-            output(data +"<br>");
-            return;
+                    if (data !== "[]") {
+                        output(data + "<br>");
+                        return;
+                    }
                     let messages = JSON.parse(data);
                     for (var i = 0; i < messages.length; i++) {
                         let s = messages[i];
                         if (!s.startsWith(initials)) {
-                            s = "&nbsp;&nbsp;&nbsp;&nbsp;" + s; 
+                            s = "&nbsp;&nbsp;&nbsp;&nbsp;" + s;
                         }
                         output(s + "<br>");
                     }
@@ -109,6 +110,7 @@ function login() {
             .then(data => {
                 initials = init;
                 output("Hello " + data + "<br>");
+                setInterval(getNewMessages, 100);
             })
             .catch(error => {
                 output("Error: " + error);
@@ -121,9 +123,5 @@ function output(message) {
 
     document.getElementById("output").innerHTML += message;
 }
-
-
-setInterval(getNewMessages, 100);
-
 
 
