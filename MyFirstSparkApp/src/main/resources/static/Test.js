@@ -17,6 +17,24 @@ function request(obj) {
 };
 
 
+
+
+function simpleSyncRequest(obj) {
+    let xhr = new XMLHttpRequest();
+    xhr.open(obj.method || "GET", obj.url, false);
+
+    xhr.send(obj.body);
+    
+    if (xhr.status >= 200 && xhr.status < 300) {
+        output("result: " + xhr.response);
+    } else {
+        output("error" + xhr.statusText);
+    }
+}
+
+
+
+
 function test () {
     request({url: "hello"})
         .then(data => {
@@ -27,7 +45,27 @@ function test () {
         });
 }
 
+
+function trial () {
+    simpleSyncRequest({url: "myButton"});
+
+/*
+        .then(data => {
+            testOut("Result: " + data);
+        })
+        .catch(error => {
+            testOut("Error: " + error);
+        });
+*/
+}
+
+
 function output (message) {
     document.getElementById("output").innerHTML += message + "<br>";
 }
+function testOut (message) {
+    document.getElementById("output").innerHTML += message + "<br>";
+}
+
+output("ready");
     
