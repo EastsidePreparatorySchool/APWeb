@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>ServerFramework - basic</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>Test routes<br>
+            <form method="post" action="postmessage" onsubmit="return postMessage(this);">
+                <input type="text" value=""  name="message" />
+                <input type="submit" value="Post"/>
+            </form>
+
+
+            <input id="input"><button onclick="putMessage()">Put</button><br>
+            <button onclick="get()">Get</button><br>
+            <button onclick="login()">Login</button><br>
+            <button onclick="showDukakis()">Show films with Rock Dukakis</button>
+
+            <br><br><br>
+
+            <p id="output"></p>
+        </div>
+        <script src="test.js"></script>
+    </body>
+</html>
