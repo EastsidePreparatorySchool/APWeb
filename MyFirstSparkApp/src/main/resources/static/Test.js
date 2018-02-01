@@ -20,6 +20,18 @@ function request(obj) {
 
 
 
+<<<<<<< HEAD
+function simpleSyncRequest(obj) {
+    let xhr = new XMLHttpRequest();
+    xhr.open(obj.method || "GET", obj.url, false);
+
+    xhr.send(obj.body);
+    
+    if (xhr.status >= 200 && xhr.status < 300) {
+        output("result: " + xhr.response);
+    } else {
+        output("error" + xhr.statusText);
+=======
 
 
 
@@ -41,12 +53,15 @@ function simpleSyncRequest(obj) {
         output("Result: " + xhr.response);
     } else {
         output("Error: " + xhr.statusText);
+>>>>>>> 9e8da881dbce8c07685c5469b3459a32095127da
     }
 }
 
 
 
 
+<<<<<<< HEAD
+=======
 
 
 
@@ -83,6 +98,7 @@ function testAsync() {
 }
 
 
+>>>>>>> 9e8da881dbce8c07685c5469b3459a32095127da
 function test () {
     request({url: "hello"})
         .then(data => {
@@ -94,6 +110,22 @@ function test () {
 }
 
 
+<<<<<<< HEAD
+function trial () {
+    simpleSyncRequest({url: "myButton"});
+
+/*
+        .then(data => {
+            testOut("Result: " + data);
+        })
+        .catch(error => {
+            testOut("Error: " + error);
+        });
+*/
+}
+
+
+=======
 
 
 
@@ -113,9 +145,19 @@ function shutdown() {
 
 
 
+>>>>>>> 9e8da881dbce8c07685c5469b3459a32095127da
 function output (message) {
     //output("promise request");
     document.getElementById("output").innerHTML += message + "<br>";
 }
+<<<<<<< HEAD
+function testOut (message) {
+    document.getElementById("output").innerHTML += message + "<br>";
+}
+
+output("ready");
+    
+=======
     
 output("Ready");
+>>>>>>> 9e8da881dbce8c07685c5469b3459a32095127da
