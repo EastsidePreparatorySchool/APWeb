@@ -1,0 +1,16 @@
+<html>
+    <body>
+        Messages for $name<br><br>
+        <ul>
+        #foreach( $potato in $items)
+            <li>Messages $potato</li><br>
+        #end
+        </ul>
+        <br>
+        <ul>
+        #foreach( $key in $kvset.keySet() )
+            <li>Key: $key -> Value: $kvset.get($key)</li>
+        #end
+        </ul>
+    </body>
+</html>

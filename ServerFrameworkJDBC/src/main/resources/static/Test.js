@@ -81,7 +81,9 @@ function showDukakis () {
 
 function login() {
     let init = window.prompt("Please enter your initials");
-    request({url: "login", method: "put", body: init})
+    let data = new FormData();
+    data.append("init", init);
+    request({url: "login", method: "post", body: data})
             .then(data => {
                  output("Hello " + data + "<br>");
             })

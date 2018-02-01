@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.MultipartConfigElement;
 import static spark.Spark.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import spark.ModelAndView;
+import org.eastsideprep.serverframeworkjdbc.VelocityTemplateEngine;
 
 /**
  *
@@ -23,39 +28,59 @@ public class ServerFrameworkJDBC {
 
         staticFiles.location("/static");
         get("/hello", (req, res) -> hello(req), new JSONRT());
-        
+
+        get("/messagesforuser", (req, res) -> velocityTest(req), new VelocityTemplateEngine());
+
         put("/protected/put", (req, res) -> putHandler(req));
         post("/protected/post", (req, res) -> postHandler(req));
-        get("/protected/get", "application/json", (req, res) -> getHandler(req),new JSONRT());
-        
-        get("/protected/gettables", "application/json", (req, res) -> getTablesHandler(req),new JSONRT());
-        get("/protected/getdukakisfilms", "application/json", (req, res) -> getDukakisHandler(req),new JSONRT());
-        
+        get("/protected/get", "application/json", (req, res) -> getHandler(req), new JSONRT());
+
+        get("/protected/gettables", "application/json", (req, res) -> getTablesHandler(req), new JSONRT());
+        get("/protected/getdukakisfilms", "application/json", (req, res) -> getDukakisHandler(req), new JSONRT());
+
         before("/protected/*", (req, res) -> {
             if (req.session().attribute("initials") == null) {
                 halt(401, "You must login.");
             }
         });
 
-        put("/login", (req, res) -> login(req));
+        post("/login", (req, res) -> login(req));
+    }
+
+    private static ModelAndView velocityTest(spark.Request req) {
+        String loginName = req.queryParams("name");
+        Map<String, Object> model = new HashMap<>();
+        model.put("name", loginName);
+        ArrayList<String> al = new ArrayList<>();
+        al.add("a");
+        al.add("b");
+        al.add("c");
+        model.put("items", al);
+        Map<String, String> kvset = new HashMap<>();
+        kvset.put("1", "copy example");   
+        kvset.put("2", "get it to work");
+        kvset.put("3", "change it");
+        model.put("kvset", kvset);
+
+         
+        return new ModelAndView(model, "template.vm"); // located in the resources directory
     }
 
     private static String login(spark.Request req) {
         req.session().attribute("initials", req.body());
         return req.body();
     }
-    
-     private static Object hello(spark.Request req) {
+
+    private static Object hello(spark.Request req) {
         Context ctx = getContextFromSession(req.session());
-        
+
         String initials = req.session().attribute("initials");
         if (initials == null) {
             initials = "<not logged in>";
         }
 
-        return "Hello World, "+initials;
+        return "Hello World, " + initials;
     }
-
 
     public static String putHandler(spark.Request req) {
         Context ctx = getContextFromSession(req.session());
@@ -73,30 +98,27 @@ public class ServerFrameworkJDBC {
         return "post handled";
     }
 
-
     public static Object getHandler(spark.Request req) {
         System.out.println("entered getNewMessages");
         Context ctx = getContextFromSession(req.session());
- 
+
         return "Here is what you got";
     }
 
-     public static Object getTablesHandler(spark.Request req) {
+    public static Object getTablesHandler(spark.Request req) {
         System.out.println("entered getNewMessages");
         Context ctx = getContextFromSession(req.session());
-  
+
         return ctx.db.showTables();
     }
 
-    
-     public static Object getDukakisHandler(spark.Request req) {
+    public static Object getDukakisHandler(spark.Request req) {
         System.out.println("entered getNewMessages");
         Context ctx = getContextFromSession(req.session());
-  
+
         return ctx.db.showFilmsWithRockDukakis();
     }
 
-    
     public static Context getContextFromSession(spark.Session s) {
         Context ctx = s.attribute("Context");
         if (ctx == null) {
