@@ -1,0 +1,137 @@
+::-webkit-scrollbar {display: none;}
+
+
+body,html {background-color: #1d285b;}
+
+.row {margin: 0;padding:0}
+.col-md-9,.col-md-8,.col-md-7,.col-md-6,.col-md-5,.col-md-4,.col-md-3,.col-md-2,.col-md-1{margin:0;padding:0}
+
+.navbar {background-color: #011638;}
+.nav > li > a {color: #ffce47;}
+.nav > li > a:hover,
+.nav > li > a:focus{
+	background-color: #011e4c;
+}
+.scrollbox {overflow: auto;}
+
+
+
+.center {display: block;margin: 0 auto;}
+.center-true {text-align: center;transform: translate(-50%, -50%);}
+
+
+.header {
+	background-color: #ffce47;
+	height: 100px;
+	width: calc(100% - 150px);
+	
+	margin-top: 75px;
+	margin-left: 75px;
+	
+	color: white;
+	
+	padding-top: 10px;
+	padding-left: 50px;
+}
+
+.row .header {
+	background-color: #011535;
+	margin-top:0;
+	margin-left:0;
+}
+.row .content {
+	background-color: #011a42;
+	width: 580px;
+	color: white;
+	padding: 20px;
+}
+.row .project-bio {
+	font-size: 20px;
+}
+.row .bio {
+	width: 100%;
+}
+
+
+.scrollbox .img-display:last-child {
+	margin-bottom: 0;
+}
+
+
+
+.img-display {
+    overflow: hidden;
+	position: relative;
+}
+.img-display-large {
+	width: 1050px;
+	height: 500px;
+}
+.img-display-thumb {
+	width: 290px;
+	height: 210px;
+	
+	margin-bottom: 25px;
+}
+
+.img-display img {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	min-width: 100%;
+}
+.img-display > .info {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,1);
+	
+	position: relative;
+	
+	animation: infohide 1s cubic-bezier(.19,1,.22,1) 0s 1 forwards;
+}
+
+.img-display > .info > .info-body {
+	position: absolute;
+	top: 50%;
+	color: white;
+	text-align: left;
+}
+.info > h1 {
+	margin: 0;
+	color: white;
+	opacity: 1;
+}
+
+.img-display > .info:hover,
+.img-display > .info:focus{
+	animation: infodisplay 1s cubic-bezier(.19,1,.22,1) 0s 1 forwards;
+}
+
+
+
+
+
+.blog-entry {
+	margin-left: 100px;
+	width: calc(100% - 2*(100px));
+	padding: 20px;
+	margin-top: 20px;
+	
+	background-color: #011a42;
+	
+	color: white;
+}
+
+
+
+
+
+@keyframes infodisplay {
+	from {background-color: rgba(0,0,0,0); padding-left: 150%}
+	to {background-color: rgba(0,0,0,0.5); padding-left: 50%}
+}
+@keyframes infohide {
+	from {background-color: rgba(0,0,0,0.5); padding-left: 50%}
+	to {background-color: rgba(0,0,0,0); padding-left: 150%}
+}

@@ -1,0 +1,13 @@
+libs/*
+/Console/nbproject/private/
+/Console/build/
+/Console/dist/
+/MyFirstProject/nbproject/private/
+/MyFirstProject/build/
+/MyFirstProject/dist/
+/JavaApplication42/nbproject/private/
+/JavaApplication42/build/
+/HTML5Application/nbproject/private/
+/Test/nbproject/private/
+/FileUploadTest/nbproject/private/
+/FileUploadTest/build/
