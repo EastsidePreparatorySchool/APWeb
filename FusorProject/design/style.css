@@ -1,0 +1,31 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Feb 8, 2018, 7:45:11 PM
+    Author     : jtyler
+*/
+
+#videoFeed {
+    position: inherent;
+    background-color: cyan;
+    width: 960px;
+    height: 540px;
+    margin-left: 7%;
+    margin-top: 3%;
+}
+#gallery {
+    float: right;
+    position: inherit;
+    background-color: red;
+    width: 640px;
+    height: 360px;
+    margin-right: 3%;
+    margin-top: 22%;
+}
+
+ul {
+
+}
