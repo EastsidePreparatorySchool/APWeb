@@ -66,6 +66,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javax.imageio.ImageIO;
+import spark.Request;
 
 /**
  *
@@ -127,11 +128,12 @@ public class Console extends Application {
     private int slideshowSeconds = 5;
 
     // main fx launcher
-
     public static void main(String[] args) {
         //DROP SPARK ROUTE HANDLERS HERE
         staticFiles.location("/static");
         get("/register", (req, res) -> "hey");
+        get("/getImage", "application/json", (req, res) -> getImageHandler(req), new JSONRT());
+
         //START OF SEM CODE 
         //ConsolePane.MoveSystemConsole();
         /*
@@ -159,6 +161,14 @@ public class Console extends Application {
     }
 
     //INSERT FUNCTIONS FOR REQUEST HANDLING HERE 
+    
+    public static Object getImageHandler(Request req) {
+        Database db = new Database();
+        Object o = db.retrieveImage(1);
+        System.out.println("AYYYY: " + o);
+        return o;
+    }
+    
     //SEM CODE FROM MR. MEIN
     @Override
     public void start(Stage primaryStage) {
