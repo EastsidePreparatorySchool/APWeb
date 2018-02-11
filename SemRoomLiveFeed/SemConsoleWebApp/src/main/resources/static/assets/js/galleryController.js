@@ -25,8 +25,13 @@ function getImage() {
     request({url: "/getImage"})
             .then(data => {
                 console.log("here");
-                var image = JSON.parse(data);
-                console.log(image);
+                var rawData = JSON.parse(data);
+                console.log(rawData);
+                
+
+                var image = document.createElement('img');
+                image.src = "data:image/png;base64," + rawData;
+                document.body.appendChild(image);
             })
             .catch(error => {
                 console.log(error);
