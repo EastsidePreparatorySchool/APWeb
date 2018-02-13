@@ -24,13 +24,12 @@ function request(obj) {
 function getImage() {
     request({url: "/getImage"})
             .then(data => {
-                console.log("here");
+                console.log("starting decoding");
                 var rawData = JSON.parse(data);
-                console.log(rawData);
-                
+                console.log("finished parsing");
 
                 var image = document.createElement('img');
-                image.src = "data:image/png;base64," + rawData;
+                image.src = "data:image/png;base64," + btoa(rawData);
                 document.body.appendChild(image);
             })
             .catch(error => {

@@ -84,7 +84,7 @@ public class Database {
 
             //create file input stream and add blob as parameter
             FileInputStream input = new FileInputStream(file);
-            statement.setBinaryStream(1, input);
+            statement.setBinaryStream(1, input, file.length());
 
             statement.executeUpdate();
 
@@ -102,14 +102,11 @@ public class Database {
 
             ResultSet rs = statement.executeQuery();
             rs.next();
-            image = rs.getBinaryStream("image");
-            InputStream in; //assuming already present
-            data = new byte[image.available()];
-            image.read(data);
-
+            image = rs.getBinaryStream(1);
+            System.out.println(image);
         } catch (Exception e) {
         }
 
-        return data;
+        return image;
     }
 }
