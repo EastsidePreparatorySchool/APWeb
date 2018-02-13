@@ -7,13 +7,11 @@ package com.mycompany.semconsolewebapp;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 /**
  *
@@ -84,7 +82,7 @@ public class Database {
 
             //create file input stream and add blob as parameter
             FileInputStream input = new FileInputStream(file);
-            statement.setBinaryStream(1, input, file.length());
+            statement.setBinaryStream(1, input);
 
             statement.executeUpdate();
 
@@ -94,16 +92,15 @@ public class Database {
     }
 
     public Object retrieveImage(int index) {
-        InputStream image = null;
-        byte[] data = null;
+        Object image = null;
         try {
             String sql = "SELECT image FROM images WHERE images.image_id=1;";
             PreparedStatement statement = conn.prepareCall(sql);
 
             ResultSet rs = statement.executeQuery();
             rs.next();
-            image = rs.getBinaryStream(1);
-            System.out.println(image);
+            image = rs.getBinaryStream("image");
+                       
         } catch (Exception e) {
         }
 
