@@ -9,6 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.MultipartConfigElement;
 import static spark.Spark.*;
+import com.github.sarxos.webcam.Webcam;
+import javax.swing.JFrame;
+
+import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamPanel;
+import com.github.sarxos.webcam.WebcamResolution;
+import com.github.sarxos.webcam.WebcamStreamer;
 
 /**
  *
@@ -23,6 +30,7 @@ public class ServerFrameworkJDBC {
 
         staticFiles.location("/static");
         get("/hello", (req, res) -> hello(req), new JSONRT());
+        get("/showface", (req, res) -> useWebcam(req));
         
         put("/protected/put", (req, res) -> putHandler(req));
         post("/protected/post", (req, res) -> postHandler(req));
@@ -38,6 +46,28 @@ public class ServerFrameworkJDBC {
         });
 
         put("/login", (req, res) -> login(req));
+    }
+    
+    public static String useWebcam(spark.Request req) throws InterruptedException{
+       Webcam webcam = Webcam.getDefault();
+		webcam.setViewSize(WebcamResolution.VGA.getSize());
+
+        /*WebcamPanel panel = new WebcamPanel(webcam);
+        panel.setFPSDisplayed(true);
+        panel.setDisplayDebugInfo(true);
+        panel.setImageSizeDisplayed(true);
+        panel.setMirrored(true);
+        JFrame window = new JFrame("Test webcam panel");
+        window.add(panel);
+        window.setResizable(true);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.pack();
+        window.setVisible(true);
+         */
+        WebcamStreamer webcamStreamer = new WebcamStreamer(8080, webcam, 0.5, true);
+		do {
+			Thread.sleep(5000);
+		} while (true);
     }
 
     private static String login(spark.Request req) {
