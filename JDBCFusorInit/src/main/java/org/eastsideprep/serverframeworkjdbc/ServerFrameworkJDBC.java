@@ -52,17 +52,9 @@ public class ServerFrameworkJDBC {
        Webcam webcam = Webcam.getDefault();
 		webcam.setViewSize(WebcamResolution.VGA.getSize());
 
-        /*WebcamPanel panel = new WebcamPanel(webcam);
-        panel.setFPSDisplayed(true);
-        panel.setDisplayDebugInfo(true);
-        panel.setImageSizeDisplayed(true);
-        panel.setMirrored(true);
-        JFrame window = new JFrame("Test webcam panel");
-        window.add(panel);
-        window.setResizable(true);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.pack();
-        window.setVisible(true);
+        /*
+                Webcam streaming methods made by GitHub User Sarxos
+                https://github.com/sarxos/webcam-capture
          */
         WebcamStreamer webcamStreamer = new WebcamStreamer(8080, webcam, 0.5, true);
 		do {
