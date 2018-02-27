@@ -62,4 +62,5 @@
             <url>http://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
     </repositories>
+    <name>FusorFinalProject</name>
 </project>
