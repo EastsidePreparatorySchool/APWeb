@@ -9,13 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.MultipartConfigElement;
 import static spark.Spark.*;
-import com.github.sarxos.webcam.Webcam;
-import javax.swing.JFrame;
-
-import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamPanel;
-import com.github.sarxos.webcam.WebcamResolution;
-import com.github.sarxos.webcam.WebcamStreamer;
+import spark.Request;
 
 /**
  *
@@ -26,19 +20,19 @@ public class ServerFrameworkJDBC {
     static ArrayList<String> messages;
 
     public static void main(String[] args) {
-        messages = new ArrayList<>();
+        FusorWebcam fw = new FusorWebcam();
 
         staticFiles.location("/static");
         get("/hello", (req, res) -> hello(req), new JSONRT());
-        get("/showface", (req, res) -> useWebcam(req));
-        
+        get("/showface", (req, res) -> useWebcam(req, fw));
+
         put("/protected/put", (req, res) -> putHandler(req));
         post("/protected/post", (req, res) -> postHandler(req));
-        get("/protected/get", "application/json", (req, res) -> getHandler(req),new JSONRT());
-        
-        get("/protected/gettables", "application/json", (req, res) -> getTablesHandler(req),new JSONRT());
-        get("/protected/getdukakisfilms", "application/json", (req, res) -> getDukakisHandler(req),new JSONRT());
-        
+        get("/protected/get", "application/json", (req, res) -> getHandler(req), new JSONRT());
+
+        get("/protected/gettables", "application/json", (req, res) -> getTablesHandler(req), new JSONRT());
+        get("/protected/getdukakisfilms", "application/json", (req, res) -> getDukakisHandler(req), new JSONRT());
+
         before("/protected/*", (req, res) -> {
             if (req.session().attribute("initials") == null) {
                 halt(401, "You must login.");
@@ -47,37 +41,43 @@ public class ServerFrameworkJDBC {
 
         put("/login", (req, res) -> login(req));
     }
-    
-    public static String useWebcam(spark.Request req) throws InterruptedException{
-       Webcam webcam = Webcam.getDefault();
-		webcam.setViewSize(WebcamResolution.VGA.getSize());
 
+    public static String useWebcam(spark.Request req, FusorWebcam fw) {
+        String onoff = req.queryParams("onoff");
+        System.out.println(onoff);
         /*
                 Webcam streaming methods made by GitHub User Sarxos
                 https://github.com/sarxos/webcam-capture
          */
-        WebcamStreamer webcamStreamer = new WebcamStreamer(8080, webcam, 0.5, true);
-		do {
-			Thread.sleep(5000);
-		} while (true);
+        //WebcamStreamer webcamStreamer = new WebcamStreamer(8080, webcam, 0.5, true);
+        /*do {
+                Thread.sleep(5000);
+            } while (onoff.equalsIgnoreCase("on"));
+         */
+        if (onoff.equalsIgnoreCase("on")) {
+            fw.activateStream();
+            return "Stream active!";
+        } else {
+            fw.terminateStream();
+            return "Stream terminated.";
+        }
     }
 
     private static String login(spark.Request req) {
         req.session().attribute("initials", req.body());
         return req.body();
     }
-    
-     private static Object hello(spark.Request req) {
+
+    private static Object hello(spark.Request req) {
         Context ctx = getContextFromSession(req.session());
-        
+
         String initials = req.session().attribute("initials");
         if (initials == null) {
             initials = "<not logged in>";
         }
 
-        return "Hello World, "+initials;
+        return "Hello World, " + initials;
     }
-
 
     public static String putHandler(spark.Request req) {
         Context ctx = getContextFromSession(req.session());
@@ -95,30 +95,27 @@ public class ServerFrameworkJDBC {
         return "post handled";
     }
 
-
     public static Object getHandler(spark.Request req) {
         System.out.println("entered getNewMessages");
         Context ctx = getContextFromSession(req.session());
- 
+
         return "Here is what you got";
     }
 
-     public static Object getTablesHandler(spark.Request req) {
+    public static Object getTablesHandler(spark.Request req) {
         System.out.println("entered getNewMessages");
         Context ctx = getContextFromSession(req.session());
-  
+
         return ctx.db.showTables();
     }
 
-    
-     public static Object getDukakisHandler(spark.Request req) {
+    public static Object getDukakisHandler(spark.Request req) {
         System.out.println("entered getNewMessages");
         Context ctx = getContextFromSession(req.session());
-  
+
         return ctx.db.showFilmsWithRockDukakis();
     }
 
-    
     public static Context getContextFromSession(spark.Session s) {
         Context ctx = s.attribute("Context");
         if (ctx == null) {
