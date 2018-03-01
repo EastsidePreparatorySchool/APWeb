@@ -16,7 +16,7 @@ and open the template in the editor.
     width: 960px;
     height: 540px;
     margin-left: 7%;
-    margin-top: 3%;
+    margin-top: 4%;
 }
 .video {
     position: absolute;
@@ -34,12 +34,64 @@ and open the template in the editor.
 }
 #gallery {
     float: right;
-    position: inherit;
+    position: absolute;
     overflow: hidden;
     background-color: red;
     width: 600px;
     height: 360px;
+    margin-left: 57%;
     margin-right: 3%;
     margin-top: 22%;
 }
+.webcamSwitch {
+    position: fixed;
+    margin-left: 7%;
+    margin-top:39.1%;
+}
 
+
+#table{
+    position: absolute;
+    float:right;
+    position:relative;
+    left:-50%;
+    text-align:left;
+    margin-top: 0px;
+    padding-top: 0px;
+    font-size: large;
+}
+#table ul{
+    margin-top: 11px;
+    list-style:none;
+    position:relative;
+    left:50%;
+}
+
+#table li{margin-left: 10px;margin-right:10px;float:left;position:relative;}/* ie needs position:relative here*/
+
+#table a{
+    text-decoration:none;
+    float:left;
+    text-align:center;
+    white-space:nowrap;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color:black;
+
+
+    -webkit-transition: background-color 300ms linear, color 300ms linear;
+    -ms-transition: background-color 300ms linear, color 300ms linear;
+    transition: background-color 300ms linear, color 300ms linear;
+
+}
+#table a:hover{
+    background-color: black;
+    color:white;
+
+    -webkit-transition: background-color 300ms linear, color 300ms linear;
+    -ms-transition: background-color 300ms linear, color 300ms linear;
+    transition: background-color 300ms linear, color 300ms linear; 
+}
+#content{overflow:hidden}
