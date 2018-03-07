@@ -6,11 +6,13 @@
 package org.eastsideprep.serverframeworkjdbc;
 
 import com.github.sarxos.webcam.Webcam;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.MultipartConfigElement;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import spark.ModelAndView;
 import static spark.Spark.*;
@@ -47,8 +49,48 @@ public class ServerFrameworkJDBC {
         });
 
         put("/login", (req, res) -> login(req));
-    }
     
+    get("/download", "application/json", (req, res) -> getint(req), new JSONRT());
+
+        get("/upload/download", (req, res) -> {
+            String y = req.queryParams("arg1"); //get index from params
+            int x = Integer.parseInt(y);
+            System.out.println("x is: " + x);
+            Context ctx = getContextFromSession(req.session());
+            ArrayList<byte[]> images = ctx.db.getImage(req, res); //arraylist of byte array containing all DB images
+
+            byte[] image = images.get(x);  //get image based on param
+
+            HttpServletResponse raw = res.raw(); //use Java Servlets to get raw response
+            res.header("Content-Disposition", "attachment; filename=image.jpg"); // set response header (communicates between server and requests)
+            res.type("application/force-download"); //use Servlets force download functionality
+            try {
+                //this is for writing to file
+
+                //change the imagetofolder route to wherever you want the images to go to
+                FileOutputStream imagetofolder = new FileOutputStream("src/main/resources/design/image" + x + ".jpg"); //set OutputStream location to folder
+                imagetofolder.write(image); //write into the output streeam
+                imagetofolder.flush(); //takes care of buffered output
+                imagetofolder.close(); //close the stream
+
+                //this is for displaying on webpage
+                raw.getOutputStream().write(image); //getOutputStream returns a stream for writing binary data (like our blob)
+                raw.getOutputStream().flush(); //takes care of buffered output
+                raw.getOutputStream().close(); //closes the stream
+                return raw; //return written stream
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        });
+        before("/protected/*", (req, res) -> {
+            if (req.session().attribute("initials") == null) {
+                halt(401, "You must login.");
+            }
+        });
+    
+    }
     public static ArrayList<FusorWebcam> getWebcams() {
         ArrayList<FusorWebcam> fws = new ArrayList<FusorWebcam>(); //list of FusorWebcam objects to return
         List<Webcam> ws = Webcam.getWebcams(); //get list of all available webcams connected to computer
