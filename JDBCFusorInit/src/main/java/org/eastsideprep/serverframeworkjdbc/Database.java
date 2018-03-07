@@ -7,6 +7,7 @@ package org.eastsideprep.serverframeworkjdbc;
 
 import java.io.InputStream;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import javax.servlet.http.Part;
 
@@ -199,6 +200,74 @@ public class Database {
         return "Should not get here";
     }
 
+    Object registerOperator(spark.Request req, String firstName, String lastName, String initials) {
+
+        try {
+            
+            String sql =  "select * from operators where first_name=\"" + firstName + "\" and last_name=\"" 
+                    + lastName+ "\";"; //select query to get message from DB
+            //System.out.println(sql + "sfdjksdfkosfdsfd"); //for debugging
+            PreparedStatement statement = conn.prepareStatement(sql);
+
+            ResultSet rs = statement.executeQuery();
+            //System.out.println("Result set: " + rs.toString());
+            
+                
+                if (rs.next()==false) { //check for empty resultset to add to database if operator is not yet registered
+                    
+                
+                String query = " insert into operators (first_name, last_name, initials)" //sql query, insert into database
+                        + " values (?, ?, ?)";
+                    System.out.println("got here");
+
+                // create the mysql insert preparedstatement
+                PreparedStatement preparedStmt = conn.prepareStatement(query);
+                preparedStmt.setString(1, firstName); //sets the parameters
+                preparedStmt.setString(2, lastName);
+                preparedStmt.setString(3, initials);
+
+                // execute the preparedstatement
+                preparedStmt.execute();
+
+                //conn.close();
+                return firstName + lastName + initials;
+                } else {
+                    return "already registered";
+                }
+            
+
+            //System.out.println(message + "---------------------------"); //debugging
+            //message = req.queryParams("message").toString();
+            // the mysql insert statement
+        } catch (Exception e) {
+            System.err.println("Got an exception in registerOperator: " + e);
+
+        }
+        return "Should not get here";
+    }
+
+     Object logSession(spark.Request req) {
+        try {
+            String query = " insert into session (time, date)" //sql query, insert into database
+                    + " values (?, ?)";
+            String dt = LocalDateTime.now().toString(); //get date and time
+
+            String time = dt.substring(dt.indexOf("T") + 1, dt.length() - 4); //repeatedly printed out dt to figure
+            //out the indexes to substring for date and time
+            String date = dt.substring(0, dt.indexOf("T"));
+//            System.out.println("--------------");
+//            System.out.println(time); //for debugging
+//            System.out.println(date);
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setString(1, time);
+            preparedStmt.setString(2, date);
+            preparedStmt.execute();
+            return "session made";
+        } catch (Exception e) {
+            System.err.println("Error in logSession: " + e);
+        }
+        return "Should not get here";
+    }
     /*
         // CRUD: Students
     // makes a new row in the students table using the fields of the Student argument

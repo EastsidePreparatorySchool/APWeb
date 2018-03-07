@@ -26,6 +26,7 @@ public class ServerFrameworkJDBC {
         staticFiles.location("/static");
         get("/hello", (req, res) -> hello(req), new JSONRT());
         get("/showface", (req, res) -> useWebcam(req, fw));
+        post("/login", (req, res) -> logSessionHandler(req));
         
         post("upload", (req, res) -> uploadFile(req, res));     //uploading pictures    
 
@@ -153,4 +154,33 @@ public class ServerFrameworkJDBC {
         return "Should not get here";
 
     }
+    
+    public static Object logSessionHandler(spark.Request req) { //handler to log a new session in the db, first logs users in the session
+        //then data about the session
+        MultipartConfigElement multipartConfigElement = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
+        req.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement); //necessary post code
+        System.out.println("entered logSessionHandler"); //for debugging
+
+        Context ctx = getContextFromSession(req.session());
+        //System.out.println("MSFDOIJFJKF");
+        //String input = req.queryParams("init");
+        String input = "Steve Harvey";
+        if (input.contains(" ")) {
+            //System.out.println("sdkffjdsdfmk");
+            String firstName = input.substring(0, input.indexOf(" ")); //input must be formatted in First + Last
+            //gets first and last name based on location of space
+            String lastName = input.substring(input.indexOf(" ") + 1);
+            String initials = firstName.substring(0, 1) + lastName.substring(0, 1); //concatonates first letter of 
+            //both names to get initials
+            ctx.db.registerOperator(req, firstName, lastName, initials); //register operator if not already registered
+            ctx.db.logSession(req); //log the session
+            //System.out.println(initials + " initials of operator"); //for debugging
+            return firstName + " " + lastName;
+        }
+       
+        //System.out.println(m + "from addHandler"); for debugging
+        
+        
+        return "Error in input, please enter your name in format: First Last";
+}
 }
