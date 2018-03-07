@@ -1,7 +1,0 @@
-#surefire
-#Tue Feb 27 08:27:59 PST 2018
-maven.ext.class.path=C\:\\Program Files\\NetBeans 8.2\\java\\maven-nblib\\netbeans-eventspy.jar
-user.dir=C\:\\Users\\azhuang\\Documents\\NetBeansProjects\\JDBCFusorInit
-file.encoding=UTF-8
-localRepository=C\:\\Users\\azhuang\\.m2\\repository
-basedir=C\:\\Users\\azhuang\\Documents\\NetBeansProjects\\JDBCFusorInit
