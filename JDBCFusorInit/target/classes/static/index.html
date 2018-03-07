@@ -17,6 +17,12 @@ and open the template in the editor.
                 <input type="submit" value="Post"/>
             </form>
 
+            <form enctype="multipart/form-data"  onsubmit="return submitForm(this);" name="scannedform">
+                Upload image: <input name="scannedfile" type="file" />
+                <input type="submit" value="Upload"/>
+
+            </form>
+
 
             <input id="input"><button onclick="putMessage()">Put</button><br>
             <button onclick="get()">Get</button><br>
@@ -24,6 +30,8 @@ and open the template in the editor.
             <button onclick="showDukakis()">Show films with Rock Dukakis</button>
 
             <br><br><br>
+
+
 
             <p id="output"></p>
         </div>
