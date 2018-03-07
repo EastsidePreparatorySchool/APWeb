@@ -1,0 +1,10 @@
+<html>
+    <body>
+        <h1>Streams</h1>
+            <ul style="list-style-type: none;">
+                #foreach( $potato in $urls )
+                 <li><img src="$potato" width="624" height="468"></li>
+                #end
+            </ul>
+    </body>
+</html>

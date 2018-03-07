@@ -5,10 +5,14 @@
  */
 package org.eastsideprep.serverframeworkjdbc;
 
+import com.github.sarxos.webcam.Webcam;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.Part;
+import spark.ModelAndView;
 import static spark.Spark.*;
 import spark.Request;
 
@@ -21,11 +25,11 @@ public class ServerFrameworkJDBC {
     static ArrayList<String> messages;
 
     public static void main(String[] args) {
-        FusorWebcam fw = new FusorWebcam();
+        ArrayList<FusorWebcam> fws = getWebcams();
 
         staticFiles.location("/static");
         get("/hello", (req, res) -> hello(req), new JSONRT());
-        get("/showface", (req, res) -> useWebcam(req, fw));
+        get("/showface", (req, res) -> useWebcam(req, fws));
         post("/login", (req, res) -> logSessionHandler(req));
         
         post("upload", (req, res) -> uploadFile(req, res));     //uploading pictures    
@@ -44,8 +48,20 @@ public class ServerFrameworkJDBC {
 
         put("/login", (req, res) -> login(req));
     }
+    
+    public static ArrayList<FusorWebcam> getWebcams() {
+        ArrayList<FusorWebcam> fws = new ArrayList<FusorWebcam>(); //list of FusorWebcam objects to return
+        List<Webcam> ws = Webcam.getWebcams(); //get list of all available webcams connected to computer
+        int i = 0;
+        for (Webcam w: ws) {
+            FusorWebcam fw = new FusorWebcam(w, i); //creates new FusorWebcam object for each webcam
+            fws.add(fw);
+            i++;
+        }
+        return fws;
+    }
 
-    public static String useWebcam(spark.Request req, FusorWebcam fw) {
+    public static ModelAndView useWebcam(spark.Request req, ArrayList<FusorWebcam> fws) {
         String onoff = req.queryParams("onoff");
         System.out.println(onoff);
         /*
@@ -58,11 +74,22 @@ public class ServerFrameworkJDBC {
             } while (onoff.equalsIgnoreCase("on"));
          */
         if (onoff.equalsIgnoreCase("on")) {
-            fw.activateStream();
-            return "Stream active!";
+            int i = 0;
+            ArrayList<String> url = new ArrayList();
+            for(FusorWebcam fw: fws) {
+                fw.activateStream();
+                url.add("http://10.20.81.244:" + (8080+i) + "/");
+                i++;
+            }
+            Map<String, Object> model = new HashMap<>();
+            model.put("urls", url);
+            return new ModelAndView(model, "template.vm");
+//            return "Stream active!";
         } else {
+            for(FusorWebcam fw: fws) {
             fw.terminateStream();
-            return "Stream terminated.";
+            }
+            return new ModelAndView("nothing", "template.vm");
         }
     }
 
