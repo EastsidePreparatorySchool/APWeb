@@ -36,7 +36,7 @@ public class Database {
     public void connect() {
         System.out.println("Attempting to connect...");
         try {
-            this.conn = DriverManager.getConnection("jdbc:mysql://localhost/sakila", "user", "password");
+            this.conn = DriverManager.getConnection("jdbc:mysql://localhost/FusorDB", "User", "Password");
             System.out.println("Connection successful");
         } catch (SQLException ex) {
             System.out.print("Error connecting to database: ");

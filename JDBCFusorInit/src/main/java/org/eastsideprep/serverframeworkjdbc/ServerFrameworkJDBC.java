@@ -157,8 +157,8 @@ public class ServerFrameworkJDBC {
         Context ctx = getContextFromSession(req.session());
         //System.out.println("MSFDOIJFJKF");
         //String input = req.queryParams("init");
-        req.session().attribute("initials", req.body());
-        String input = req.queryParams("initials");
+        req.session().attribute("initials", req.body()); 
+        String input = req.session().attribute("initials"); //session attribute is now the request body, get as a string
         if (input.contains(" ")) {
             //System.out.println("sdkffjdsdfmk");
             String firstName = input.substring(0, input.indexOf(" ")); //input must be formatted in First + Last
