@@ -42,7 +42,7 @@ public class FusorWebcam {
     }
 
     void activateStream() {
-        this.webcamStreamer = new WebcamStreamer(8080 + this.index, this.webcam, 0.5, true); //starts stream, steam is an image stream with 0.5fps, you can change the fps setting.
+        this.webcamStreamer = new WebcamStreamer(8080 + this.index, this.webcam, 5.0, true); //starts stream, steam is an image stream with 0.5fps, you can change the fps setting.
         System.out.println("Stream " + index + " activated on port " + (8080 + index));
 
     }
