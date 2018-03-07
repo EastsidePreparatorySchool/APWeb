@@ -126,7 +126,30 @@ public class Database {
     
     
 
-   
+    Object showFilmsWithRockDukakis() {
+        ArrayList<Film> films = new ArrayList<>();
+        
+        try {
+            String sql = "select title as name, release_year as year from actor, film_actor, film "
+                    + "where first_name='Rock' and last_name='Dukakis' "
+                    + "and film_actor.actor_id = actor.actor_id "
+                    + "and film.film_id = film_actor.film_id;";
+            PreparedStatement statement = conn.prepareStatement(sql);
+
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Film film = new Film();
+                film.name = rs.getString("name");
+                film.year = rs.getString("year");
+                films.add(film);
+                System.out.println(film.name+" "+film.year);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+
+        }
+        return films.toArray();
+    }
 
     // executes a prepared sql statement specified by the sql argument
     // the first parameter of that prepared statement will be the parameter argument
@@ -148,6 +171,102 @@ public class Database {
 
     }
 
-   
-   
+    /*
+        // CRUD: Students
+    // makes a new row in the students table using the fields of the Student argument
+    // prints success message if successful, prints exception otherwise
+    public void createStudent(Student sd) {
+        try {
+            Statement stmt = conn.createStatement();
+            String sql = "INSERT INTO students (id, firstname, lastname, login, gradyear) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, sd.id);
+            statement.setString(2, sd.firstName);
+            statement.setString(3, sd.lastName);
+            statement.setString(4, sd.login);
+            statement.setInt(5, sd.gradYear);
+
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("A new student was inserted successfully!");
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public Student retrieveStudent(int id) {
+        Student request = null;
+        try {
+            String sql = "SELECT * FROM students WHERE id=?;";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, id);
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                request = new Student(rs.getInt("id"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("login"), rs.getInt("gradyear"));
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return request;
+    }
+
+    public Student retrieveStudent(String login) {
+        Student request = null;
+        try {
+            String sql = "SELECT * FROM students WHERE login=?;";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, login);
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                request = new Student(rs.getInt("id"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("login"), rs.getInt("gradyear"));
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return request;
+    }
+
+    public void updateStudent(Student sd) {
+        try {
+            String sql = "UPDATE FROM students SET firstname=?, lastname=?, login=?, gradyear=? WHERE id=?;";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, sd.firstName);
+            statement.setString(2, sd.lastName);
+            statement.setString(3, sd.login);
+            statement.setInt(4, sd.getGradYear());
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+    }
+
+    //todo: Make this only look at id, not the other fields
+    public void deleteStudent(Student sd) {
+        try {
+            String sql = "DELETE FROM students WHERE id=?, firstname=?, lastname=?, login=?, gradyear=?";
+
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, sd.id);
+            statement.setString(2, sd.firstName);
+            statement.setString(3, sd.lastName);
+            statement.setString(4, sd.login);
+            statement.setInt(5, sd.gradYear);
+
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("A student was deleted successfully!");
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+     */
 }
