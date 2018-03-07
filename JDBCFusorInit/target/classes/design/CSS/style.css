@@ -7,6 +7,10 @@ and open the template in the editor.
     Created on : Feb 8, 2018, 7:45:11 PM
     Author     : jtyler
 */
+body {
+    background:url("../images/background.jpg");
+    background-position: center;
+}
 
 .videoFeed {
     position: fixed;
