@@ -68,7 +68,7 @@ public class ServerFrameworkJDBC {
                 //this is for writing to file
 
                 //change the imagetofolder route to wherever you want the images to go to
-                FileOutputStream imagetofolder = new FileOutputStream("src/main/resources/design/image" + x + ".jpg"); //set OutputStream location to folder
+                FileOutputStream imagetofolder = new FileOutputStream("src/main/resources/design/images" + x + ".jpg"); //set OutputStream location to folder
                 imagetofolder.write(image); //write into the output streeam
                 imagetofolder.flush(); //takes care of buffered output
                 imagetofolder.close(); //close the stream
