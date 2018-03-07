@@ -51,8 +51,13 @@ and open the template in the editor.
         <form class="webcamSwitch2" action="http://10.20.81.244:4567/showface?onoff=off">
             <input class="button" type="submit" value="Camera Off">
         </form>
-        
-        
+        <form class="thing" enctype="multipart/form-data"  onsubmit="return submitForm(this);" name="scannedform">
+            Upload image: <input name="scannedfile" type="file" />
+            <input class="button" type="submit" value="Upload"/>
+
+        </form>
+
+
         <button class="button" onclick="login()">Start Session</button><br>
 
 
