@@ -222,6 +222,54 @@ public class Database {
         }
         return "Should not get here";
     }
+static int getk() {
+        int k = 0;
+        try {
+
+            String query2 = "select Picture from pictures;"; //select all pictures uploaded
+            PreparedStatement ps2 = conn.prepareStatement(query2); //create prepared statement
+            ResultSet rs2 = ps2.executeQuery(); //create result set
+            
+            //add to k while there are still pictures - find the total number
+            while (rs2.next()) {
+                k++;
+            }
+        } catch (Exception e) {
+            System.err.println("Got an exception in getk" + e);
+        }
+
+        return k;
+    }
+
+    static ArrayList<byte[]> getImage(spark.Request req, spark.Response res) {
+        int k = getk(); //use total number 
+        byte[] data = null; //make empty byte array for photos
+        ArrayList photos = new ArrayList<byte[]>(); //make arraylist of byte arrays to return
+        try {
+            //get all images from db
+            for (int i = 1; i <= k; i++) {
+                
+                String query = "select Picture as file from pictures WHERE Picture_id = (?);"; //select individual images based on id
+
+                PreparedStatement preparedStmt = conn.prepareStatement(query); //prepare statement
+                preparedStmt.setInt(1, i); //set variable in statement to i so as to loop through and return all of them
+                ResultSet rs = preparedStmt.executeQuery(); //execute statement
+                
+                //add bytes from BLOB file into array
+                while (rs.next()) {
+                    data = rs.getBytes("file");
+                }
+                photos.add(data); //add each photo to arraylist
+            }
+
+            return photos;
+
+        } catch (Exception e) {
+            System.err.println("Got an exception in getImage" + e);
+        }
+
+        return null;
+    }
 
      Object logSession(spark.Request req) {
         try {
