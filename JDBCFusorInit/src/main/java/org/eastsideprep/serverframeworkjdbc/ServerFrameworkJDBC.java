@@ -191,6 +191,13 @@ public class ServerFrameworkJDBC {
 
         return ctx;
     }
+       private static int getint(spark.Request req) {
+        Context ctx = getContextFromSession(req.session());
+        int x = ctx.db.getk() - 1;
+        System.out.println(x);
+        return x;
+    }
+
     
     static Object uploadFile(spark.Request request, spark.Response response) {
         //System.out.println("upload");
