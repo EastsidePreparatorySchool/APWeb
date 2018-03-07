@@ -1,4 +1,4 @@
-var initials = "";
+let initials = "";
 
 
 function request(obj) {
@@ -80,10 +80,12 @@ function showDukakis () {
 }
 
 function login() {
-    let init = window.prompt("Please enter your initials");
-    request({url: "login", method: "put", body: init})
+    initials = window.prompt("Please enter your full name");
+    request({url: "login", body: initials, method: "POST"})
             .then(data => {
-                 output("Hello " + data + "<br>");
+                //still deciding whether or not to display anything here
+                
+                 output("Thank you for logging in, " + data + ".");
             })
             .catch(error => {
                 output("Error: " + error);

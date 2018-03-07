@@ -1,4 +1,4 @@
-var initials = "";
+let initials = "";
 
 
 function request(obj) {
@@ -80,8 +80,8 @@ function showDukakis () {
 }
 
 function login() {
-    let init = window.prompt("Please enter your full name");
-    request({url: "login", body: init, method: "POST"})
+    initials = window.prompt("Please enter your full name");
+    request({url: "login", body: initials, method: "POST"})
             .then(data => {
                 //still deciding whether or not to display anything here
                 

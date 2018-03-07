@@ -129,30 +129,7 @@ public class Database {
     
     
 
-    Object showFilmsWithRockDukakis() {
-        ArrayList<Film> films = new ArrayList<>();
-        
-        try {
-            String sql = "select title as name, release_year as year from actor, film_actor, film "
-                    + "where first_name='Rock' and last_name='Dukakis' "
-                    + "and film_actor.actor_id = actor.actor_id "
-                    + "and film.film_id = film_actor.film_id;";
-            PreparedStatement statement = conn.prepareStatement(sql);
-
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                Film film = new Film();
-                film.name = rs.getString("name");
-                film.year = rs.getString("year");
-                films.add(film);
-                System.out.println(film.name+" "+film.year);
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-
-        }
-        return films.toArray();
-    }
+    
 
     // executes a prepared sql statement specified by the sql argument
     // the first parameter of that prepared statement will be the parameter argument
