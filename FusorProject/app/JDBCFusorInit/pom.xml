@@ -61,6 +61,11 @@
             <version>0.3.13-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.7</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
