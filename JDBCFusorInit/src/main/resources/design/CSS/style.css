@@ -54,7 +54,7 @@ body {
 }
 .webcamSwitch2 {
     position: fixed;
-    margin-left: 14%;
+    margin-left: 16%;
     margin-top:39.1%;
 }
 
@@ -103,3 +103,22 @@ body {
     transition: background-color 300ms linear, color 300ms linear; 
 }
 #content{overflow:hidden}
+
+.button {
+    background-color: white;
+    color: black;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    border: 1.5px solid #4CAF50;
+}
+
+.button:hover {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
