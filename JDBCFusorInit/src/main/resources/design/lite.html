@@ -8,7 +8,7 @@ and open the template in the editor.
     <head>
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
         <link rel="stylesheet" type="text/css" href="CSS/style.css">
-        <title>Fusor Live</title>
+        <title>Fusor Live | Lite</title>
         <meta charset="UTF-8">
 
 
@@ -17,37 +17,27 @@ and open the template in the editor.
 
 
     <body>   
-        <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+        <link rel="shortcut icon" type="image/x-icon" href="../images/favicon.ico" />
 
-
-
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="lite.html">Lite</a></li>
-            <li><a href="gallery.html">Gallery</a></li>
-            <li><a href="about.html">About</a></li>
-        </ul>
-
-        <div id="gallery">
-            <img class="mySlides" src="images/animal01.jpg">
-            <img class="mySlides" src="images/animal02.jpg">
-            <img class="mySlides" src="images/animal03.jpg">
-            <img class="mySlides" src="images/animal04.jpg">
-            <img class="mySlides" src="images/animal05.jpg">
-            <img class="mySlides" src="images/animal06.jpg">
-            <img class="mySlides" src="images/animal07.jpg">
-            <img class="mySlides" src="images/animal08.jpg">
-            <img class="mySlides" src="images/animal09.jpg">
-
-
+        <div id="table">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="lite.html">Lite</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
         </div>
 
-        <div class="videoFeed">
+        <div class="videoFeed" style="width: 100%; margin-left: 0px;">
             <img class="feed" style="-webkit-user-select: none;" src="http://10.20.81.244:8080/">
         </div>
-        <form class="webcamSwitch" action="http://10.20.81.244:4567/showface">
-            <input type="submit" value="Turn on Camera">
+        <form class="webcamSwitch1" action="http://10.20.81.244:4567/showface?onoff=on">
+            <input type="submit" value="Camera On">
         </form>
+        <form class="webcamSwitch2" action="http://10.20.81.244:4567/showface?onoff=off">
+            <input type="submit" value="Camera Off">
+        </form>
+
 
 
         <!-- using w3 school mySlides class -->

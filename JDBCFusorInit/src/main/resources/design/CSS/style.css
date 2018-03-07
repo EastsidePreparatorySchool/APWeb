@@ -12,7 +12,7 @@ and open the template in the editor.
     position: fixed;
     overflow: hidden;
     z-index: -100;
-    background-color: cyan;
+    background: url("../images/Offline.jpg") center;
     width: 960px;
     height: 540px;
     margin-left: 7%;
@@ -43,12 +43,16 @@ and open the template in the editor.
     margin-right: 3%;
     margin-top: 22%;
 }
-.webcamSwitch {
+.webcamSwitch1 {
     position: fixed;
     margin-left: 7%;
     margin-top:39.1%;
 }
-
+.webcamSwitch2 {
+    position: fixed;
+    margin-left: 14%;
+    margin-top:39.1%;
+}
 
 #table{
     position: absolute;
