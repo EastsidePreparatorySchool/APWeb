@@ -29,7 +29,7 @@ public class ServerFrameworkJDBC {
     public static void main(String[] args) {
         ArrayList<FusorWebcam> fws = getWebcams();
 
-        staticFiles.location("/static");
+        staticFiles.location("/design");
         get("/hello", (req, res) -> hello(req), new JSONRT());
         get("/showface", (req, res) -> useWebcam(req, fws), new VelocityTemplateEngine());
         post("/login", (req, res) -> logSessionHandler(req));
