@@ -5,8 +5,10 @@
  */
 package org.eastsideprep.serverframeworkjdbc;
 
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
+import javax.servlet.http.Part;
 
 /**
  *
@@ -14,7 +16,7 @@ import java.util.ArrayList;
  */
 public class Database {
 
-    public Connection conn;
+    public static Connection conn;
 
     Database() {
         try {
@@ -169,6 +171,32 @@ public class Database {
             System.out.println(e);
         }
 
+    }
+    
+    
+    static Object addImages(spark.Request req, Part file) {
+
+        try {
+            // the mysql insert statement
+            //to insert the picture into the databse
+            String query = " insert into pictures (Picture)" //sql query, insert into database
+                    + " values (?)";
+
+            // create the mysql insert preparedstatement
+            InputStream is = file.getInputStream(); //inputstream to convert to blob
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setBinaryStream(1, is); //sets the one parameter
+
+            // execute the preparedstatement
+            preparedStmt.execute();
+
+            //conn.close(); //works without this
+            return "temp";
+        } catch (Exception e) {
+            System.err.println("Got an exception in uploadImages: " + e);
+
+        }
+        return "Should not get here";
     }
 
     /*

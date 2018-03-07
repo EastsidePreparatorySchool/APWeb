@@ -97,3 +97,25 @@ function output(message) {
 }
 
 
+function submitForm(form) { //from OneNote to upload a form
+    var body = new FormData(form);
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "upload");
+    // must not do this!!!! xhr.setRequestHeader("Content-type", "multipart/form-data");
+
+    xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            output("returned " + xhr.response);
+        } else {
+            output("error " + xhr.statusText);
+        }
+    };
+    xhr.onerror = () => {
+        output("error " + xhr.statusText);
+    };
+    xhr.send(body);
+    return false;
+}
+
+

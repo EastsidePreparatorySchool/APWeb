@@ -8,6 +8,7 @@ package org.eastsideprep.serverframeworkjdbc;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.MultipartConfigElement;
+import javax.servlet.http.Part;
 import static spark.Spark.*;
 import spark.Request;
 
@@ -25,6 +26,8 @@ public class ServerFrameworkJDBC {
         staticFiles.location("/static");
         get("/hello", (req, res) -> hello(req), new JSONRT());
         get("/showface", (req, res) -> useWebcam(req, fw));
+        
+        post("upload", (req, res) -> uploadFile(req, res));     //uploading pictures    
 
         put("/protected/put", (req, res) -> putHandler(req));
         post("/protected/post", (req, res) -> postHandler(req));
@@ -124,5 +127,30 @@ public class ServerFrameworkJDBC {
         }
 
         return ctx;
+    }
+    
+    static Object uploadFile(spark.Request request, spark.Response response) {
+        //System.out.println("upload");
+        Context ctx = getContextFromSession(request.session()); //normal posthandler code
+        MultipartConfigElement multipartConfigElement = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
+        request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
+        //System.out.println("fidosdjkff");
+        try {
+            Part file = request.raw().getPart("scannedfile"); //gets file as a part
+            //System.out.println("File string: " + file.toString());
+            ctx.db.addImages(request, file); //database method to complete upload
+//            final Path path = Paths.get(System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") 
+//                     + file.getSubmittedFileName()); //in case you want to upload the image to a file, leaving
+                                                        //this here just in case
+//            Files.copy(in, path);
+            System.out.println("Uploaded file " + file.getSubmittedFileName());
+            return "Uploaded file " + file.getSubmittedFileName();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return "Should not get here";
+
     }
 }
