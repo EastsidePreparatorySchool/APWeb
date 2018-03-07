@@ -31,7 +31,7 @@ public class ServerFrameworkJDBC {
 
         staticFiles.location("/static");
         get("/hello", (req, res) -> hello(req), new JSONRT());
-        get("/showface", (req, res) -> useWebcam(req, fws));
+        get("/showface", (req, res) -> useWebcam(req, fws), new VelocityTemplateEngine());
         post("/login", (req, res) -> logSessionHandler(req));
         
         post("upload", (req, res) -> uploadFile(req, res));     //uploading pictures    
