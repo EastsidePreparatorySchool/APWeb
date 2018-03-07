@@ -1,4 +1,5 @@
-var initials = "";
+let initials = "";
+var k;
 
 
 function request(obj) {
@@ -51,37 +52,40 @@ function postMessage(oFormElement) {
     return false;
 }
 
+function getimage() {
 
-
-
-function get () {
-    request({url: "protected/get"})
+    request({url: "/download"}) //request URL to send number of images in DB to JS
+    
+            //variable for total number of images
             .then(data => {
-                output(data + "<br>");
-            })
-            .catch(error => {
-                output("Error: " + error);
-            });
+                k = JSON.parse(data) - 1;
 
-}
 
-function showDukakis () {
-    request({url: "protected/getdukakisfilms"})
-            .then(data => {
-                data = JSON.parse(data);
-                for (var i = 0; i < data.length; i++) {
-                    output("<br>"+data[i].name + ", "+  data[i].year+ "<br>");
+                var table = document.getElementById("MyTable"); //reference table
+                
+                //run loop while there are still images left to get
+                for (var i = 1; i <= k; i++) {
+
+                    var rowcount = table.rows.length; //count the number of rows
+                    var row = table.insertRow(rowcount); //add a new row to the table
+
+                    var cell1 = row.insertCell(0); //add a new cell to the row
+                    var newimage = new Image(500, 500); //make a new image
+                    newimage.src = "upload/download?arg1=" + i; //set image source to download link with params based on iterator
+                    newimage.name = "newimage";
+                    cell1.appendChild(newimage); //add image to table
+
+
                 }
             })
-            .catch(error => {
-                output("Error: " + error);
-            });
+
+
 
 }
 
 function login() {
-    let init = window.prompt("Please enter your full name");
-    request({url: "login", body: init, method: "POST"})
+    initials = window.prompt("Please enter your full name");
+    request({url: "login", body: initials, method: "POST"})
             .then(data => {
                 //still deciding whether or not to display anything here
                 

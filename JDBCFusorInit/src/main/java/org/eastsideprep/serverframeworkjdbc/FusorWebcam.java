@@ -16,6 +16,8 @@ import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
 import com.github.sarxos.webcam.WebcamStreamer;
+import java.net.MalformedURLException;
+import org.bytedeco.javacpp.opencv_videoio.VideoCapture;
 
 /**
  *
@@ -27,21 +29,27 @@ public class FusorWebcam {
                 Webcam streaming methods made by GitHub User Sarxos
                 https://github.com/sarxos/webcam-capture
      */
-    Webcam webcam;
-    WebcamStreamer webcamStreamer;
+    Webcam webcam; //webcam object
+    WebcamStreamer webcamStreamer; //webcam stream object
+    int index;
 
-    FusorWebcam() {
-        this.webcam = Webcam.getDefault();
-        webcam.setViewSize(WebcamResolution.VGA.getSize());
+    FusorWebcam(Webcam w, int index) {
+        this.webcam = w; //uses server host's default webcam
+        w.setViewSize(WebcamResolution.VGA.getSize());
+        this.index = index;
+
+        //uses default webcam resolution
     }
 
     void activateStream() {
-        this.webcamStreamer = new WebcamStreamer(8080, this.webcam, 0.5, true);
+        this.webcamStreamer = new WebcamStreamer(8080 + this.index, this.webcam, 5.0, true); //starts stream, steam is an image stream with 0.5fps, you can change the fps setting.
+        System.out.println("Stream " + index + " activated on port " + (8080 + index));
+
     }
 
     void terminateStream() {
-        this.webcamStreamer.stop();
         this.webcam.close();
+        this.webcamStreamer.stop();
     }
 
 }

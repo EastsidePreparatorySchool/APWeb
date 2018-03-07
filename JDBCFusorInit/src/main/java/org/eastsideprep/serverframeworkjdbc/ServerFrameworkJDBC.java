@@ -5,10 +5,16 @@
  */
 package org.eastsideprep.serverframeworkjdbc;
 
+import com.github.sarxos.webcam.Webcam;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.MultipartConfigElement;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+import spark.ModelAndView;
 import static spark.Spark.*;
 import spark.Request;
 
@@ -21,11 +27,11 @@ public class ServerFrameworkJDBC {
     static ArrayList<String> messages;
 
     public static void main(String[] args) {
-        FusorWebcam fw = new FusorWebcam();
+        ArrayList<FusorWebcam> fws = getWebcams();
 
         staticFiles.location("/static");
         get("/hello", (req, res) -> hello(req), new JSONRT());
-        get("/showface", (req, res) -> useWebcam(req, fw));
+        get("/showface", (req, res) -> useWebcam(req, fws), new VelocityTemplateEngine());
         post("/login", (req, res) -> logSessionHandler(req));
         
         post("upload", (req, res) -> uploadFile(req, res));     //uploading pictures    
@@ -35,7 +41,6 @@ public class ServerFrameworkJDBC {
         get("/protected/get", "application/json", (req, res) -> getHandler(req), new JSONRT());
 
         get("/protected/gettables", "application/json", (req, res) -> getTablesHandler(req), new JSONRT());
-        get("/protected/getdukakisfilms", "application/json", (req, res) -> getDukakisHandler(req), new JSONRT());
 
         before("/protected/*", (req, res) -> {
             if (req.session().attribute("initials") == null) {
@@ -44,9 +49,61 @@ public class ServerFrameworkJDBC {
         });
 
         put("/login", (req, res) -> login(req));
+    
+    get("/download", "application/json", (req, res) -> getint(req), new JSONRT());
+
+        get("/upload/download", (req, res) -> {
+            String y = req.queryParams("arg1"); //get index from params
+            int x = Integer.parseInt(y);
+            System.out.println("x is: " + x);
+            Context ctx = getContextFromSession(req.session());
+            ArrayList<byte[]> images = ctx.db.getImage(req, res); //arraylist of byte array containing all DB images
+
+            byte[] image = images.get(x);  //get image based on param
+
+            HttpServletResponse raw = res.raw(); //use Java Servlets to get raw response
+            res.header("Content-Disposition", "attachment; filename=image.jpg"); // set response header (communicates between server and requests)
+            res.type("application/force-download"); //use Servlets force download functionality
+            try {
+                //this is for writing to file
+
+                //change the imagetofolder route to wherever you want the images to go to
+                FileOutputStream imagetofolder = new FileOutputStream("src/main/resources/design/image" + x + ".jpg"); //set OutputStream location to folder
+                imagetofolder.write(image); //write into the output streeam
+                imagetofolder.flush(); //takes care of buffered output
+                imagetofolder.close(); //close the stream
+
+                //this is for displaying on webpage
+                raw.getOutputStream().write(image); //getOutputStream returns a stream for writing binary data (like our blob)
+                raw.getOutputStream().flush(); //takes care of buffered output
+                raw.getOutputStream().close(); //closes the stream
+                return raw; //return written stream
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        });
+        before("/protected/*", (req, res) -> {
+            if (req.session().attribute("initials") == null) {
+                halt(401, "You must login.");
+            }
+        });
+    
+    }
+    public static ArrayList<FusorWebcam> getWebcams() {
+        ArrayList<FusorWebcam> fws = new ArrayList<FusorWebcam>(); //list of FusorWebcam objects to return
+        List<Webcam> ws = Webcam.getWebcams(); //get list of all available webcams connected to computer
+        int i = 0;
+        for (Webcam w: ws) {
+            FusorWebcam fw = new FusorWebcam(w, i); //creates new FusorWebcam object for each webcam
+            fws.add(fw);
+            i++;
+        }
+        return fws;
     }
 
-    public static String useWebcam(spark.Request req, FusorWebcam fw) {
+    public static ModelAndView useWebcam(spark.Request req, ArrayList<FusorWebcam> fws) {
         String onoff = req.queryParams("onoff");
         System.out.println(onoff);
         /*
@@ -59,11 +116,22 @@ public class ServerFrameworkJDBC {
             } while (onoff.equalsIgnoreCase("on"));
          */
         if (onoff.equalsIgnoreCase("on")) {
-            fw.activateStream();
-            return "Stream active!";
+            int i = 0;
+            ArrayList<String> url = new ArrayList();
+            for(FusorWebcam fw: fws) {
+                fw.activateStream();
+                url.add("http://10.20.81.244:" + (8080+i) + "/");
+                i++;
+            }
+            Map<String, Object> model = new HashMap<>();
+            model.put("urls", url);
+            return new ModelAndView(model, "template.vm");
+//            return "Stream active!";
         } else {
+            for(FusorWebcam fw: fws) {
             fw.terminateStream();
-            return "Stream terminated.";
+            }
+            return new ModelAndView("nothing", "template.vm");
         }
     }
 
@@ -113,13 +181,7 @@ public class ServerFrameworkJDBC {
         return ctx.db.showTables();
     }
 
-    public static Object getDukakisHandler(spark.Request req) {
-        System.out.println("entered getNewMessages");
-        Context ctx = getContextFromSession(req.session());
-
-        return ctx.db.showFilmsWithRockDukakis();
-    }
-
+  
     public static Context getContextFromSession(spark.Session s) {
         Context ctx = s.attribute("Context");
         if (ctx == null) {
@@ -129,6 +191,13 @@ public class ServerFrameworkJDBC {
 
         return ctx;
     }
+       private static int getint(spark.Request req) {
+        Context ctx = getContextFromSession(req.session());
+        int x = ctx.db.getk() - 1;
+        System.out.println(x);
+        return x;
+    }
+
     
     static Object uploadFile(spark.Request request, spark.Response response) {
         //System.out.println("upload");
@@ -164,7 +233,8 @@ public class ServerFrameworkJDBC {
         Context ctx = getContextFromSession(req.session());
         //System.out.println("MSFDOIJFJKF");
         //String input = req.queryParams("init");
-        String input = "Steve Harvey";
+        req.session().attribute("initials", req.body()); 
+        String input = req.session().attribute("initials"); //session attribute is now the request body, get as a string
         if (input.contains(" ")) {
             //System.out.println("sdkffjdsdfmk");
             String firstName = input.substring(0, input.indexOf(" ")); //input must be formatted in First + Last

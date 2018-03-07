@@ -30,22 +30,7 @@ CREATE TABLE IF NOT EXISTS `FusorDB`.`pictures` (
 ENGINE = InnoDB;
 
 
--- -----------------------------------------------------
--- Table `FusorDB`.`favorites`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `FusorDB`.`favorites` ;
 
-CREATE TABLE IF NOT EXISTS `FusorDB`.`favorites` (
-  `favorite_id` INT UNSIGNED NOT NULL,
-  `favorite` BLOB NULL,
-  PRIMARY KEY (`favorite_id`),
-  UNIQUE INDEX `Picture_id_UNIQUE` (`favorite_id` ASC),
-  CONSTRAINT `Picture_id`
-    FOREIGN KEY (`favorite_id`)
-    REFERENCES `FusorDB`.`pictures` (`picture_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
