@@ -11,7 +11,15 @@ package org.eastsideprep.serverframeworkjdbc;
  */
 public class Attributes {
     boolean on; //fusor on or off?
-    int vpressure; //vacuum pressure
+    int vpressure;
+    int voltage;
+    int deuterium;
+    int radiationLevel;
+    
+    
+    public Attributes() {
+        
+    }
      
     
     //TODO: figure out how to add the rest of the attributes intto this class

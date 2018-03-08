@@ -33,8 +33,10 @@ public class ServerFrameworkJDBC {
         get("/hello", (req, res) -> hello(req), new JSONRT());
         get("/showface", (req, res) -> useWebcam(req, fws), new VelocityTemplateEngine());
         post("/login", (req, res) -> logSessionHandler(req));
-        
-        post("upload", (req, res) -> uploadFile(req, res));     //uploading pictures    
+
+        post("upload", (req, res) -> uploadFile(req, res));     //uploading pictures   
+
+        get("/status", (req, res) -> getAttributesHandler(req), new JSONRT());
 
         put("/protected/put", (req, res) -> putHandler(req));
         post("/protected/post", (req, res) -> postHandler(req));
@@ -49,8 +51,8 @@ public class ServerFrameworkJDBC {
         });
 
         put("/login", (req, res) -> login(req));
-    
-    get("/download", "application/json", (req, res) -> getint(req), new JSONRT());
+
+        get("/download", "application/json", (req, res) -> getint(req), new JSONRT());
 
         get("/upload/download", (req, res) -> {
             String y = req.queryParams("arg1"); //get index from params
@@ -89,13 +91,14 @@ public class ServerFrameworkJDBC {
                 halt(401, "You must login.");
             }
         });
-    
+
     }
+
     public static ArrayList<FusorWebcam> getWebcams() {
         ArrayList<FusorWebcam> fws = new ArrayList<FusorWebcam>(); //list of FusorWebcam objects to return
         List<Webcam> ws = Webcam.getWebcams(); //get list of all available webcams connected to computer
         int i = 0;
-        for (Webcam w: ws) {
+        for (Webcam w : ws) {
             FusorWebcam fw = new FusorWebcam(w, i); //creates new FusorWebcam object for each webcam
             fws.add(fw);
             i++;
@@ -118,9 +121,9 @@ public class ServerFrameworkJDBC {
         if (onoff.equalsIgnoreCase("on")) {
             int i = 0;
             ArrayList<String> url = new ArrayList();
-            for(FusorWebcam fw: fws) {
+            for (FusorWebcam fw : fws) {
                 fw.activateStream();
-                url.add("http://10.20.81.244:" + (8080+i) + "/");
+                url.add("http://10.20.81.244:" + (8080 + i) + "/");
                 i++;
             }
             Map<String, Object> model = new HashMap<>();
@@ -128,8 +131,8 @@ public class ServerFrameworkJDBC {
             return new ModelAndView(model, "template.vm");
 //            return "Stream active!";
         } else {
-            for(FusorWebcam fw: fws) {
-            fw.terminateStream();
+            for (FusorWebcam fw : fws) {
+                fw.terminateStream();
             }
             return new ModelAndView("nothing", "template.vm");
         }
@@ -181,7 +184,6 @@ public class ServerFrameworkJDBC {
         return ctx.db.showTables();
     }
 
-  
     public static Context getContextFromSession(spark.Session s) {
         Context ctx = s.attribute("Context");
         if (ctx == null) {
@@ -191,14 +193,14 @@ public class ServerFrameworkJDBC {
 
         return ctx;
     }
-       private static int getint(spark.Request req) {
+
+    private static int getint(spark.Request req) {
         Context ctx = getContextFromSession(req.session());
         int x = ctx.db.getk() - 1;
         System.out.println(x);
         return x;
     }
 
-    
     static Object uploadFile(spark.Request request, spark.Response response) {
         //System.out.println("upload");
         Context ctx = getContextFromSession(request.session()); //normal posthandler code
@@ -211,7 +213,7 @@ public class ServerFrameworkJDBC {
             ctx.db.addImages(request, file); //database method to complete upload
 //            final Path path = Paths.get(System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") 
 //                     + file.getSubmittedFileName()); //in case you want to upload the image to a file, leaving
-                                                        //this here just in case
+            //this here just in case
 //            Files.copy(in, path);
             System.out.println("Uploaded file " + file.getSubmittedFileName());
             return "Uploaded file " + file.getSubmittedFileName();
@@ -223,7 +225,7 @@ public class ServerFrameworkJDBC {
         return "Should not get here";
 
     }
-    
+
     public static Object logSessionHandler(spark.Request req) { //handler to log a new session in the db, first logs users in the session
         //then data about the session
         MultipartConfigElement multipartConfigElement = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
@@ -233,7 +235,7 @@ public class ServerFrameworkJDBC {
         Context ctx = getContextFromSession(req.session());
         //System.out.println("MSFDOIJFJKF");
         //String input = req.queryParams("init");
-        req.session().attribute("initials", req.body()); 
+        req.session().attribute("initials", req.body());
         String input = req.session().attribute("initials"); //session attribute is now the request body, get as a string
         if (input.contains(" ")) {
             //System.out.println("sdkffjdsdfmk");
@@ -247,10 +249,29 @@ public class ServerFrameworkJDBC {
             //System.out.println(initials + " initials of operator"); //for debugging
             return firstName + " " + lastName;
         }
-       
+
         //System.out.println(m + "from addHandler"); for debugging
-        
-        
         return "Error in input, please enter your name in format: First Last";
-}
+    }
+
+    public static Object getAttributesHandler(spark.Request req) {
+        ArrayList<String> o = new ArrayList<>();
+        Attributes a = new Attributes();
+        Context ctx = getContextFromSession(req.session());
+
+        ctx.db.getAttributes(req, a);
+        String vac = Integer.toString(a.vpressure);
+        String volt = Integer.toString(a.voltage);
+        String d = Integer.toString(a.deuterium);
+        String rad = Integer.toString(a.radiationLevel);
+        
+        o.add(vac);
+        o.add(d);
+        o.add(volt);
+        o.add(rad);
+        
+        return o;
+
+    }
+
 }

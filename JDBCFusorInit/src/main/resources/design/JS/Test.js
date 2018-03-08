@@ -1,12 +1,9 @@
 let initials = "";
 var k;
-
-
 function request(obj) {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
         xhr.open(obj.method || "GET", obj.url);
-
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {
                 resolve(xhr.response);
@@ -15,54 +12,19 @@ function request(obj) {
             }
         };
         xhr.onerror = () => reject(xhr.statusText);
-
         xhr.send(obj.body);
     });
 }
 ;
-
-
-
-
-
-
-
-function putMessage() {
-    var s = document.getElementById("input").value;
-    document.getElementById("input").value = "";
-
-    request({url: "protected/put", method: "PUT", body: s})
-            .then(data => {
-                output(data + "<br>");
-            })
-            .catch(error => {
-                output("Error: " + error);
-            });
-}
-
-
-function postMessage(oFormElement) {
-    request({url: "protected/post", method: "POST", body: new FormData(oFormElement)})
-            .then(data => {
-                output(data + "<br>");
-            })
-            .catch(error => {
-                output("Error: " + error);
-            });
-    return false;
-}
-
 function getimage() {
 
     request({url: "/download"}) //request URL to send number of images in DB to JS
-    
+
             //variable for total number of images
             .then(data => {
                 k = JSON.parse(data) - 1;
-
-
                 var table = document.getElementById("MyTable"); //reference table
-                
+
                 //run loop while there are still images left to get
                 for (var i = 1; i <= k; i++) {
 
@@ -88,8 +50,8 @@ function login() {
     request({url: "login", body: initials, method: "POST"})
             .then(data => {
                 //still deciding whether or not to display anything here
-                
-                 output("Thank you for logging in, " + data + ".");
+
+                output("Thank you for logging in, " + data + ".");
             })
             .catch(error => {
                 output("Error: " + error);
@@ -102,10 +64,15 @@ function output(message) {
     document.getElementById("output").innerHTML += message;
 }
 
+function outvac(message) {
+    document.getElementById("vac").innerHTML = message;
+}
 
+function outon(message) {
+    document.getElementById("a").innerHTML = message;
+}
 function submitForm(form) { //from OneNote to upload a form
     var body = new FormData(form);
-
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "upload");
     // must not do this!!!! xhr.setRequestHeader("Content-type", "multipart/form-data");
@@ -124,4 +91,57 @@ function submitForm(form) { //from OneNote to upload a form
     return false;
 }
 
+
+//display Status values from database
+function displayStatus() {
+    var vac;
+    var volt;
+    var d;
+    var rad;
+    request({url: "status", method: "GET"})
+            .then(data => {
+                if (data != "null") { //nullchecker for incoming data F
+                    window.setInterval(function () { //refresh status, refreshes every 1000ms
+                        displayStatus();
+                    }, 1000);
+
+
+
+                    let status = JSON.parse(data); //get data from java
+
+                    //setting variables of status items
+                    vac = status[0];
+                    d = status[1];
+                    volt = status[2];
+                    rad = status[3];
+                    if (volt == 0) {
+                        document.getElementById("a").innerHTML = "Fusor Status: OFF";
+                        document.getElementById("d").innerHTML = "";
+                        document.getElementById("volt").innerHTML = "";
+                        document.getElementById("rad").innerHTML = "";
+
+                        return; //check to determine if the fusor is on 
+                        //(hopefully voltage will not be 0 if fusor is on)
+                    }
+                    //loading status items into HTML
+                    document.getElementById("a").innerHTML = "Fusor Status: ON"; //just like below, this is not working for whatever reason
+                    //outon("Fusor Status: ON");
+                    document.getElementById("d").innerHTML = "Deuterium Levels: " + d;
+                    document.getElementById("volt").innerHTML = "Voltage: " + volt;
+                    document.getElementById("rad").innerHTML = "Radiation Levels: " + rad;
+                    //document.getElementById("vac").innerhtml = "Vacuum Pressure: " + vac; //this doesn't work and i have literally no idea why
+                    outvac("Vacuum Pressure: " + vac); //forced to use this because the above line does not work
+
+
+
+                }
+
+
+
+
+            })
+            .catch(error => {
+                console.log("Error: " + error);
+            });
+}
 

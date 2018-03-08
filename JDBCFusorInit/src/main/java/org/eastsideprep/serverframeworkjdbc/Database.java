@@ -125,11 +125,6 @@ public class Database {
 
         return result.toString();
     }
-    
-    
-    
-
-    
 
     // executes a prepared sql statement specified by the sql argument
     // the first parameter of that prepared statement will be the parameter argument
@@ -150,8 +145,7 @@ public class Database {
         }
 
     }
-    
-    
+
     static Object addImages(spark.Request req, Part file) {
 
         try {
@@ -180,22 +174,20 @@ public class Database {
     Object registerOperator(spark.Request req, String firstName, String lastName, String initials) {
 
         try {
-            
-            String sql =  "select * from operators where first_name=\"" + firstName + "\" and last_name=\"" 
-                    + lastName+ "\";"; //select query to get message from DB
+
+            String sql = "select * from operators where first_name=\"" + firstName + "\" and last_name=\""
+                    + lastName + "\";"; //select query to get message from DB
             //System.out.println(sql + "sfdjksdfkosfdsfd"); //for debugging
             PreparedStatement statement = conn.prepareStatement(sql);
 
             ResultSet rs = statement.executeQuery();
             //System.out.println("Result set: " + rs.toString());
-            
-                
-                if (rs.next()==false) { //check for empty resultset to add to database if operator is not yet registered
-                    
-                
+
+            if (rs.next() == false) { //check for empty resultset to add to database if operator is not yet registered
+
                 String query = " insert into operators (first_name, last_name, initials)" //sql query, insert into database
                         + " values (?, ?, ?)";
-                    System.out.println("got here");
+                System.out.println("got here");
 
                 // create the mysql insert preparedstatement
                 PreparedStatement preparedStmt = conn.prepareStatement(query);
@@ -208,10 +200,9 @@ public class Database {
 
                 //conn.close();
                 return firstName + lastName + initials;
-                } else {
-                    return "already registered";
-                }
-            
+            } else {
+                return "already registered";
+            }
 
             //System.out.println(message + "---------------------------"); //debugging
             //message = req.queryParams("message").toString();
@@ -222,14 +213,15 @@ public class Database {
         }
         return "Should not get here";
     }
-static int getk() {
+
+    static int getk() {
         int k = 0;
         try {
 
             String query2 = "select Picture from pictures;"; //select all pictures uploaded
             PreparedStatement ps2 = conn.prepareStatement(query2); //create prepared statement
             ResultSet rs2 = ps2.executeQuery(); //create result set
-            
+
             //add to k while there are still pictures - find the total number
             while (rs2.next()) {
                 k++;
@@ -248,13 +240,13 @@ static int getk() {
         try {
             //get all images from db
             for (int i = 1; i <= k; i++) {
-                
+
                 String query = "select Picture as file from pictures WHERE Picture_id = (?);"; //select individual images based on id
 
                 PreparedStatement preparedStmt = conn.prepareStatement(query); //prepare statement
                 preparedStmt.setInt(1, i); //set variable in statement to i so as to loop through and return all of them
                 ResultSet rs = preparedStmt.executeQuery(); //execute statement
-                
+
                 //add bytes from BLOB file into array
                 while (rs.next()) {
                     data = rs.getBytes("file");
@@ -271,7 +263,7 @@ static int getk() {
         return null;
     }
 
-     Object logSession(spark.Request req) {
+    Object logSession(spark.Request req) {
         try {
             String query = " insert into session (time, date)" //sql query, insert into database
                     + " values (?, ?)";
@@ -293,102 +285,29 @@ static int getk() {
         }
         return "Should not get here";
     }
-    /*
-        // CRUD: Students
-    // makes a new row in the students table using the fields of the Student argument
-    // prints success message if successful, prints exception otherwise
-    public void createStudent(Student sd) {
+
+    Object getAttributes(spark.Request req, Attributes a) {
+        
+
         try {
-            Statement stmt = conn.createStatement();
-            String sql = "INSERT INTO students (id, firstname, lastname, login, gradyear) VALUES (?, ?, ?, ?, ?)";
+            String sql = "select voltage, "
+                    + "deuterium, vacuum, radlevel from session;"; //select query to get message from DB
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, sd.id);
-            statement.setString(2, sd.firstName);
-            statement.setString(3, sd.lastName);
-            statement.setString(4, sd.login);
-            statement.setInt(5, sd.gradYear);
-
-            int rowsInserted = statement.executeUpdate();
-            if (rowsInserted > 0) {
-                System.out.println("A new student was inserted successfully!");
-            }
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
-    public Student retrieveStudent(int id) {
-        Student request = null;
-        try {
-            String sql = "SELECT * FROM students WHERE id=?;";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, id);
 
             ResultSet rs = statement.executeQuery();
-            if (rs.next()) {
-                request = new Student(rs.getInt("id"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("login"), rs.getInt("gradyear"));
+            while (rs.next()) {
+                a.voltage = rs.getInt("voltage");
+                a.deuterium = rs.getInt("deuterium");
+                a.vpressure = rs.getInt("vacuum");
+                a.radiationLevel = rs.getInt("radlevel");
+                
             }
 
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("Exception in getAttributes: "+ e);
+
         }
-        return request;
+        return a;
     }
 
-    public Student retrieveStudent(String login) {
-        Student request = null;
-        try {
-            String sql = "SELECT * FROM students WHERE login=?;";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, login);
-
-            ResultSet rs = statement.executeQuery();
-            if (rs.next()) {
-                request = new Student(rs.getInt("id"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("login"), rs.getInt("gradyear"));
-            }
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return request;
-    }
-
-    public void updateStudent(Student sd) {
-        try {
-            String sql = "UPDATE FROM students SET firstname=?, lastname=?, login=?, gradyear=? WHERE id=?;";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, sd.firstName);
-            statement.setString(2, sd.lastName);
-            statement.setString(3, sd.login);
-            statement.setInt(4, sd.getGradYear());
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-    }
-
-    //todo: Make this only look at id, not the other fields
-    public void deleteStudent(Student sd) {
-        try {
-            String sql = "DELETE FROM students WHERE id=?, firstname=?, lastname=?, login=?, gradyear=?";
-
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, sd.id);
-            statement.setString(2, sd.firstName);
-            statement.setString(3, sd.lastName);
-            statement.setString(4, sd.login);
-            statement.setInt(5, sd.gradYear);
-
-            int rowsDeleted = statement.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("A student was deleted successfully!");
-            }
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
-     */
 }
