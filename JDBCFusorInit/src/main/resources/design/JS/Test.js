@@ -51,7 +51,7 @@ function login() {
             .then(data => {
                 //still deciding whether or not to display anything here
 
-                output("Thank you for logging in, " + data + ".");
+                outops(data);
             })
             .catch(error => {
                 output("Error: " + error);
@@ -70,6 +70,10 @@ function outvac(message) {
 
 function outon(message) {
     document.getElementById("a").innerHTML = message;
+}
+
+function outops(message) {
+    document.getElementById("ops").innerHTML += message;
 }
 function submitForm(form) { //from OneNote to upload a form
     var body = new FormData(form);

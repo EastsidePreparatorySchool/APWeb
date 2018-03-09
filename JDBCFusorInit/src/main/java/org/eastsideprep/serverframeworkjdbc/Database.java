@@ -265,7 +265,7 @@ public class Database {
 
     Object logSession(spark.Request req) {
         try {
-            String query = " insert into session (time, date)" //sql query, insert into database
+            String query = " insert into session_ops (time_in, date_in)" //sql query, insert into database
                     + " values (?, ?)";
             String dt = LocalDateTime.now().toString(); //get date and time
 
